@@ -1,0 +1,36 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.customNav {
+    background-color: #FFC78E;
+}
+.customFontColor {
+    color: #db4500 !important;
+    font-weight: bold;
+}
+
+#accordionSidebar li .nav-link:hover {
+    color: #ccc; /* 設定懸停時的顏色為灰色 */
+    background-color: #D94600; /* 設定懸停時的背景顏色 */
+    transition: background-color 0.3s ease, color 0.3s ease; /* 添加過渡效果 */
+}

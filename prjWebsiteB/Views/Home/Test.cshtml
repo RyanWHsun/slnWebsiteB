@@ -1,0 +1,107 @@
+﻿@model IEnumerable<prjWebsiteB.Models.TUser>
+
+@{
+    ViewData["Title"] = "Test";
+}
+
+<h1>Test</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FUserRankId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FUserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FUserImage)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FUserNickName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FUserSex)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FUserBirthday)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FUserPhone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FUserEmail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FUserAddress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FUserComeDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FUserPassword)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FUserNotify)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FUserOnLine)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FUserRankId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FUserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FUserImage)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FUserNickName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FUserSex)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FUserBirthday)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FUserPhone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FUserEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FUserAddress)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FUserComeDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FUserPassword)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FUserNotify)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FUserOnLine)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.FUserId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.FUserId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.FUserId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
