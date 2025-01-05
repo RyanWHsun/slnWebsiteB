@@ -1,0 +1,29 @@
+﻿@model IEnumerable<prjWebsiteB.Models.TPost>
+
+<h1>文章管理</h1>
+<div class="container">
+    <div>
+        <label for="searchString">搜尋關鍵字:</label>
+        <input id="searchString" name="searchString" class="form-control" />
+        <button id="search" type="button" class="btn btn-primary">搜尋</button>
+    </div>
+</div>
+<div id="searchResults">
+    <partial name="_PostListPartial" />
+</div>
+@section Scripts
+{
+    <script>
+        $("#search").on("click",function(){
+            const searchString  = $("#searchString").val();
+            $.ajax({
+                type:"GET",
+                url:`TPosts/Search/${searchString}`
+            }).done(data=>{
+                $("#searchResults").html(data);
+            }).fail(err=>{
+                alert(err.statusText);
+            })
+        });
+    </script>
+}
