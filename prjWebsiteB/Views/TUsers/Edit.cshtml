@@ -1,0 +1,95 @@
+﻿@model prjWebsiteB.Models.TUser
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>TUser</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="FUserId" />
+            <div class="form-group">
+                <label asp-for="FUserRankId" class="control-label"></label>
+                <input asp-for="FUserRankId" class="form-control" />
+                <span asp-validation-for="FUserRankId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FUserName" class="control-label"></label>
+                <input asp-for="FUserName" class="form-control" />
+                <span asp-validation-for="FUserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FUserImage" class="control-label"></label>
+                <input asp-for="FUserImage" class="form-control" />
+                <span asp-validation-for="FUserImage" class="text-danger"></span>
+                <partial name="_ShowUserImage" />
+            </div>
+            <div class="form-group">
+                <label asp-for="FUserNickName" class="control-label"></label>
+                <input asp-for="FUserNickName" class="form-control" />
+                <span asp-validation-for="FUserNickName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FUserSex" class="control-label"></label>
+                <input asp-for="FUserSex" class="form-control" />
+                <span asp-validation-for="FUserSex" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FUserBirthday" class="control-label"></label>
+                <input asp-for="FUserBirthday" class="form-control" />
+                <span asp-validation-for="FUserBirthday" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FUserPhone" class="control-label"></label>
+                <input asp-for="FUserPhone" class="form-control" />
+                <span asp-validation-for="FUserPhone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FUserEmail" class="control-label"></label>
+                <input asp-for="FUserEmail" class="form-control" />
+                <span asp-validation-for="FUserEmail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FUserAddress" class="control-label"></label>
+                <input asp-for="FUserAddress" class="form-control" />
+                <span asp-validation-for="FUserAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FUserComeDate" class="control-label"></label>
+                <input asp-for="FUserComeDate" class="form-control" />
+                <span asp-validation-for="FUserComeDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FUserPassword" class="control-label"></label>
+                <input asp-for="FUserPassword" class="form-control" />
+                <span asp-validation-for="FUserPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FUserNotify" class="control-label"></label>
+                <input asp-for="FUserNotify" class="form-control" />
+                <span asp-validation-for="FUserNotify" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FUserOnLine" class="control-label"></label>
+                <input asp-for="FUserOnLine" class="form-control" />
+                <span asp-validation-for="FUserOnLine" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
