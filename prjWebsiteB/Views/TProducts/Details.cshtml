@@ -13,10 +13,7 @@
         }
 
         .image-container {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: nowrap;
-            justify-content: space-between;
+
         }
 
         .img-thumbnail {
@@ -94,9 +91,7 @@
             @Html.DisplayNameFor(model => model.FImage)
         </dt>
         <dd class="col-sm-10">
-            <div id="imagesContainer1" class="image-container"></div>
-            <div id="imagesContainer2" class="image-container"></div>
-            <div id="imagesContainer3" class="image-container"></div>
+            <div id="imagesContainer" class="image-container"></div>
         </dd>
     </dl>
 </div>
@@ -118,12 +113,9 @@
             })
             .done(data => {
                 // 清空圖片容器
-                $('#imagesContainer1').empty();
-                $('#imagesContainer2').empty();
-                $('#imagesContainer3').empty();
-
-                var containers = ['#imagesContainer1', '#imagesContainer2', '#imagesContainer3'];
-                for (var i = 0; i < containers.length; i++) {
+                $('#imagesContainer').empty();
+                                
+                for (var i = 0; i < 3; i++) {
                     // 檢查是否有返回圖片數據
                     if (data && data.length > i) {
                         // 創建並顯示圖片
@@ -133,16 +125,16 @@
                             alt: 'Product Image',
                             width: '150px' // 設置圖片寬度
                         });
-                        $(containers[i]).append(img);
+                        $('#imagesContainer').append(img);
                     } else {
                         // 如果沒有返回圖片數據，顯示預設圖片
-                        var defaultImg = $('<img />', {
-                            src: `${baseAddress}/img/No_Pic_Tao.jpg`,
-                            class: 'img-thumbnail',
-                            alt: 'Default Image',
-                            width: '150px' // 設置圖片寬度
-                        });
-                        $(containers[i]).append(defaultImg);
+                        // var defaultImg = $('<img />', {
+                        //     src: `${baseAddress}/img/No_Pic_Tao.jpg`,
+                        //     class: 'img-thumbnail',
+                        //     alt: 'Default Image',
+                        //     width: '150px' // 設置圖片寬度
+                        // });
+                        $('#imagesContainer').text("尚無商品圖片");
                     }
                 }
             })
