@@ -1,0 +1,161 @@
+﻿@model IEnumerable<prjWebsiteB.ViewModels.ProductViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+@section Styles
+{
+    <style>
+        .topic {
+            margin: 20px;
+        }
+
+        .content {
+            margin: 20px;
+        }
+
+        .hidden-column {
+            display: none;
+        }
+    </style>
+}
+<div class="container-fluid topic">
+    <h1>商品管理</h1>
+    <button class="btn btn-info">
+        <a asp-action="Create">Create New</a>
+    </button>
+    <form method="get">
+        <input type="text" name="searchString" class="form-control" placeholder="搜尋商品名稱" />
+    </form>
+</div>
+
+<table class="table content">
+    <thead class="table-success">
+        <tr>
+            <th>
+
+            </th>
+            <th class="hidden-column">@Html.DisplayNameFor(model => model.FProductId)</th>
+            <th>
+                @Html.DisplayNameFor(model => model.FImage)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FProductName)
+            </th>
+            <th class="hidden-column">
+                @Html.DisplayNameFor(model => model.FProductDescription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FProductPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FIsOnSale)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FProductDateAdd)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FProductUpdated)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FStock)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FCategoryName)
+            </th>           
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <div class="mb-2">
+                        <a class="btn btn-success" asp-action="Details" asp-route-id="@item.FProductId">明細</a>
+                    </div>
+                    <div class="mb-2">
+                        <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.FProductId">修改</a>
+                    </div>
+                    <div class="mb-2">
+                        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                onclick="setDeleteId(@item.FProductId)">
+                            刪除
+                        </button>
+                    </div>
+                </td>                
+                <td class="hidden-column">@Html.DisplayFor(modelItem => item.FProductId)</td>
+                <td>
+                    <img src="@Url.Action("GetPicture","TProducts", new{id=@item.FProductId})" style="width:100px" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FProductName)
+                </td>
+                <td class="hidden-column">
+                    @Html.DisplayFor(modelItem => item.FProductDescription)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FProductPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FIsOnSale)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FProductDateAdd)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FProductUpdated)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FStock)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FCategoryName)
+                </td>                
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- 刪除確認模態框 -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">確認刪除</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                您確定要刪除此商品嗎？
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDelete()">確認刪除</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 隱藏的表單 -->
+<form id="deleteForm" method="post" asp-action="DeleteConfirmed" asp-controller="TProducts">
+    <input type="hidden" name="id" id="deleteId" />
+</form>
+
+@section Scripts {
+    <script>
+        let deleteId = null;
+
+        // 設定刪除的商品 ID
+        function setDeleteId(id) {
+        deleteId = id;
+        document.getElementById("deleteId").value = id; // 將 ID 設置到隱藏表單中
+        }
+
+        // 確認刪除時觸發
+        function confirmDelete() {
+        document.getElementById("deleteForm").submit(); // 提交隱藏的表單
+        }
+
+    </script>
+
+}
