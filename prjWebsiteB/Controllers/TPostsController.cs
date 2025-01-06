@@ -96,7 +96,7 @@ namespace prjWebsiteB.Controllers
             {
                 return NotFound();
             }
-            ViewData["FCategoryId"] = new SelectList(_context.TPostCategories, "FCategoryId", "FCategoryId", tPost.FCategoryId);
+            ViewData["FCategoryId"] = new SelectList(_context.TPostCategories, "FCategoryId", "FName", tPost.FCategoryId);
             ViewData["FUserId"] = new SelectList(_context.TUsers, "FUserId", "FUserId", tPost.FUserId);
             return View(tPost);
         }
