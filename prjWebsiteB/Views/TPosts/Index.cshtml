@@ -22,5 +22,27 @@
                 alert(err.statusText);
             })
         });
+
+        $("tbody button").on("click",function(){
+            var FPostId = $(this).data("fpostid");
+            var FUserId = $(this).data("fuserid");
+            var FTitle = $(this).data("ftitle");
+            var FContent = $(this).data("fcontent");
+            var FCreatedAt = $(this).data("fcreatedat");
+            var FUpdatedAt = $(this).data("fupdatedat");
+            var FIsPublic = $(this).data("fispublic");
+            console.log(FIsPublic);
+            $("#editFPostId").text(FPostId);
+            $("#editFUserId").text(FUserId);
+            $("#editFTitle").text(FTitle);
+            $("#editFContent").text(FContent);
+            $("#editFCreatedAt").text(FCreatedAt);
+            $("#editFUpdatedAt").text(FUpdatedAt);
+            if(FIsPublic=="True"){
+                $('#FIsPublicSelect').val('true');
+            }else{
+                $('#FIsPublicSelect').val('false');
+            }
+        })
     </script>
 }

@@ -1,8 +1,5 @@
 ﻿@model IEnumerable<prjWebsiteB.Models.TPost>
 
-<p>
-    <a asp-action="Create" class="btn btn-success">Create New</a>
-</p>
 <table class="table table-striped table-hover table-bordered">
     <thead class="table-success">
         <tr>
@@ -63,12 +60,65 @@
                     @Html.DisplayFor(modelItem => item.FCategory.FName)
                 </td>
 
-                <td>
+                @*  <td>
                     <a asp-action="Edit" asp-route-id="@item.FPostId" class="btn btn-primary">Edit</a>
                     <a asp-action="Details" asp-route-id="@item.FPostId" class="btn btn-info">Details</a>
                     <a asp-action="Delete" asp-route-id="@item.FPostId" class="btn btn-danger">Delete</a>
+                </td> *@
+                <td>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editPostModal"
+                            data-FPostId="@item.FPostId"
+                            data-FUserId="@item.FUserId"
+                            data-FTitle="@item.FTitle"
+                            data-FContent="@item.FContent"
+                            data-FCreatedAt="@item.FCreatedAt"
+                            data-FUpdatedAt="@item.FUpdatedAt"
+                            data-FIsPublic="@item.FIsPublic">
+                        修改
+                    </button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="editPostModal" tabindex="-1" aria-labelledby="addPostModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPostModalLabel">修改</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <dl class="row">
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.FPostId)</dt>
+                        <dd id="editFPostId" class="col-sm-9"></dd>
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.FUserId)</dt>
+                        <dd id="editFUserId" class="col-sm-9"></dd>
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.FTitle)</dt>
+                        <dd id="editFTitle" class="col-sm-9"></dd>
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.FContent)</dt>
+                        <dd id="editFContent" class="col-sm-9"></dd>
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.FCreatedAt)</dt>
+                        <dd id="editFCreatedAt" class="col-sm-9"></dd>
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.FUpdatedAt)</dt>
+                        <dd id="editFUpdatedAt" class="col-sm-9"></dd>
+                        <dt class="col-sm-3"> @Html.DisplayNameFor(model => model.FIsPublic)</dt>
+                        <dd class="col-sm-9">
+                            <select id="FIsPublicSelect" name="FIsPublic" class="form-control">
+                                <option value="true">公開</option>
+                                <option value="false">私人</option>
+                            </select>
+                        </dd>
+                    </dl>
+                </div>
+                <div>
+                    <label></label>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
