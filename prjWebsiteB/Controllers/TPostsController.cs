@@ -37,7 +37,7 @@ namespace prjWebsiteB.Controllers
             return PartialView("_PostListPartial", dbGroupBContext);
         }
         [HttpPost]
-        public async Task<IActionResult> Update(int id, bool isPublic)
+        public async Task<IActionResult> Update(int id, bool isPublic,string searchString)
         {
             
             if (id == null)
@@ -74,7 +74,10 @@ namespace prjWebsiteB.Controllers
                 }
             }
             IQueryable<TPost> dbGroupBContext = _context.TPosts.Include(t => t.FCategory);
-            
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                dbGroupBContext = dbGroupBContext.Where(e => e.FTitle.Contains(searchString) || e.FContent.Contains(searchString));
+            }
             return PartialView("_PostListPartial", dbGroupBContext);
         }
 

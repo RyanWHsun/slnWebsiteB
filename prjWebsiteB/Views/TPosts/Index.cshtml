@@ -27,7 +27,7 @@
             $.ajax({
                 type:"POST",
                 url:"/TPosts/Update",
-                data:{id:$("#editFPostId").text(),isPublic:$('#FIsPublicSelect').val()}
+                data:{id:$("#editFPostId").text(),isPublic:$('#FIsPublicSelect').val(),searchString:$("#searchString").val()}
             }).done(data=>{
                 $("#searchResults").html(data);
             }).fail(err=>{
