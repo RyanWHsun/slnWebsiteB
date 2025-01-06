@@ -1,0 +1,117 @@
+﻿@model prjWebsiteB.ViewModels.TEventCreateViewModel
+
+@{
+    ViewData["Title"] = "新增活動項目";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="text-center mb-4">新增項目</h1>
+            <hr />
+            <form asp-action="Create" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- 活動名稱 -->
+                <div class="form-group">
+                    <label asp-for="FEventName" class="control-label">活動名稱</label>
+                    <input asp-for="FEventName" class="form-control" placeholder="請輸入活動名稱" />
+                    <span asp-validation-for="FEventName" class="text-danger"></span>
+                </div>
+
+                <!-- 活動描述 -->
+                <div class="form-group">
+                    <label asp-for="FEventDescription" class="control-label">活動說明</label>
+                    <textarea asp-for="FEventDescription" class="form-control" placeholder="請輸入活動描述"></textarea>
+                    <span asp-validation-for="FEventDescription" class="text-danger"></span>
+                </div>
+
+                <!-- 活動類型 -->
+                <div class="form-group">
+                    <label asp-for="FEventCategoryId" class="control-label">活動類型</label>
+                    <select asp-for="FEventCategoryId" asp-items="ViewBag.CategoryList" class="form-control">
+                        <option value="">請選擇活動類型</option>
+                    </select>
+                    <span asp-validation-for="FEventCategoryId" class="text-danger"></span>
+                </div>
+
+                <!-- 活動地點 -->
+                <div class="form-group">
+                    <label asp-for="FEventLocation" class="control-label">活動地點</label>
+                    <input asp-for="FEventLocation" class="form-control" placeholder="請輸入活動地點" />
+                    <span asp-validation-for="FEventLocation" class="text-danger"></span>
+                </div>
+
+                <!-- 活動日期 -->
+                <div class="form-group">
+                    <label asp-for="FEventStartDate" class="control-label">開始日期</label>
+                    <input asp-for="FEventStartDate" type="date" class="form-control" />
+                    <span asp-validation-for="FEventStartDate" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="FEventEndDate" class="control-label">結束日期</label>
+                    <input asp-for="FEventEndDate" type="date" class="form-control" />
+                    <span asp-validation-for="FEventEndDate" class="text-danger"></span>
+                </div>
+
+                <!-- 活動費用 -->
+                <div class="form-group">
+                    <label asp-for="FEventActivityfee" class="control-label">報名費用</label>
+                    <input asp-for="FEventActivityfee" type="number" class="form-control" placeholder="請輸入報名費用" />
+                    <span asp-validation-for="FEventActivityfee" class="text-danger"></span>
+                </div>
+
+                <!-- 人數限制 -->
+                <div class="form-group">
+                    <label asp-for="FEventMaxParticipants" class="control-label">人數上限</label>
+                    <input asp-for="FEventMaxParticipants" type="number" class="form-control" placeholder="請輸入人數上限" />
+                    <span asp-validation-for="FEventMaxParticipants" class="text-danger"></span>
+                </div>
+
+                <!-- 活動狀態 -->
+                <div class="form-group">
+                    <label asp-for="FEventIsActive" class="control-label">活動狀態</label>
+                    <select asp-for="FEventIsActive" class="form-control">
+                        <option value="true">啟用</option>
+                        <option value="false">停用</option>
+                    </select>
+                    <span asp-validation-for="FEventIsActive" class="text-danger"></span>
+                </div>
+
+                <!-- 圖片上傳 -->
+                <div class="form-group">
+                    <label for="uploadedFile">圖片上傳</label>
+                    <input type="file" id="uploadedFile" name="uploadedFile" class="form-control-file" accept="image/*" />
+                    <img id="previewImage" src="#" alt="圖片預覽" class="img-thumbnail mt-3" style="display: none; max-width: 100%; height: auto;" />
+                </div>
+
+                <!-- 按鈕 -->
+                <div class="form-group text-right">
+                    <button type="submit" class="btn btn-primary">保存</button>
+                    <a asp-action="Index" class="btn btn-secondary">取消</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+            document.getElementById('uploadedFile').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const preview = document.getElementById('previewImage');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

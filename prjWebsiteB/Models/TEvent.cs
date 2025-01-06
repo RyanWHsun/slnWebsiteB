@@ -42,4 +42,6 @@ public partial class TEvent
     public virtual ICollection<TEventImage> TEventImages { get; set; } = new List<TEventImage>();
 
     public virtual ICollection<TEventRegistrationForm> TEventRegistrationForms { get; set; } = new List<TEventRegistrationForm>();
+
 }
+
