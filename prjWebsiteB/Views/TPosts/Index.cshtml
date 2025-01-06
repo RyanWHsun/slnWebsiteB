@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<prjWebsiteB.Models.TPost>
 
 <h1>文章管理</h1>
-    <form class="form-inline">
+    <div class="form-inline">
     <label for="searchString" class="form-label mr-2">關鍵字搜尋:</label>
     <input id="searchString" name="searchString" class="form-control" />
-    </form>
+    </div>
 <div id="searchResults">
     <partial name="_PostListPartial" />
 </div>
@@ -23,15 +23,27 @@
             })
         });
 
-        $("tbody button").on("click",function(){
-            var FPostId = $(this).data("fpostid");
-            var FUserId = $(this).data("fuserid");
-            var FTitle = $(this).data("ftitle");
-            var FContent = $(this).data("fcontent");
-            var FCreatedAt = $(this).data("fcreatedat");
-            var FUpdatedAt = $(this).data("fupdatedat");
-            var FIsPublic = $(this).data("fispublic");
-            console.log(FIsPublic);
+        function Update(){
+            $.ajax({
+                type:"POST",
+                url:"/TPosts/Update",
+                data:{id:$("#editFPostId").text(),isPublic:$('#FIsPublicSelect').val()}
+            }).done(data=>{
+                $("#searchResults").html(data);
+            }).fail(err=>{
+                alert(err.statusText);
+            })
+        }
+
+        function btnData(){
+            var button = $(event.target);
+            var FPostId = button.data("fpostid");
+            var FUserId = button.data("fuserid");
+            var FTitle = button.data("ftitle");
+            var FContent = button.data("fcontent");
+            var FCreatedAt = button.data("fcreatedat");
+            var FUpdatedAt = button.data("fupdatedat");
+            var FIsPublic = button.data("fispublic");
             $("#editFPostId").text(FPostId);
             $("#editFUserId").text(FUserId);
             $("#editFTitle").text(FTitle);
@@ -43,6 +55,6 @@
             }else{
                 $('#FIsPublicSelect').val('false');
             }
-        })
+        }
     </script>
 }

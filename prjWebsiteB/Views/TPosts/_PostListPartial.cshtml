@@ -66,7 +66,7 @@
                     <a asp-action="Delete" asp-route-id="@item.FPostId" class="btn btn-danger">Delete</a>
                 </td> *@
                 <td>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editPostModal"
+                    <button type="button" onclick="btnData()" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editPostModal"
                             data-FPostId="@item.FPostId"
                             data-FUserId="@item.FUserId"
                             data-FTitle="@item.FTitle"
@@ -114,10 +114,7 @@
                         </dd>
                     </dl>
                 </div>
-                <div>
-                    <label></label>
-                    
-                </div>
+                <button id="submitBtn" type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="Update()">送出</button>
             </div>
         </div>
     </div>

@@ -36,6 +36,48 @@ namespace prjWebsiteB.Controllers
             }
             return PartialView("_PostListPartial", dbGroupBContext);
         }
+        [HttpPost]
+        public async Task<IActionResult> Update(int id, bool isPublic)
+        {
+            
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var tPost = await _context.TPosts.FindAsync(id);
+
+            if (tPost == null)
+            {
+                return NotFound();
+            }
+
+            tPost.FIsPublic = isPublic;
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(tPost);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!TPostExists(tPost.FPostId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+            IQueryable<TPost> dbGroupBContext = _context.TPosts.Include(t => t.FCategory);
+            
+            return PartialView("_PostListPartial", dbGroupBContext);
+        }
+
 
         // GET: TPosts/Delete/5
         public async Task<IActionResult> Delete(int? id)
