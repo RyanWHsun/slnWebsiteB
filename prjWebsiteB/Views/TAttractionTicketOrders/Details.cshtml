@@ -1,0 +1,48 @@
+﻿@model prjWebsiteB.Models.TAttractionTicketOrder
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>TAttractionTicketOrder</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FOrderQty)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FOrderQty)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FUnitPrice)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FUnitPrice)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FCreatedDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FCreatedDate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FAttractionTicket)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FAttractionTicket.FAttractionTicketId)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FBuyer)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FBuyer.FUserId)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.FAttractionTicketOrderId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

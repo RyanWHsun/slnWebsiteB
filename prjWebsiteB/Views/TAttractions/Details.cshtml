@@ -1,0 +1,216 @@
+﻿@model prjWebsiteB.AttractionViewModels.TAttraction
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+@* @section Styles {
+    <style>
+        .carousel {
+            width: 800px;
+            position: relative;
+        }
+
+        #carouselImage {
+            width: 600px;
+            height: 300px;
+            position: relative;
+            left: 100px;
+        }
+
+        #previous {
+            width: 50px;
+            height: 50px;
+            position: absolute;
+            top: 125px;
+            left: 0px;
+        }
+
+        #next {
+            width: 50px;
+            height: 50px;
+            position: absolute;
+            top: 125px;
+            left: 750px;
+        }
+
+        .progress-bar-container {
+            width: 100px;
+            height: 5px;
+            position: absolute;
+            left: 350px;
+            bottom: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.6);
+        }
+    </style>
+} *@
+
+<h1>詳細資訊</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FAttractionName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FAttractionName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FDescription)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FDescription)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FAddress)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FAddress)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FPhoneNumber)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FPhoneNumber)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FOpeningTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FOpeningTime)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FClosingTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FClosingTime)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FWebsiteUrl)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FWebsiteUrl)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FLongitude)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FLongitude)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FLatitude)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FLatitude)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FRegion)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FRegion)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FCreatedDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FCreatedDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FUpdatedDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FUpdatedDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FStatus)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FStatus)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FTrafficInformation)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FTrafficInformation)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FCategoryId)
+        </dt>
+        <dd class="col-sm-10">
+            @ViewBag.categoryName
+        </dd>
+        <dt class="col-sm-2">
+            <label for="FImage" class="control-label"></label>
+        </dt>
+    </dl>
+</div>
+
+@* 照片輪播牆 *@
+@* <div class="carousel">
+    <img id="previous" src="~/img/previous.png" alt="previous" />
+    <img id="carouselImage"
+         src=""
+         alt="Twice Fancy Cover" />
+    <img id="next" src="~/img/next.png" alt="next" />
+
+    <div class="progress-bar-container">
+        <div class="progress-bar"></div>
+    </div>
+</div> *@
+
+<partial name="~/Views/TAttractionImages/_ShowImagePartial.cshtml" model="@Model" />
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.FAttractionId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@* @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(async function () {
+            const attractionId = @Model?.FAttractionId; // 根據你的需求替換為實際景點的 ID
+            try {
+                const response = await fetch(`/TAttractions/GetPictures?id=${attractionId}`);
+                const images = await response.json();
+
+                if (images.length === 0) {
+                    alert("No images available");
+                    return;
+                }
+
+                let currentIndex = 0;
+                const $carouselImage = $("#carouselImage");
+
+                // 設置初始圖片
+                $carouselImage.attr("src", images[currentIndex]);
+
+                // 綁定上一張與下一張按鈕
+                $("#previous").on("click", function () {
+                    currentIndex = (currentIndex - 1 + images.length) % images.length;
+                    $carouselImage.attr("src", images[currentIndex]);
+                    // Swal.fire(`${currentIndex}`);
+                });
+
+                $("#next").on("click", function () {
+                    currentIndex = (currentIndex + 1) % images.length;
+                    $carouselImage.attr("src", images[currentIndex]);
+                    // Swal.fire(`${currentIndex}`);
+                });
+
+            } catch (error) {
+                console.error("Error fetching images:", error);
+                alert("Failed to load images. Please try again later.");
+            }
+        });
+    </script>
+} *@

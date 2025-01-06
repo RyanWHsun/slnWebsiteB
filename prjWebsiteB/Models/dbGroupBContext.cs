@@ -17,6 +17,8 @@ public partial class dbGroupBContext : DbContext
 
     public virtual DbSet<TAttractionCategory> TAttractionCategories { get; set; }
 
+    public virtual DbSet<TAttractionComment> TAttractionComments { get; set; }
+
     public virtual DbSet<TAttractionImage> TAttractionImages { get; set; }
 
     public virtual DbSet<TAttractionTicket> TAttractionTickets { get; set; }
@@ -61,6 +63,8 @@ public partial class dbGroupBContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.UseCollation("Chinese_Taiwan_Stroke_CI_AS");
+
         modelBuilder.Entity<TAttraction>(entity =>
         {
             entity.HasKey(e => e.FAttractionId).HasName("PK__tAttract__F9B18832182D39AF");
@@ -122,6 +126,30 @@ public partial class dbGroupBContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("fCreateDate");
             entity.Property(e => e.FDescription).HasColumnName("fDescription");
+        });
+
+        modelBuilder.Entity<TAttractionComment>(entity =>
+        {
+            entity.HasKey(e => e.FCommentId).HasName("PK__tAttract__F4718CE256C24957");
+
+            entity.ToTable("tAttractionComments");
+
+            entity.Property(e => e.FCommentId).HasColumnName("fCommentId");
+            entity.Property(e => e.FAttractionId).HasColumnName("fAttractionId");
+            entity.Property(e => e.FComment).HasColumnName("fComment");
+            entity.Property(e => e.FCreatedDate)
+                .HasColumnType("datetime")
+                .HasColumnName("fCreatedDate");
+            entity.Property(e => e.FRating).HasColumnName("fRating");
+            entity.Property(e => e.FUserId).HasColumnName("fUserId");
+
+            entity.HasOne(d => d.FAttraction).WithMany(p => p.TAttractionComments)
+                .HasForeignKey(d => d.FAttractionId)
+                .HasConstraintName("FK__tAttracti__fAttr__03F0984C");
+
+            entity.HasOne(d => d.FUser).WithMany(p => p.TAttractionComments)
+                .HasForeignKey(d => d.FUserId)
+                .HasConstraintName("FK__tAttracti__fUser__04E4BC85");
         });
 
         modelBuilder.Entity<TAttractionImage>(entity =>

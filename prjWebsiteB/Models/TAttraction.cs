@@ -41,6 +41,8 @@ public partial class TAttraction
 
     public virtual TAttractionCategory FCategory { get; set; }
 
+    public virtual ICollection<TAttractionComment> TAttractionComments { get; set; } = new List<TAttractionComment>();
+
     public virtual ICollection<TAttractionImage> TAttractionImages { get; set; } = new List<TAttractionImage>();
 
     public virtual ICollection<TAttractionTicket> TAttractionTickets { get; set; } = new List<TAttractionTicket>();

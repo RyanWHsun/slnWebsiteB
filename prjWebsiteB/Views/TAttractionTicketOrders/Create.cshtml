@@ -1,0 +1,51 @@
+﻿@model prjWebsiteB.Models.TAttractionTicketOrder
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>TAttractionTicketOrder</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FBuyerId" class="control-label"></label>
+                <select asp-for="FBuyerId" class ="form-control" asp-items="ViewBag.FBuyerId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="FAttractionTicketId" class="control-label"></label>
+                <select asp-for="FAttractionTicketId" class ="form-control" asp-items="ViewBag.FAttractionTicketId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="FOrderQty" class="control-label"></label>
+                <input asp-for="FOrderQty" class="form-control" />
+                <span asp-validation-for="FOrderQty" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FUnitPrice" class="control-label"></label>
+                <input asp-for="FUnitPrice" class="form-control" />
+                <span asp-validation-for="FUnitPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FCreatedDate" class="control-label"></label>
+                <input asp-for="FCreatedDate" class="form-control" />
+                <span asp-validation-for="FCreatedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

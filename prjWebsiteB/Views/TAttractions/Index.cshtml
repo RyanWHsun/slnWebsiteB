@@ -1,0 +1,309 @@
+﻿@model IEnumerable<prjWebsiteB.Models.TAttraction>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="myGrid" style="height: 500px"></div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FAttractionName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FDescription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FAddress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FPhoneNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FOpeningTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FClosingTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FWebsiteUrl)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FLongitude)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FLatitude)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FRegion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FCreatedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FUpdatedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FTrafficInformation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FCategory)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FAttractionName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FDescription)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FAddress)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FPhoneNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FOpeningTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FClosingTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FWebsiteUrl)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FLongitude)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FLatitude)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FRegion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FCreatedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FUpdatedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FStatus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FTrafficInformation)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FCategory.FAttractionCategoryName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.FAttractionId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.FAttractionId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.FAttractionId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(function(){
+
+            function deleteItem(id) {
+                $.ajax({
+                    url: '/TAttractions/Delete?id=' + id,
+                    type: 'POST',
+                    success: function () {
+                        alert("刪除成功！");
+                        if (gridOptions.api){
+                            gridOptions.api.applyTransaction({ remove: [{ fAttractionId: id }] });
+                            console.error("更新畫面成功");
+                        } else {
+                            console.error("Grid API 尚未初始化");
+                        } 
+                    },
+                    error: function () {
+                        alert("刪除失敗，請稍後再試！");
+                    }
+                });
+                
+            }
+
+            class CustomButtonComponent {
+                eGui;
+                eButtonDetail;
+                eButtonEdit;
+                eButtonDelete;
+                eventListenerDetail;
+                eventListenerEdit;
+                eventListenerDelete;
+
+                init(params) {
+                    this.eGui = document.createElement("div");
+
+                    // 詳細資料按鈕
+                    this.eButtonDetail = document.createElement("button");
+                    this.eButtonDetail.className = "btn-detail";
+                    this.eButtonDetail.textContent = "詳細資料";
+                    this.eventListenerDetail = () => {
+                        //window.location.href = `https://localhost:7121/TAttractions/Details/${params.data.fAttractionId}`;
+                    };
+                    this.eButtonDetail.addEventListener("click", this.eventListenerDetail);
+
+                    // 編輯按鈕
+                    this.eButtonEdit = document.createElement("button");
+                    this.eButtonEdit.className = "btn-edit";
+                    this.eButtonEdit.textContent = "編輯";
+                    this.eventListenerEdit = () => {
+                        alert(`編輯景點: ${params.data.fAttractionName}`);
+                        // 這裡可以加上編輯的邏輯，例如跳轉到編輯頁面或開啟編輯對話框
+                    };
+                    this.eButtonEdit.addEventListener("click", this.eventListenerEdit);
+
+                    // 刪除按鈕
+                    this.eButtonDelete = document.createElement("button");
+                    this.eButtonDelete.className = "btn-delete";
+                    this.eButtonDelete.textContent = "刪除";
+                    this.eventListenerDelete = () => {
+                        if (confirm(`確定要刪除景點: ${params.data.fAttractionName}嗎？`)) {
+                            // 這裡可以加上刪除的邏輯，例如呼叫 API 刪除資料
+                            deleteItem(params.data.fAttractionId);
+                            //console.log(`刪除景點: ${params.data.fAttractionId}`);
+                        }
+                    };
+                    this.eButtonDelete.addEventListener("click", this.eventListenerDelete);
+
+                    // 將按鈕加入到 eGui 中
+                    this.eGui.appendChild(this.eButtonDetail);
+                    this.eGui.appendChild(this.eButtonEdit);
+                    this.eGui.appendChild(this.eButtonDelete);
+                }
+
+                getGui() {
+                    return this.eGui;
+                }
+
+                refresh(params) {
+                    return true;
+                }
+
+                destroy() {
+                    if (this.eButtonDetail) {
+                        this.eButtonDetail.removeEventListener("click", this.eventListenerDetail);
+                    }
+                    if (this.eButtonEdit) {
+                        this.eButtonEdit.removeEventListener("click", this.eventListenerEdit);
+                    }
+                    if (this.eButtonDelete) {
+                        this.eButtonDelete.removeEventListener("click", this.eventListenerDelete);
+                    }
+                }
+            }
+           
+            //const gridOptions={};
+            // 將 Model 序列化為 JSON 並賦值給變數
+            const rowData = @Html.Raw(Json.Serialize(Model.Select(item =>
+            {
+                return new
+                {
+                    item.FAttractionId,
+                    item.FAttractionName,
+                    item.FAddress,
+                    item.FPhoneNumber,
+                    item.FOpeningTime,
+                    item.FClosingTime,
+                    item.FRegion,
+                    FCreatedDate = item.FCreatedDate.HasValue
+                      ? item.FCreatedDate.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                      : string.Empty,
+                    FUpdatedDate = item.FUpdatedDate.HasValue
+                      ? item.FUpdatedDate.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                      : string.Empty,
+                    // item.FCreatedDate,
+                    // item.FUpdatedDate,
+                    item.FStatus,
+                    FCategory = item.FCategory?.FAttractionCategoryName
+                };
+            })));
+            // 使用偵錯工具發現rowData裡面的欄位名稱開頭都是小寫f，為什麼
+            // 這個問題是由 C# 的屬性名稱序列化時的規則 所導致的。
+            // Json.Serialize 或其他類似的序列化方法（如 JsonConvert.SerializeObject 或 System.Text.Json）
+            // 在序列化物件時，預設會使用屬性名稱的大小寫格式，但在 JavaScript 中，
+            // 通常建議使用小駝峰命名法（camelCase），因此某些序列化工具會自動將 C# 屬性名稱的首字母小寫。
+            console.log(rowData);
+            const gridOptions = {
+                rowData: rowData, // 使用序列化後的資料
+                columnDefs: [
+                    {field: "button", cellRenderer: CustomButtonComponent },
+                    // {headerName: "景點ID", field: "fAttractionId"},
+                    {headerName: "景點名稱", field: "fAttractionName", filter:true},
+                    {headerName: "地址", field: "fAddress", filter:true},
+                    {headerName: "電話", field: "fPhoneNumber"},
+                    {headerName: "開放時間", field: "fOpeningTime"},
+                    {headerName: "關閉時間", field: "fClosingTime"},
+                    {headerName: "地區", field: "fRegion", filter:true},
+                    {headerName: "建立日期", field: "fCreatedDate"},
+                    {headerName: "更新日期", field: "fUpdatedDate"},
+                    {headerName: "狀態", field: "fStatus", filter:true},
+                    {headerName: "分類", field: "fCategory", filter:true}
+                ],
+                pagination: true,
+                paginationPageSize: 10,
+                paginationPageSizeSelector: [10, 25, 50],
+                // 使用 fAttractionId 作為 rowId
+                getRowId: function (params) {
+                    return params.data.fAttractionId;
+                },
+                onGridReady: function (params) {
+                    console.log("Grid 已準備就緒");
+                    gridOptions.api = params.api; // 保存 API 引用
+                }
+            };
+            console.log(gridOptions);
+            const myGridElement = document.querySelector('#myGrid');
+            agGrid.createGrid(myGridElement, gridOptions);       
+        });
+    </script>
+}
