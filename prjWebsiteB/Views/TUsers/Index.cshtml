@@ -12,6 +12,7 @@
 <table class="table table-striped table-hover">
     <thead class="table-primary">
         <tr>
+            @* <th></th> *@
             <th>等級</th>
             <th>姓名</th>
             <th>暱稱</th>
@@ -25,7 +26,11 @@
             <th>頭像</th>
         </tr>
     </thead>
+    <tbody>
+        <tr>
 
+        </tr>
+    </tbody>
 </table>
 
 
@@ -42,8 +47,18 @@
                 type:'GET',
                 url:"/TUsers/IndexJson",
                 dataSrc: function (json) { return json; }
+                // defaultContent:"<button class='btn btn-info'></button>"
             },
             columns:[
+                 // {
+                 //            "data": null,   新增一列，这里不需要数据源
+                 //            "width": "20%",
+                 //            "render": function (data, type, row) {
+                 //                return '<button class="btn btn-primary" >查看</button>' +
+                 //                       '<button class="btn btn-warning" >编辑</button>' +
+                 //                       '<button class="btn btn-danger" >删除</button>';
+                 //            }
+                 //        }
                 {"data":"fUserRankId","width":"18%"},
                 {"data":"fUserName","width":"10%"},
                 {"data":"fUserNickName","width":"10%"},
