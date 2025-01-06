@@ -13,7 +13,6 @@
         }
 
         .image-container {
-
         }
 
         .img-thumbnail {
@@ -114,7 +113,9 @@
             .done(data => {
                 // 清空圖片容器
                 $('#imagesContainer').empty();
-                                
+
+                var validImageCount = 0;
+
                 for (var i = 0; i < 3; i++) {
                     // 檢查是否有返回圖片數據
                     if (data && data.length > i) {
@@ -126,16 +127,13 @@
                             width: '150px' // 設置圖片寬度
                         });
                         $('#imagesContainer').append(img);
-                    } else {
-                        // 如果沒有返回圖片數據，顯示預設圖片
-                        // var defaultImg = $('<img />', {
-                        //     src: `${baseAddress}/img/No_Pic_Tao.jpg`,
-                        //     class: 'img-thumbnail',
-                        //     alt: 'Default Image',
-                        //     width: '150px' // 設置圖片寬度
-                        // });
-                        $('#imagesContainer').text("尚無商品圖片!");
+                        validImageCount++;
                     }
+                }
+
+                // 如果沒有任何有效圖片，顯示提示信息
+                if (validImageCount === 0) {
+                    $('#imagesContainer').text("尚無商品圖片!");
                 }
             })
             .fail(err => {
@@ -143,5 +141,6 @@
             });
         });
     </script>
+
 }
 

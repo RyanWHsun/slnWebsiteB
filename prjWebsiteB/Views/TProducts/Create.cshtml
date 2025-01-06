@@ -7,9 +7,40 @@
 @section Styles
 {
     <style>
-        .content {
+        .content {            
             margin: 20px;
             padding-left: 50px;
+            width: 60%;
+            align-items: center;            
+        }
+
+        .fileSelectorDiv {
+            border: 1px dashed #ccc;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            line-height: 30px;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            
+        }
+        .fileSelector {
+            display: none;
+        }
+
+        .fileSelectorContainer {
+            display: flex;
+            gap: 10px;            
+        }
+        /* 調整 form-group 的寬度 */
+        .form-group {
+            /* 你可以根據需要調整寬度，例如 100%, 80%, 等 */
+        }
+
+        .form-group .form-control {
+            width: 100%; /* 確保表單控制項在 form-group 內占滿寬度 */
         }
     </style>
 }
@@ -20,11 +51,11 @@
 <hr />
 <div class="row">
     <div class="col-md-4 content">
-        <form asp-action="Create">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="FUserId" class="control-label"></label>
-                <select asp-for="FUserId" class ="form-control" asp-items="ViewBag.FUserId"></select>
+                <select asp-for="FUserId" class="form-control" asp-items="ViewBag.FUserId"></select>
             </div>
             <div class="form-group">
                 <label asp-for="FProductCategoryId" class="control-label"></label>
@@ -35,7 +66,7 @@
                 <label asp-for="FProductName" class="control-label"></label>
                 <input asp-for="FProductName" class="form-control" />
                 <span asp-validation-for="FProductName" class="text-danger"></span>
-            </div>           
+            </div>
             <div class="form-group">
                 <label asp-for="FProductPrice" class="control-label"></label>
                 <input asp-for="FProductPrice" class="form-control" />
@@ -57,7 +88,7 @@
                 <label asp-for="FProductDescription" class="control-label"></label>
                 <textarea asp-for="FProductDescription" class="form-control"></textarea>
                 <span asp-validation-for="FProductDescription" class="text-danger"></span>
-            </div>            
+            </div>
             <div class="form-group">
                 <label asp-for="FStock" class="control-label"></label>
                 <input asp-for="FStock" class="form-control" />
@@ -65,8 +96,15 @@
             </div>
             <div class="form-group">
                 <label asp-for="FImage" class="control-label">Product Image</label>
-                <input type="file" class="form-control" asp-for="FImage" />
+                <div class="fileSelectorContainer">
+                    <div id="div1" class="fileSelectorDiv">點兩下上傳圖片</div>
+                    <div id="div2" class="fileSelectorDiv">點兩下上傳圖片</div>
+                    <div id="div3" class="fileSelectorDiv">點兩下上傳圖片</div>
+             </div>
                 <span asp-validation-for="FImage" class="text-danger"></span>
+                    <input type="file" id="imageUpload1" class="fileSelector" name="imageUpload1" accept="image/*" />
+                    <input type="file" id="imageUpload2" class="fileSelector" name="imageUpload2" accept="image/*" />
+                    <input type="file" id="imageUpload3" class="fileSelector" name="imageUpload3" accept="image/*" />
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -80,5 +118,57 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // 當雙擊 div 時觸發對應的文件選擇器
+        document.getElementById("div1").addEventListener("dblclick", function() {
+            document.getElementById("imageUpload1").click();
+        });
+        document.getElementById("div2").addEventListener("dblclick", function() {
+            document.getElementById("imageUpload2").click();
+        });
+        document.getElementById("div3").addEventListener("dblclick", function() {
+            document.getElementById("imageUpload3").click();
+        });
+
+
+        // 在選擇文件後顯示圖片並進行驗證
+        document.getElementById("imageUpload1").addEventListener("change", function() {
+            validateImage(this, document.getElementById("div1"));
+        });
+        document.getElementById("imageUpload2").addEventListener("change", function() {
+            validateImage(this, document.getElementById("div2"));
+        });
+        document.getElementById("imageUpload3").addEventListener("change", function() {
+            validateImage(this, document.getElementById("div3"));
+        });
+
+        function validateImage(input, div) {
+            if (input.files && input.files[0]) {
+                var file = input.files[0];
+                var fileType = file.type;
+
+                // 只允許圖片類型
+                if (!fileType.startsWith('image/')) {
+                    alert("請選擇圖片文件");
+                    input.value = ""; // 清空文件選擇
+                    div.style.backgroundImage = "";
+                    div.textContent = "點兩下上傳圖片";
+                    return;
+                }
+
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    div.style.backgroundImage = `url(${e.target.result})`;
+                    div.style.backgroundSize = "cover";
+                    div.style.backgroundPosition = "center";
+                    div.textContent = ""; // 移除提示文字
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+
 }

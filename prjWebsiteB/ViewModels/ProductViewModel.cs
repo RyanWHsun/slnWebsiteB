@@ -21,7 +21,7 @@ namespace prjWebsiteB.ViewModels
         public int? FStock { get; set; }
         public string? FCategoryName { get; set; }  //導覽屬性
         public int FProductImageId { get; set; }
-        public List<string>? FImage { get; set; } // 用於存取圖片
+        public List<IFormFile>? FImage { get; set; } // 用於存取圖片
     }
 
 }

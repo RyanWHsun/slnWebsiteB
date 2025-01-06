@@ -79,7 +79,7 @@ namespace prjWebsiteB.Controllers
                 FProductUpdated = tProduct.FProductUpdated,
                 FStock = tProduct.FStock,
                 FCategoryName = tProduct.FProductCategory.FCategoryName,
-                FImage = null, //tProduct.TProductImages.FirstOrDefault()?.FImage
+                FImage = null
             };
             return View(product);
         }
@@ -101,8 +101,15 @@ namespace prjWebsiteB.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ProductViewModel newItem)
+        public async Task<IActionResult> Create(ProductViewModel newItem, IFormFile imageUpload1, IFormFile imageUpload2, IFormFile imageUpload3)
         {
+            // 定義允許的圖片類型
+            var permittedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+
+            // 移除文件欄位的模型狀態錯誤
+            ModelState.Remove("imageUpload1");
+            ModelState.Remove("imageUpload2");
+            ModelState.Remove("imageUpload3");
             if (ModelState.IsValid)
             {
                 var product = new TProduct
@@ -118,9 +125,45 @@ namespace prjWebsiteB.Controllers
                     FStock = newItem.FStock
                 };
 
-                //新增產品到資料庫
+                // 先保存產品，獲取生成的 ProductId
                 _context.Add(product);
+                await _context.SaveChangesAsync(); 
+
+                // 處理圖片上傳
+                if (imageUpload1 != null && imageUpload1.Length > 0)
+                {
+                    // 讀取並保存第一張圖片
+                    var productImage1 = new TProductImage
+                    {
+                        FProductId = product.FProductId,
+                        FImage = await ReadUploadImage(imageUpload1)
+                    };
+                    _context.Add(productImage1);
+                }
+                if (imageUpload2 != null && imageUpload2.Length > 0)
+                {
+                    // 讀取並保存第二張圖片
+                    var productImage2 = new TProductImage
+                    {
+                        FProductId = product.FProductId,
+                        FImage = await ReadUploadImage(imageUpload2)
+                    };
+                    _context.Add(productImage2);
+                }
+                if (imageUpload3 != null && imageUpload3.Length > 0)
+                {
+                    // 讀取並保存第三張圖片
+                    var productImage3 = new TProductImage
+                    {
+                        FProductId = product.FProductId,
+                        FImage = await ReadUploadImage(imageUpload3)
+                    };
+                    _context.Add(productImage3);
+                }
+
+                // 保存所有變更
                 await _context.SaveChangesAsync();
+
                 // 保存成功後重定向到產品列表頁面
                 return RedirectToAction(nameof(Index));
             }
@@ -218,8 +261,7 @@ namespace prjWebsiteB.Controllers
                     {
                         product.TProductImages.Add(new TProductImage { FProductId=editItem.FProductId,FImage = await ReadUploadImage(imageUpload1) });
                     }
-                
-                
+                              
 
 
 
@@ -245,9 +287,7 @@ namespace prjWebsiteB.Controllers
             return View(editItem);
         }
 
-        /// 用於處理圖片更新的控制器方法
-        /// POST: TProducts/ReadUploadImage/5
-        [HttpPost]
+        // 將圖片轉換為二進位
         private async Task<byte[]> ReadUploadImage(IFormFile image)
         {
             using (var memoryStream = new MemoryStream())
@@ -256,6 +296,7 @@ namespace prjWebsiteB.Controllers
                 return memoryStream.ToArray();
             }
         }
+
 
 
         private bool ProductExists(int id)
