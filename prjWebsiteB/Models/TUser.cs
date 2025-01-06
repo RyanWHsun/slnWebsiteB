@@ -35,6 +35,8 @@ public partial class TUser
 
     public bool? FUserOnLine { get; set; }
 
+    public virtual ICollection<TAttractionComment> TAttractionComments { get; set; } = new List<TAttractionComment>();
+
     public virtual ICollection<TAttractionTicketOrder> TAttractionTicketOrders { get; set; } = new List<TAttractionTicketOrder>();
 
     public virtual ICollection<TEventRegistrationForm> TEventRegistrationForms { get; set; } = new List<TEventRegistrationForm>();

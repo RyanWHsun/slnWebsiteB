@@ -1,0 +1,159 @@
+﻿@model prjWebsiteB.AttractionViewModels.TAttraction
+
+@* Dependency Injection(DI)
+DbGroupBContext 類別是一個 DI 容器，可以在這裡注入，並使用 _context 來存取資料庫。 *@
+@inject dbGroupBContext _context
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>新增景點</h1>
+
+<button class="btn btn-success">填入預設資料</button>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FAttractionName" class="control-label"></label>
+                <input asp-for="FAttractionName" class="form-control" />
+                <span asp-validation-for="FAttractionName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FDescription" class="control-label"></label>
+                <input asp-for="FDescription" class="form-control" />
+                <span asp-validation-for="FDescription" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FAddress" class="control-label"></label>
+                <input asp-for="FAddress" class="form-control" />
+                <span asp-validation-for="FAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FPhoneNumber" class="control-label"></label>
+                <input asp-for="FPhoneNumber" class="form-control" />
+                <span asp-validation-for="FPhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FOpeningTime" class="control-label"></label>
+                @* <input asp-for="FOpeningTime" class="form-control" /> *@
+                <input type="time" name="FOpeningTime" id="FOpeningTime" class="form-control" />
+                <span asp-validation-for="FOpeningTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FClosingTime" class="control-label"></label>
+                @* <input asp-for="FClosingTime" class="form-control" /> *@
+                <input type="time" name="FClosingTime" id="FClosingTime" class="form-control" />
+                <span asp-validation-for="FClosingTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FWebsiteUrl" class="control-label"></label>
+                <input asp-for="FWebsiteUrl" class="form-control" />
+                <span asp-validation-for="FWebsiteUrl" class="text-danger"></span>
+            </div>
+            @* <div class="form-group">
+                <label asp-for="FLongitude" class="control-label"></label>
+                <input asp-for="FLongitude" class="form-control" />
+                <span asp-validation-for="FLongitude" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FLatitude" class="control-label"></label>
+                <input asp-for="FLatitude" class="form-control" />
+                <span asp-validation-for="FLatitude" class="text-danger"></span>
+            </div> *@
+
+            @* 下拉式選單 *@
+            <div class="form-group">
+                <label asp-for="FRegion" class="control-label"></label>
+                <select name="FRegion" class="from-control" id="FRegion">
+                    <option value="">請選擇區域</option>
+                    <option value="北部">北部</option>
+                    <option value="中部">中部</option>
+                    <option value="南部">南部</option>
+                    <option value="東部">東部</option>
+                    <option value="離島">離島</option>
+                    <option value="國外">國外</option>
+                </select>
+                <span asp-validation-for="FRegion" class="text-danger"></span>
+            </div>
+
+            @* 下拉式選單 *@
+            <div class="form-grup">
+                <label asp-for="FCategoryId" class="control-label"></label>
+                <select name="FCategoryId" class="from-control" id="FCategoryId">
+                    <option value="">請選擇分類</option>
+                    @{
+                        @foreach (var item in ViewBag.Category.Items)
+                        {
+                            <option value="@item.FAttractionCategoryId">@item.FAttractionCategoryName</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="FStatus" class="control-label"></label>
+                <select name="FStatus" class="" id="FStatus">
+                    <option value="">請選擇狀態</option>
+                    <option value="開放中">開放中</option>
+                    <option value="開放時間和平日不同">開放時間和平日不同</option>
+                    <option value="已打烊">已打烊</option>
+                    <option value="24小時營業">24小時營業</option>
+                </select>
+                <span asp-validation-for="FStatus" class="text-danger"></span>
+            </div>
+
+            @* 圖片 *@
+            <div class="mb-3">
+                <label for="FImage" class="control-label"></label>
+                <img id="imgPreview" src="@Url.Content("~/img/noImage.jpeg")" style="width:320px;height:240px" title="No image" />
+                <input id="FImage" name="FImage" type="file" accept="image/*" class="form-control" />   
+            </div>
+
+            <div class="form-group">
+                <label asp-for="FTrafficInformation" class="control-label"></label>
+                <input asp-for="FTrafficInformation" class="form-control" />
+                <span asp-validation-for="FTrafficInformation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        function previewImage(inputFile){
+            if(inputFile.files && inputFile.files[0]){
+                let allowType="image.*";
+                if(inputFile.files[0].type.match(allowType)){
+                    let reader = new FileReader();
+                    reader.onload = function(e){
+                        $('#FImage').prev().attr('src', e.target.result);
+                        $('#FImage').prev().attr('title', inputFile[0].files[0].name);
+                    }
+                    reader.readAsDataURL(inputFile.files[0]);
+                    $('.btn').prop('disabled', false);
+                }else{
+                    alert("不支援上傳的檔案格式");
+                    $('.btn').prop('disabled', true);
+                    inputFile.value="";
+                }
+            }
+        }
+
+        $('#FImage').on('change', function(){
+            previewImage(this);
+        });
+    </script>
+}

@@ -1,0 +1,84 @@
+﻿@model prjWebsiteB.ViewModels.ProductViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+@section Styles
+{
+    <style>
+        .content {
+            margin: 20px;
+            padding-left: 50px;
+        }
+    </style>
+}
+
+<h1>Create</h1>
+
+<h4>TProduct</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4 content">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FUserId" class="control-label"></label>
+                <select asp-for="FUserId" class ="form-control" asp-items="ViewBag.FUserId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="FProductCategoryId" class="control-label"></label>
+                <select asp-for="FProductCategoryId" class="form-control" asp-items="ViewBag.FProductCategoryId"></select>
+                <span asp-validation-for="FProductCategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FProductName" class="control-label"></label>
+                <input asp-for="FProductName" class="form-control" />
+                <span asp-validation-for="FProductName" class="text-danger"></span>
+            </div>           
+            <div class="form-group">
+                <label asp-for="FProductPrice" class="control-label"></label>
+                <input asp-for="FProductPrice" class="form-control" />
+                <span asp-validation-for="FProductPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FIsOnSale" class="control-label"></label>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" asp-for="FIsOnSale" value="true" id="isOnSale1" checked="checked" />
+                    <label class="form-check-label" for="isOnSale1">上架</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" asp-for="FIsOnSale" value="false" id="isOnSale0" />
+                    <label class="form-check-label" for="isOnSale0">下架</label>
+                </div>
+                <span asp-validation-for="FIsOnSale" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FProductDescription" class="control-label"></label>
+                <textarea asp-for="FProductDescription" class="form-control"></textarea>
+                <span asp-validation-for="FProductDescription" class="text-danger"></span>
+            </div>            
+            <div class="form-group">
+                <label asp-for="FStock" class="control-label"></label>
+                <input asp-for="FStock" class="form-control" />
+                <span asp-validation-for="FStock" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FImage" class="control-label">Product Image</label>
+                <input type="file" class="form-control" asp-for="FImage" />
+                <span asp-validation-for="FImage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

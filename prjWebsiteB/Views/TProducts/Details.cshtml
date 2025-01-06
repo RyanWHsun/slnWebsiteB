@@ -1,0 +1,147 @@
+﻿@model prjWebsiteB.ViewModels.ProductViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+@section Styles
+{
+    <style>
+        .content {
+            margin: 20px;
+            padding-left: 50px;
+        }
+
+        .image-container {
+
+        }
+
+        .img-thumbnail {
+            margin-right: 10px; /* 可根據需要調整間距 */
+        }
+    </style>
+}
+
+<h1>商品明細</h1>
+
+<div>
+    <hr />
+    <dl class="row content">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FProductId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FProductId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FProductName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FProductName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FProductDescription)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FProductDescription)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FProductPrice)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FProductPrice)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FIsOnSale)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FIsOnSale)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FProductDateAdd)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FProductDateAdd)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FProductUpdated)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FProductUpdated)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FStock)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FStock)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FCategoryName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FCategoryName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FUserId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FUserId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FImage)
+        </dt>
+        <dd class="col-sm-10">
+            <div id="imagesContainer" class="image-container"></div>
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.FProductId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    <script>
+        var baseAddress = window.location.origin;
+
+        $(document).ready(function() {
+            var p = encodeURI('@Model.FProductId');
+            $.ajax({
+                url: `${baseAddress}/TProducts/GetPictures/${p}`,
+                type: 'GET',
+                dataType: 'json' // 確保 jQuery 期望接收 JSON 數據
+            })
+            .done(data => {
+                // 清空圖片容器
+                $('#imagesContainer').empty();
+                                
+                for (var i = 0; i < 3; i++) {
+                    // 檢查是否有返回圖片數據
+                    if (data && data.length > i) {
+                        // 創建並顯示圖片
+                        var img = $('<img />', {
+                            src: 'data:image/jpeg;base64,' + data[i],
+                            class: 'img-thumbnail',
+                            alt: 'Product Image',
+                            width: '150px' // 設置圖片寬度
+                        });
+                        $('#imagesContainer').append(img);
+                    } else {
+                        // 如果沒有返回圖片數據，顯示預設圖片
+                        // var defaultImg = $('<img />', {
+                        //     src: `${baseAddress}/img/No_Pic_Tao.jpg`,
+                        //     class: 'img-thumbnail',
+                        //     alt: 'Default Image',
+                        //     width: '150px' // 設置圖片寬度
+                        // });
+                        $('#imagesContainer').text("尚無商品圖片!");
+                    }
+                }
+            })
+            .fail(err => {
+                alert('Failed to load images');
+            });
+        });
+    </script>
+}
+

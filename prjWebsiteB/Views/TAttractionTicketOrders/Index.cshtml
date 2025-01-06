@@ -1,0 +1,59 @@
+﻿@model IEnumerable<prjWebsiteB.Models.TAttractionTicketOrder>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FOrderQty)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FUnitPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FCreatedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FAttractionTicket)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FBuyer)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FOrderQty)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FUnitPrice)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FCreatedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FAttractionTicket.FAttractionTicketId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FBuyer.FUserId)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.FAttractionTicketOrderId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.FAttractionTicketOrderId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.FAttractionTicketOrderId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

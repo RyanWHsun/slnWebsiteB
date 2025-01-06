@@ -1,0 +1,59 @@
+﻿@model IEnumerable<prjWebsiteB.Models.TAttractionComment>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FRating)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FComment)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FCreatedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FAttraction)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FUser)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FRating)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FComment)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FCreatedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FAttraction.FAttractionId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FUser.FUserId)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.FCommentId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.FCommentId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.FCommentId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
