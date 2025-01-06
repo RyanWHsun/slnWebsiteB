@@ -1,0 +1,61 @@
+﻿@model prjWebsiteB.Models.TPost
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>TPost</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FUserId" class="control-label"></label>
+                <select asp-for="FUserId" class ="form-control" asp-items="ViewBag.FUserId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="FTitle" class="control-label"></label>
+                <input asp-for="FTitle" class="form-control" />
+                <span asp-validation-for="FTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FContent" class="control-label"></label>
+                <input asp-for="FContent" class="form-control" />
+                <span asp-validation-for="FContent" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FCreatedAt" class="control-label"></label>
+                <input asp-for="FCreatedAt" class="form-control" />
+                <span asp-validation-for="FCreatedAt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FUpdatedAt" class="control-label"></label>
+                <input asp-for="FUpdatedAt" class="form-control" />
+                <span asp-validation-for="FUpdatedAt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FIsPublic" class="control-label"></label>
+                <input asp-for="FIsPublic" class="form-control" />
+                <span asp-validation-for="FIsPublic" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FCategoryId" class="control-label"></label>
+                <select asp-for="FCategoryId" class ="form-control" asp-items="ViewBag.FCategoryId"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

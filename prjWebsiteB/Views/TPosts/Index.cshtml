@@ -1,0 +1,26 @@
+﻿@model IEnumerable<prjWebsiteB.Models.TPost>
+
+<h1>文章管理</h1>
+    <form class="form-inline">
+    <label for="searchString" class="form-label mr-2">關鍵字搜尋:</label>
+    <input id="searchString" name="searchString" class="form-control" />
+    </form>
+<div id="searchResults">
+    <partial name="_PostListPartial" />
+</div>
+@section Scripts
+{
+    <script>
+        $("#searchString").on("keyup",function(){
+            const searchString  = $(this).val();
+            $.ajax({
+                type:"GET",
+                url:`TPosts/Search/${searchString}`
+            }).done(data=>{
+                $("#searchResults").html(data);
+            }).fail(err=>{
+                alert(err.statusText);
+            })
+        });
+    </script>
+}
