@@ -57,7 +57,7 @@
                     @Html.DisplayFor(modelItem => item.FUpdatedAt)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.FIsPublic)
+                    @(item.FIsPublic.HasValue ? (item.FIsPublic.Value ? "公開" : "私人") : "")
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.FCategory.FName)

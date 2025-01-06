@@ -39,16 +39,16 @@
             @Html.DisplayNameFor(model => model.FIsPublic)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FIsPublic)
+            @(Model.FIsPublic.HasValue ? (Model.FIsPublic.Value ? "公開" : "私人") : "")
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FCategory)
+            @Html.DisplayNameFor(model => model.FCategory.FName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FCategory.FCategoryId)
+            @Html.DisplayFor(model => model.FCategory.FName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FUser)
+            @Html.DisplayNameFor(model => model.FUserId)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.FUser.FUserId)

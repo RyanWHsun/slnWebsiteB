@@ -34,12 +34,11 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.FUpdatedAt)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FIsPublic)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FIsPublic)
+        <dt class="col-sm-2"> @Html.DisplayNameFor(model => model.FIsPublic)</dt>
+        <dd class="col-sm-10">
+            <select asp-for="FCategoryId" class="form-control" asp-items="@ViewBag.IsPublic" style="width:10%"></select>
         </dd>
+        
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.FCategory)
         </dt>
@@ -55,6 +54,5 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.FPostId">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

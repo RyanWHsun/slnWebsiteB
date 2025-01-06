@@ -40,6 +40,10 @@ namespace prjWebsiteB.Controllers
         // GET: TPosts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            ViewBag.IsPublic = new SelectList(_context.TPosts.Select(c => c.FIsPublic).Distinct().Select(e => new { 
+                value=e,
+                text= (bool)e ? "公開" : "私人"
+            }),"value","text");
             if (id == null)
             {
                 return NotFound();
@@ -86,6 +90,7 @@ namespace prjWebsiteB.Controllers
         // GET: TPosts/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+
             if (id == null)
             {
                 return NotFound();
