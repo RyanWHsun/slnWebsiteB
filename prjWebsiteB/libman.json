@@ -5,6 +5,10 @@
     {
       "library": "Chart.js@4.4.1",
       "destination": "wwwroot/vendor/chart.js/"
+    },
+    {
+      "library": "datatables@1.10.21",
+      "destination": "wwwroot/lib/datatables/"
     }
   ]
 }
