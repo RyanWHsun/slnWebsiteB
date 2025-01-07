@@ -25,6 +25,10 @@ namespace prjWebsiteB.Controllers
             var dbGroupBContext = _context.TPosts.Include(t => t.TPostImages);
             return View(dbGroupBContext);
         }
+        public async Task<IActionResult> Posts()
+        {
+            return View();
+        }
 
         // GET: TPosts/Search/searchString
         [Route("/TPosts/Search/{searchString?}")]
