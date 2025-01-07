@@ -4,6 +4,9 @@
     <thead class="table-success">
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.TPostImages.First().FImage)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.FPostId)
             </th>
             <th>
@@ -24,9 +27,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.FIsPublic)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FCategory.FName)
-            </th>
 
             <th></th>
         </tr>
@@ -35,6 +35,9 @@
         @foreach (var item in Model)
         {
             <tr>
+                <td>
+                    <partial name="_ShowPicturePartial" model="@item" />
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.FPostId)
                 </td>
@@ -55,9 +58,6 @@
                 </td>
                 <td>
                     @(item.FIsPublic.HasValue ? (item.FIsPublic.Value ? "公開" : "私人") : "")
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FCategory.FName)
                 </td>
                 <td>
                     <button type="button" onclick="btnData(@item.FPostId)" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editPostModal">修改</button>

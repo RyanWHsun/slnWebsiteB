@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +22,7 @@ namespace prjWebsiteB.Controllers
         // GET: TPosts/Index
         public async Task<IActionResult> Index()
         {
-            var dbGroupBContext = _context.TPosts.Include(t => t.FCategory);
+            var dbGroupBContext = _context.TPosts.Include(t => t.TPostImages);
             return View(dbGroupBContext);
         }
 
@@ -29,7 +30,7 @@ namespace prjWebsiteB.Controllers
         [Route("/TPosts/Search/{searchString?}")]
         public async Task<IActionResult> Search(string searchString)
         {
-            IQueryable<TPost> dbGroupBContext = _context.TPosts.Include(t => t.FCategory);
+            IQueryable<TPost> dbGroupBContext = _context.TPosts.Include(t => t.TPostImages);
             if (!string.IsNullOrEmpty(searchString))
             {
                 dbGroupBContext = dbGroupBContext.Where(e => e.FTitle.Contains(searchString) || e.FContent.Contains(searchString));
@@ -72,7 +73,7 @@ namespace prjWebsiteB.Controllers
                     }
                 }
             }
-            IQueryable<TPost> dbGroupBContext = _context.TPosts.Include(t => t.FCategory);
+            IQueryable<TPost> dbGroupBContext = _context.TPosts.Include(t => t.TPostImages);
             if (!string.IsNullOrEmpty(searchString))
             {
                 dbGroupBContext = dbGroupBContext.Where(e => e.FTitle.Contains(searchString) || e.FContent.Contains(searchString));
@@ -144,6 +145,13 @@ namespace prjWebsiteB.Controllers
         private bool TPostExists(int id)
         {
             return _context.TPosts.Any(e => e.FPostId == id);
+        }
+
+        public async Task<FileResult> GetPicture(int id)
+        {
+            var tPost = _context.TPosts.Include(t => t.TPostImages).FirstOrDefault(p => p.FPostId == id);
+            var image = tPost?.TPostImages.FirstOrDefault().FImage;
+            return File(image, "image/jpeg");
         }
     }
 }

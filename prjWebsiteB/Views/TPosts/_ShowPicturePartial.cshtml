@@ -1,0 +1,17 @@
+﻿@model TPost
+
+@inject dbGroupBContext _context
+@{
+    TPost? post = await _context.TPosts.FindAsync(Model.FPostId);
+
+    if (post != null && post.TPostImages.Count>0)
+    {
+        <img src="@Url.Action("GetPicture","TPosts",new{id=Model.FPostId})"
+             style="width:320px;height:240px" />
+    }
+    else
+    {
+        <img src="@Url.Content("~/images/noImage.jpg")"
+             style="width:320px;height:240px" />
+    }
+}
