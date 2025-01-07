@@ -66,9 +66,11 @@
                                 <td class="align-middle">@(item.FEventIsActive.HasValue ? (item.FEventIsActive.Value ? "啟用" : "停用") : "未設定")</td>
                                 <td class="align-middle">@Html.DisplayFor(modelItem => item.FUser.FUserName)</td>
                                 <td class="align-middle">
-                                    <a asp-action="Edit" asp-route-id="@item.FEventId" class="btn btn-sm" style="background-color: #FF7043; color: white;">編輯</a>
-                                    <a asp-action="Details" asp-route-id="@item.FEventId" class="btn btn-sm" style="background-color: #FFA726; color: white;">詳細</a>
-                                    <a asp-action="Delete" asp-route-id="@item.FEventId" class="btn btn-sm" style="background-color: #F4511E; color: white;">刪除</a>
+                                    <div class="d-flex flex-column align-items-center">
+                                        <a asp-action="Edit" asp-route-id="@item.FEventId" class="btn btn-sm mb-1" style="background-color: #FF7043; color: white; width: 100px;">編輯</a>
+                                        <a asp-action="Details" asp-route-id="@item.FEventId" class="btn btn-sm mb-1" style="background-color: #FFA726; color: white; width: 100px;">詳細</a>
+                                        <a asp-action="Delete" asp-route-id="@item.FEventId" class="btn btn-sm" style="background-color: #F4511E; color: white; width: 100px;">刪除</a>
+                                    </div>
                                 </td>
                             </tr>
                         }

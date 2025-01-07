@@ -81,9 +81,11 @@
 
                 <!-- 圖片上傳 -->
                 <div class="form-group">
-                    <label for="uploadedFile">圖片上傳</label>
+                    <label for="uploadedFile">圖片上傳 (可選)</label>
                     <input type="file" id="uploadedFile" name="uploadedFile" class="form-control-file" accept="image/*" />
-                    <img id="previewImage" src="#" alt="圖片預覽" class="img-thumbnail mt-3" style="display: none; max-width: 100%; height: auto;" />
+                    <small class="form-text text-muted">若不選擇圖片，將自動使用預設圖片。</small>
+                    <!-- 預設圖片 -->
+                    <img id="previewImage" src="/images/default-image.jpg" alt="圖片預覽" class="img-thumbnail mt-3" style="max-width: 100%; height: auto;" />
                 </div>
 
                 <!-- 按鈕 -->
@@ -98,16 +100,19 @@
 
 @section Scripts {
     <script>
-            document.getElementById('uploadedFile').addEventListener('change', function (event) {
+        document.getElementById('uploadedFile').addEventListener('change', function (event) {
             const file = event.target.files[0];
+            const preview = document.getElementById('previewImage');
+
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function (e) {
-                    const preview = document.getElementById('previewImage');
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
+                    preview.src = e.target.result; // 預覽使用者上傳的圖片
                 };
                 reader.readAsDataURL(file);
+            } else {
+                // 如果未選擇檔案，顯示預設圖片
+                preview.src = "/images/default-image.jpg";
             }
         });
     </script>

@@ -99,7 +99,6 @@ namespace prjWebsiteB.Controllers
         {
             if (ModelState.IsValid)
             {
-                // 建立 TEvent 實例
                 var tEvent = new TEvent
                 {
                     FEventName = model.FEventName,
@@ -112,36 +111,33 @@ namespace prjWebsiteB.Controllers
                     FEventIsActive = model.FEventIsActive,
                     FEventMaxParticipants = model.FEventMaxParticipants,
                     FEventCreatedDate = model.FEventCreatedDate ?? DateTime.Now,
-                    FEventUpdatedDate = DateTime.Now
+                    FEventUpdatedDate = DateTime.Now,
+                    FEventUrl = "images/default-image.jpg"
                 };
 
-                // 儲存活動至資料庫
+                if (uploadedFile != null && uploadedFile.Length > 0)
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+                    var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(uploadedFile.FileName);
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await uploadedFile.CopyToAsync(fileStream);
+                    }
+
+                    tEvent.FEventUrl = Path.Combine("images", uniqueFileName).Replace("\\", "/");
+                }
+
                 _context.TEvents.Add(tEvent);
                 await _context.SaveChangesAsync();
 
-                // 如果有上傳圖片，將圖片儲存到 TEventImage 表格
-                if (uploadedFile != null && uploadedFile.Length > 0)
-                {
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        await uploadedFile.CopyToAsync(memoryStream);
-                        var tEventImage = new TEventImage
-                        {
-                            FEventId = tEvent.FEventId,
-                            FEventImage = memoryStream.ToArray()
-                        };
-                        _context.TEventImages.Add(tEventImage);
-                        await _context.SaveChangesAsync();
-                    }
-                }
-
-                // 如果有選擇活動類型，將其儲存到 TEventCategoryMapping 表格
                 if (model.FEventCategoryId.HasValue)
                 {
                     var eventCategoryMapping = new TEventCategoryMapping
                     {
-                        FEventId = tEvent.FEventId, // 關聯活動 ID
-                        FEventCategoryId = model.FEventCategoryId.Value // 選擇的活動類型 ID
+                        FEventId = tEvent.FEventId,
+                        FEventCategoryId = model.FEventCategoryId.Value
                     };
                     _context.TEventCategoryMappings.Add(eventCategoryMapping);
                     await _context.SaveChangesAsync();
@@ -150,7 +146,6 @@ namespace prjWebsiteB.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // 如果驗證失敗，重新加載選單資料
             ViewData["FUserId"] = new SelectList(_context.TUsers, "FUserId", "FUserName", model.FUserId);
             ViewData["CategoryList"] = new SelectList(_context.TEventCategories, "FEventCategoryId", "FEventCategoryName", model.FEventCategoryId);
             return View(model);
@@ -192,10 +187,7 @@ namespace prjWebsiteB.Controllers
             {
                 try
                 {
-                    var existingEvent = await _context.TEvents
-                        .Include(e => e.TEventCategoryMappings)
-                        .FirstOrDefaultAsync(e => e.FEventId == id);
-
+                    var existingEvent = await _context.TEvents.FirstOrDefaultAsync(e => e.FEventId == id);
                     if (existingEvent == null)
                     {
                         return NotFound();
@@ -212,52 +204,19 @@ namespace prjWebsiteB.Controllers
                     existingEvent.FEventIsActive = tEvent.FEventIsActive;
                     existingEvent.FEventUpdatedDate = DateTime.Now;
 
-                    // 更新圖片（只有當有新圖片上傳時）
+                    // 如果有新圖片，儲存並更新路徑
                     if (uploadedFile != null && uploadedFile.Length > 0)
                     {
-                        using (var memoryStream = new MemoryStream())
-                        {
-                            await uploadedFile.CopyToAsync(memoryStream);
+                        var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+                        var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(uploadedFile.FileName);
+                        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                            var existingImage = await _context.TEventImages.FirstOrDefaultAsync(img => img.FEventId == id);
-                            if (existingImage != null)
-                            {
-                                // 更新圖片
-                                existingImage.FEventImage = memoryStream.ToArray();
-                                _context.TEventImages.Update(existingImage);
-                            }
-                            else
-                            {
-                                // 新增圖片
-                                var newImage = new TEventImage
-                                {
-                                    FEventId = id,
-                                    FEventImage = memoryStream.ToArray()
-                                };
-                                _context.TEventImages.Add(newImage);
-                            }
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await uploadedFile.CopyToAsync(fileStream);
                         }
-                    }
-                    else
-                    {
-                        // 如果沒有新的圖片，直接略過圖片更新邏輯
-                        // 不需要對 existingImage 做任何操作
-                    }
 
-                    // 更新活動類型映射
-                    var existingMapping = existingEvent.TEventCategoryMappings.FirstOrDefault();
-                    if (existingMapping != null)
-                    {
-                        existingMapping.FEventCategoryId = tEvent.TEventCategoryMappings.FirstOrDefault()?.FEventCategoryId;
-                    }
-                    else if (tEvent.TEventCategoryMappings.FirstOrDefault()?.FEventCategoryId != null)
-                    {
-                        var newMapping = new TEventCategoryMapping
-                        {
-                            FEventId = id,
-                            FEventCategoryId = tEvent.TEventCategoryMappings.FirstOrDefault().FEventCategoryId.Value
-                        };
-                        _context.TEventCategoryMappings.Add(newMapping);
+                        existingEvent.FEventUrl = Path.Combine("images", uniqueFileName).Replace("\\", "/");
                     }
 
                     _context.Update(existingEvent);
@@ -278,10 +237,6 @@ namespace prjWebsiteB.Controllers
                 }
             }
 
-            // 如果驗證失敗，重新加載下拉選單並返回視圖
-            ViewData["FUserId"] = new SelectList(_context.TUsers, "FUserId", "FUserName", tEvent.FUserId);
-            ViewData["CategoryList"] = new SelectList(_context.TEventCategories, "FEventCategoryId", "FEventCategoryName", tEvent.TEventCategoryMappings.FirstOrDefault()?.FEventCategoryId);
-
             return View(tEvent);
         }
 
@@ -292,20 +247,20 @@ namespace prjWebsiteB.Controllers
 
         public async Task<IActionResult> GetEventImage(int id)
         {
-            var eventImage = await _context.TEventImages.FirstOrDefaultAsync(img => img.FEventId == id);
-            if (eventImage == null || eventImage.FEventImage == null)
+            var tEvent = await _context.TEvents.FirstOrDefaultAsync(e => e.FEventId == id);
+            if (tEvent == null || string.IsNullOrEmpty(tEvent.FEventUrl))
             {
-                var defaultImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "default-image.jpg");
-                if (!System.IO.File.Exists(defaultImagePath))
-                {
-                    return NotFound();
-                }
-
-                var defaultImage = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
-                return File(defaultImage, "image/jpeg");
+                return NotFound();
             }
 
-            return File(eventImage.FEventImage, "image/jpeg");
+            var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", tEvent.FEventUrl);
+            if (!System.IO.File.Exists(imagePath))
+            {
+                imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "default-image.jpg");
+            }
+
+            var image = await System.IO.File.ReadAllBytesAsync(imagePath);
+            return File(image, "image/jpeg");
         }
 
         public async Task<IActionResult> Delete(int? id)
@@ -316,8 +271,9 @@ namespace prjWebsiteB.Controllers
             }
 
             var tEvent = await _context.TEvents
-                .Include(t => t.FUser)
+                .Include(t => t.FUser) // 包含建立者資訊
                 .FirstOrDefaultAsync(m => m.FEventId == id);
+
             if (tEvent == null)
             {
                 return NotFound();
@@ -326,23 +282,28 @@ namespace prjWebsiteB.Controllers
             return View(tEvent);
         }
 
-        // POST: TEvents/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var tEvent = await _context.TEvents
-                .Include(e => e.TEventCategoryMappings)
-                .Include(e => e.TEventImages)
-                .FirstOrDefaultAsync(e => e.FEventId == id);
+                .Include(e => e.TEventCategoryMappings) // 包含活動類型映射
+                .FirstOrDefaultAsync(e => e.FEventId == id); // 根據活動 ID 查找
 
             if (tEvent != null)
             {
+                // 刪除圖片檔案（如果不是預設圖片）
+                if (!string.IsNullOrEmpty(tEvent.FEventUrl) && tEvent.FEventUrl != "images/default-image.jpg")
+                {
+                    var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", tEvent.FEventUrl);
+                    if (System.IO.File.Exists(imagePath))
+                    {
+                        System.IO.File.Delete(imagePath); // 刪除圖片檔案
+                    }
+                }
+
                 // 刪除關聯的 TEventCategoryMapping
                 _context.TEventCategoryMappings.RemoveRange(tEvent.TEventCategoryMappings);
-
-                // 刪除關聯的 TEventImage
-                _context.TEventImages.RemoveRange(tEvent.TEventImages);
 
                 // 刪除活動
                 _context.TEvents.Remove(tEvent);
