@@ -29,7 +29,7 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         $("#searchString").on("keyup",function(){
-            const searchString  = $(this).val();
+            const searchString = encodeURIComponent($(this).val());
             $.ajax({
                 type:"GET",
                 url:`TPosts/Search/${searchString}`
