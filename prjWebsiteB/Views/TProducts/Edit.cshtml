@@ -8,24 +8,42 @@
         .content {
             margin: 20px;
             padding-left: 50px;
+            width: 60%;
+            align-items: center;
         }
 
-        .image-container img {
+        .fileSelectorDiv {
+            border: 1px dashed #ccc;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            line-height: 30px;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
             cursor: pointer;
         }
 
-        #imageUpload1, #imageUpload2, #imageUpload3 {
-            display: none; /* 隱藏文件選擇器 */
+        .fileSelector {
+            display: none;
         }
 
+        .fileSelectorContainer {
+            display: flex;
+            gap: 10px;
+        }
+
+        .form-group .form-control {
+            width: 100%; /* 確保表單控制項在 form-group 內占滿寬度 */
+        }
     </style>
 }
 <h1>Edit</h1>
 
 <h4>TProduct</h4>
 <hr />
-<div class="row content">
-    <div class="col-md-4">
+<div class="row">
+    <div class="col-md-4 content">
         <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="FProductId" />
@@ -73,21 +91,16 @@
             </div>
             <div class="form-group">
                 <label asp-for="FImage" class="control-label">Product Image</label>
-                <div id="imagesContainer1" class="image-container">
-                    <img id="img1" src="~/img/No_Pic_Tao.jpg" class="img-thumbnail" alt="Default Image" />
-                </div>
-                <div id="imagesContainer2" class="image-container">
-                    <img id="img2" src="~/img/No_Pic_Tao.jpg" class="img-thumbnail" alt="Default Image" />
-                </div>
-                <div id="imagesContainer3" class="image-container">
-                    <img id="img3" src="~/img/No_Pic_Tao.jpg" class="img-thumbnail" alt="Default Image" />
+                <div class="fileSelectorContainer">
+                    <div id="div1" class="fileSelectorDiv">點兩下上傳圖片</div>
+                    <div id="div2" class="fileSelectorDiv">點兩下上傳圖片</div>
+                    <div id="div3" class="fileSelectorDiv">點兩下上傳圖片</div>
                 </div>
                 <span asp-validation-for="FImage" class="text-danger"></span>
+                <input type="file" id="imageUpload1" class="fileSelector" name="imageUpload1" accept="image/*" />
+                <input type="file" id="imageUpload2" class="fileSelector" name="imageUpload2" accept="image/*" />
+                <input type="file" id="imageUpload3" class="fileSelector" name="imageUpload3" accept="image/*" />
             </div>
-            <!-- 文件選擇器，隱藏 -->
-            <input type="file" id="imageUpload1" name="imageUpload1" accept="image/*" style="display: none;" />
-            <input type="file" id="imageUpload2" name="imageUpload2" accept="image/*" style="display: none;" />
-            <input type="file" id="imageUpload3" name="imageUpload3" accept="image/*" style="display: none;" />
              <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -110,13 +123,25 @@
             $.ajax({
                 url: `${baseAddress}/TProducts/GetPictures/${p}`,
                 type: 'GET',
-                dataType: 'json' // 確保 jQuery 期望接收 JSON 數據
+                dataType: 'json'
             })
             .done(data => {
-                var containers = ['#imagesContainer1', '#imagesContainer2', '#imagesContainer3'];
+                var containers = ['#div1', '#div2', '#div3'];
+
                 for (var i = 0; i < containers.length; i++) {
                     if (data && data.length > i) {
-                        $(`${containers[i]} img`).attr('src', 'data:image/jpeg;base64,' + data[i]);
+                        // 創建 img 元素並設置 src 屬性
+                        var img = $('<img />', {
+                            src: 'data:image/jpeg;base64,' + data[i],
+                            class: 'img-thumbnail',
+                            alt: 'Product Image',
+                            width: '150px' // 設置圖片寬度
+                        });
+
+                        // 移除原本的文字
+                        $(containers[i]).empty();
+                        // 將 img 元素添加到 div 中
+                        $(containers[i]).append(img);
                     }
                 }
             })
@@ -124,51 +149,52 @@
                 alert('Failed to load images');
             });
 
-            // 綁定圖片容器的雙擊事件
-            $('#imagesContainer1, #imagesContainer2, #imagesContainer3').on('dblclick', function() {
-                var imageId = $(this).attr('id').replace('imagesContainer', '');
-                $(`#imageUpload${imageId}`).click();
+            // 當雙擊 div 時觸發對應的文件選擇器
+            document.getElementById("div1").addEventListener("dblclick", function() {
+                document.getElementById("imageUpload1").click();
+            });
+            document.getElementById("div2").addEventListener("dblclick", function() {
+                document.getElementById("imageUpload2").click();
+            });
+            document.getElementById("div3").addEventListener("dblclick", function() {
+                document.getElementById("imageUpload3").click();
             });
 
-            // 處理選擇新圖片事件
-            $('#imageUpload1, #imageUpload2, #imageUpload3').on('change', function() {
-                var imageId = this.id.replace('imageUpload', '');
+            // 在選擇文件後顯示圖片並進行驗證
+            document.getElementById("imageUpload1").addEventListener("change", function() {
+                validateImage(this, document.getElementById("div1"));
+            });
+            document.getElementById("imageUpload2").addEventListener("change", function() {
+                validateImage(this, document.getElementById("div2"));
+            });
+            document.getElementById("imageUpload3").addEventListener("change", function() {
+                validateImage(this, document.getElementById("div3"));
+            });
+
+            });
+            function validateImage(input, div) {
+                if (input.files && input.files[0]) {
+                    var file = input.files[0];
+                    var fileType = file.type;
+
+                // 只允許圖片類型
+                if (!fileType.startsWith('image/')) {
+                    alert("請選擇圖片文件");
+                    input.value = ""; // 清空文件選擇
+                    div.style.backgroundImage = "";
+                    div.textContent = "點兩下上傳圖片";
+                    return;
+                }
+
                 var reader = new FileReader();
                 reader.onload = function(e) {
-                    $(`#imagesContainer${imageId} img`).attr('src', e.target.result);
-                    // 保存更新的圖片到對象中，以便後續提交使用
-                    updatedImages[imageId] = e.target.result;
+                    div.style.backgroundImage = `url(${e.target.result})`;
+                    div.style.backgroundSize = "cover";
+                    div.style.backgroundPosition = "center";
+                    div.textContent = ""; // 移除提示文字
                 }
-                reader.readAsDataURL(this.files[0]);
-            });
-
-            // 處理表單提交事件
-            $('form').on('submit', function(e) {
-                e.preventDefault(); // 防止表單提交的默認行為
-
-                var formData = new FormData(this);
-
-                // 將更新的圖片添加到表單數據中
-                Object.keys(updatedImages).forEach(function(key) {
-                    formData.append(`updatedImages[${key}]`, updatedImages[key]);
-                });
-                $.ajax({
-                    url: this.action,
-                    type: this.method,
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: function(response) {
-                        alert('數據已成功更新');
-                        window.location.href = '@Url.Action("Index")'; // 重定向到索引頁面
-                    },
-                    error: function(err) {
-                        alert('數據更新失敗');
-                    }
-                });
-
-                
-            });
-        });
+                reader.readAsDataURL(file);
+            }
+        }
     </script>
 }

@@ -23,6 +23,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             background-color:white;
+            padding-right: 50px;
         }
 
         .searchBar {
@@ -56,7 +57,7 @@
     <form method="get" id="filterForm">
         <div class="searchBar">
             <div class="mb-3 ">            
-                <select id="categoryFilter" class="form-select" name="categoryId" onchange="submitFilterForm()">
+                <select id="categoryFilter" class="form-select" name="categoryId">
                     <option value="">所有類別</option>
                     @foreach (var category in ViewBag.ProductCategories)
                     {
@@ -66,14 +67,16 @@
             </div>
             <div class="mb-3 searchBar">
                 <input type="text" name="searchString" class="form-control" placeholder="搜尋商品名稱" />
+                <button type="button" class="btn btn-primary" onclick="submitFilterForm()">搜尋</button>
+                <button type="button" class="btn btn-secondary" onclick="resetFilterForm()">重置</button>
             </div>
         </div>
     </form>
     <div class="tableView">
-        <table class="table content">
+        <table class="table content table-bordered table-hover">
             <thead class="table-warning">
                 <tr>
-                    <th></th>
+                    <th class="col-1"></th>
                     <th class="hidden-column">@Html.DisplayNameFor(model => model.FProductId)</th>
                     <th>@Html.DisplayNameFor(model => model.FImage)</th>
                     <th>@Html.DisplayNameFor(model => model.FProductName)</th>
@@ -84,8 +87,7 @@
                     <th>@Html.DisplayNameFor(model => model.FProductUpdated)</th>
                     <th>@Html.DisplayNameFor(model => model.FStock)</th>
                     <th>@Html.DisplayNameFor(model => model.FCategoryName)</th>
-                    <th></th>
-                </tr>
+                    </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model)
@@ -112,7 +114,9 @@
                         <td>@Html.DisplayFor(modelItem => item.FProductName)</td>
                         <td class="hidden-column">@Html.DisplayFor(modelItem => item.FProductDescription)</td>
                         <td>@Html.DisplayFor(modelItem => item.FProductPrice)</td>
-                        <td>@Html.DisplayFor(modelItem => item.FIsOnSale)</td>
+                        <td>
+                            @(item.FIsOnSale.GetValueOrDefault() ? "上架" : "下架")
+                        </td>
                         <td>@Html.DisplayFor(modelItem => item.FProductDateAdd)</td>
                         <td>@Html.DisplayFor(modelItem => item.FProductUpdated)</td>
                         <td>@Html.DisplayFor(modelItem => item.FStock)</td>
@@ -167,5 +171,13 @@
         function submitFilterForm() {
             document.getElementById("filterForm").submit();
         }
+
+        // 重置篩選表單
+        function resetFilterForm() {
+            document.getElementById("categoryFilter").value = "";
+            document.querySelector("input[name='searchString']").value = "";
+            document.getElementById("filterForm").submit();
+        }
+
     </script>
 }

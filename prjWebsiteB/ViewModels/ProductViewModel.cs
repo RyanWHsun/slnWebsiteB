@@ -20,7 +20,7 @@ namespace prjWebsiteB.ViewModels
         [Required(ErrorMessage = "數量必填喔!")]
         public int? FStock { get; set; }
         public string? FCategoryName { get; set; }  //導覽屬性
-        public int FProductImageId { get; set; }
+
         public List<IFormFile>? FImage { get; set; } // 用於存取圖片
     }
 

@@ -24,12 +24,12 @@ namespace prjWebsiteB.Controllers
         {
             var productsQuery = _context.TProducts.AsQueryable();
 
-            if (!string.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString)) //搜尋產品名稱
             {
-                productsQuery = productsQuery.Where(p => p.FProductName.Contains(searchString));
+                productsQuery = productsQuery.Where(p => p.FProductName.Contains(searchString) || p.FProductDescription.Contains(searchString));
             }
 
-            if (categoryId.HasValue && categoryId.Value > 0)
+            if (categoryId.HasValue && categoryId.Value > 0) //篩選產品類別
             {
                 productsQuery = productsQuery.Where(p => p.FProductCategoryId == categoryId.Value);
             }
@@ -218,7 +218,7 @@ namespace prjWebsiteB.Controllers
                 FProductUpdated = tProduct.FProductUpdated,
                 FStock = tProduct.FStock,
                 FCategoryName = tProduct.FProductCategory.FCategoryName,
-                FImage = null,  //tProduct.TProductImages.FirstOrDefault()?.FImage
+                FImage = null, 
             };
             ViewData["FProductCategoryId"] = new SelectList(_context.TProductCategories, "FProductCategoryId", "FCategoryName", tProduct.FProductCategoryId);
             ViewData["FUserId"] = new SelectList(_context.TUsers, "FUserId", "FUserId", tProduct.FUserId);
@@ -230,13 +230,17 @@ namespace prjWebsiteB.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FProductId,FUserId,FProductCategoryId,FProductName,FProductDescription,FProductPrice,FIsOnSale,FStock")] ProductViewModel editItem, IFormFile imageUpload1, IFormFile imageUpload2, IFormFile imageUpload3)
+        public async Task<IActionResult> Edit(int id, ProductViewModel updatedItem, IFormFile imageUpload1, IFormFile imageUpload2, IFormFile imageUpload3)
         {
-            if (id != editItem.FProductId)
+            if (id != updatedItem.FProductId)
             {
                 return NotFound();
             }
 
+            // 移除文件欄位的模型狀態錯誤
+            ModelState.Remove("imageUpload1");
+            ModelState.Remove("imageUpload2");
+            ModelState.Remove("imageUpload3");
             if (ModelState.IsValid)
             {
                 try
@@ -254,37 +258,33 @@ namespace prjWebsiteB.Controllers
                         return NotFound();
                     }
                     // 更新產品屬性
-                    product.FProductId = editItem.FProductId;
-                    product.FProductCategoryId = editItem.FProductCategoryId.Value; // 更新產品類別 ID
-                    product.FProductName = editItem.FProductName; // 更新產品名稱
-                    product.FProductDescription = editItem.FProductDescription; // 更新產品描述
-                    product.FProductPrice = editItem.FProductPrice; // 更新產品價格
-                    product.FIsOnSales = editItem.FIsOnSale; // 更新上架狀態
-                    product.FProductUpdated = DateTime.Now; // 更新產品更新日期
-                    product.FStock = editItem.FStock; // 更新庫存數量
+                    product.FProductCategoryId = updatedItem.FProductCategoryId.Value;
+                    product.FProductName = updatedItem.FProductName;
+                    product.FProductDescription = updatedItem.FProductDescription;
+                    product.FProductPrice = updatedItem.FProductPrice;
+                    product.FIsOnSales = updatedItem.FIsOnSale;
+                    product.FProductUpdated = DateTime.Now;
+                    product.FStock = updatedItem.FStock;
+
+                    // 獲取產品圖片 ID 列表
+                    // 獲取產品圖片 ID 列表
+                    var productImageIds = product.TProductImages
+                        .Where(img => img.FProductId == product.FProductId)
+                        .Select(img => img.FProductImageId)
+                        .ToList();
 
                     // 處理圖片上傳
-                    var image1 = product.TProductImages.FirstOrDefault(img => img.FProductImageId == editItem.FProductImageId);
-                    if (image1 != null)
-                    {
-                        image1.FImage = await ReadUploadImage(imageUpload1);
-                    }
-                    else
-                    {
-                        product.TProductImages.Add(new TProductImage { FProductId=editItem.FProductId,FImage = await ReadUploadImage(imageUpload1) });
-                    }
-                              
+                    await UpdateProductImage(product.FProductId, imageUpload1, productImageIds.ElementAtOrDefault(0));
+                    await UpdateProductImage(product.FProductId, imageUpload2, productImageIds.ElementAtOrDefault(1));
+                    await UpdateProductImage(product.FProductId, imageUpload3, productImageIds.ElementAtOrDefault(2));
 
-
-
-                // 更新產品數據
-                _context.Update(product);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    // 更新產品數據
+                    _context.Update(product);
+                    await _context.SaveChangesAsync();                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProductExists(editItem.FProductId))
+                    if (!ProductExists(updatedItem.FProductId))
                     {
                         return NotFound();
                     }
@@ -293,11 +293,39 @@ namespace prjWebsiteB.Controllers
                         throw;
                     }
                 }
+                return RedirectToAction(nameof(Index));
             }
-            ViewData["FProductCategoryId"] = new SelectList(_context.TProductCategories, "FProductCategoryId", "FCategoryName", editItem.FProductCategoryId);
-            ViewData["FUserId"] = new SelectList(_context.TUsers, "FUserId", "FUserId", editItem.FUserId);
-            return View(editItem);
+            ViewData["FProductCategoryId"] = new SelectList(_context.TProductCategories, "FProductCategoryId", "FCategoryName", updatedItem.FProductCategoryId);
+            ViewData["FUserId"] = new SelectList(_context.TUsers, "FUserId", "FUserId", updatedItem.FUserId);
+            return View(updatedItem);
         }
+
+        private async Task UpdateProductImage(int productId, IFormFile imageUpload, int productImageId)
+        {
+            if (imageUpload != null && imageUpload.Length > 0)
+            {
+                var existingImage = await _context.TProductImages
+                    .FirstOrDefaultAsync(img => img.FProductImageId == productImageId);
+
+                if (existingImage != null)
+                {
+                    // 更新圖片
+                   existingImage.FImage = await ReadUploadImage(imageUpload);
+                    _context.TProductImages.Update(existingImage); 
+                }
+                else
+                {
+                    // 新增圖片
+                    var newImage = new TProductImage
+                    {
+                        FProductId = productId,
+                        FImage = await ReadUploadImage(imageUpload)
+                    };
+                    _context.TProductImages.Add(newImage);
+                }
+            }
+        }
+
 
         // 將圖片轉換為二進位
         private async Task<byte[]> ReadUploadImage(IFormFile image)
@@ -309,9 +337,7 @@ namespace prjWebsiteB.Controllers
             }
         }
 
-
-
-        private bool ProductExists(int id)
+        private bool ProductExists(int id) // 檢查產品是否存在
         {
             return _context.TProducts.Any(e => e.FProductId == id);
         }
