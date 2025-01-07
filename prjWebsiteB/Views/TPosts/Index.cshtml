@@ -8,6 +8,22 @@
 <div id="searchResults">
     <partial name="_PostListPartial" />
 </div>
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="editPostModal" tabindex="-1" aria-labelledby="addPostModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPostModalLabel">修改</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="detailResult">
+                </div>
+                <button id="submitBtn" type="button" class="btn btn-primary" data-bs-dismiss="modal">送出</button>
+            </div>
+        </div>
+    </div>
+</div>
 @section Scripts
 {
     <script>
@@ -23,38 +39,29 @@
             })
         });
 
-        function Update(){
+        // $("#submitBtn").on("click",function(){
+        //     $.ajax({
+        //         type:"POST",
+        //         url:"/TPosts/Update",
+        //         data:{id:$("#editFPostId").text(),isPublic:$('#FIsPublicSelect').val(),searchString:$("#searchString").val()}
+        //     }).done(data=>{
+        //         $("#searchResults").html(data);
+        //     }).fail(err=>{
+        //         alert(err.statusText);
+        //     })
+        // })
+
+        function btnData() {
+            var target = $(event.target);
+            var id = target.data("id");
             $.ajax({
-                type:"POST",
-                url:"/TPosts/Update",
-                data:{id:$("#editFPostId").text(),isPublic:$('#FIsPublicSelect').val(),searchString:$("#searchString").val()}
+                type:"GET",
+                url:`/TPosts/Details/${id}`
             }).done(data=>{
-                $("#searchResults").html(data);
+                $("#detailResult").html(data);
             }).fail(err=>{
                 alert(err.statusText);
             })
-        }
-
-        function btnData(){
-            var button = $(event.target);
-            var FPostId = button.data("fpostid");
-            var FUserId = button.data("fuserid");
-            var FTitle = button.data("ftitle");
-            var FContent = button.data("fcontent");
-            var FCreatedAt = button.data("fcreatedat");
-            var FUpdatedAt = button.data("fupdatedat");
-            var FIsPublic = button.data("fispublic");
-            $("#editFPostId").text(FPostId);
-            $("#editFUserId").text(FUserId);
-            $("#editFTitle").text(FTitle);
-            $("#editFContent").text(FContent);
-            $("#editFCreatedAt").text(FCreatedAt);
-            $("#editFUpdatedAt").text(FUpdatedAt);
-            if(FIsPublic=="True"){
-                $('#FIsPublicSelect').val('true');
-            }else{
-                $('#FIsPublicSelect').val('false');
-            }
         }
     </script>
 }

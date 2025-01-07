@@ -53,6 +53,7 @@ namespace prjWebsiteB.Controllers
             }
 
             tPost.FIsPublic = isPublic;
+            _context.Entry(tPost).State = EntityState.Modified;
 
             if (ModelState.IsValid)
             {
@@ -79,6 +80,26 @@ namespace prjWebsiteB.Controllers
                 dbGroupBContext = dbGroupBContext.Where(e => e.FTitle.Contains(searchString) || e.FContent.Contains(searchString));
             }
             return PartialView("_PostListPartial", dbGroupBContext);
+        }
+
+        // GET: TPosts/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var tPost = await _context.TPosts
+                .Include(t => t.FCategory)
+                .Include(t => t.FUser)
+                .FirstOrDefaultAsync(m => m.FPostId == id);
+            if (tPost == null)
+            {
+                return NotFound();
+            }
+
+            return PartialView("_DetailsPartial",tPost);
         }
 
 
