@@ -59,14 +59,8 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.FCategory.FName)
                 </td>
-
-                @*  <td>
-                    <a asp-action="Edit" asp-route-id="@item.FPostId" class="btn btn-primary">Edit</a>
-                    <a asp-action="Details" asp-route-id="@item.FPostId" class="btn btn-info">Details</a>
-                    <a asp-action="Delete" asp-route-id="@item.FPostId" class="btn btn-danger">Delete</a>
-                </td> *@
                 <td>
-                    <button type="button" onclick="btnData()" data-id="@item.FPostId" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editPostModal">修改</button>
+                    <button type="button" onclick="btnData(@item.FPostId)" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editPostModal">修改</button>
                 </td>
             </tr>
         }

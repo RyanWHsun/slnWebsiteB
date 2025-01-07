@@ -37,9 +37,9 @@ namespace prjWebsiteB.Controllers
             return PartialView("_PostListPartial", dbGroupBContext);
         }
         [HttpPost]
-        public async Task<IActionResult> Update(int id, bool isPublic,string searchString)
+        public async Task<IActionResult> Update(int id, bool isPublic, string searchString)
         {
-            
+            ModelState.Remove("searchString");
             if (id == null)
             {
                 return NotFound();
@@ -53,8 +53,6 @@ namespace prjWebsiteB.Controllers
             }
 
             tPost.FIsPublic = isPublic;
-            _context.Entry(tPost).State = EntityState.Modified;
-
             if (ModelState.IsValid)
             {
                 try
@@ -85,6 +83,11 @@ namespace prjWebsiteB.Controllers
         // GET: TPosts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            ViewBag.FIsPublic = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "true", Text = "公開" },
+                new SelectListItem { Value = "false", Text = "私人" }
+            };
             if (id == null)
             {
                 return NotFound();
@@ -99,7 +102,7 @@ namespace prjWebsiteB.Controllers
                 return NotFound();
             }
 
-            return PartialView("_DetailsPartial",tPost);
+            return PartialView("_DetailsPartial", tPost);
         }
 
 

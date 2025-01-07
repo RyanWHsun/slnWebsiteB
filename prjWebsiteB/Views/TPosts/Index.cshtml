@@ -9,23 +9,24 @@
     <partial name="_PostListPartial" />
 </div>
 <!-- Bootstrap Modal -->
-<div class="modal fade" id="editPostModal" tabindex="-1" aria-labelledby="addPostModalLabel" aria-hidden="true">
+<div class="modal fade" id="editPostModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addPostModalLabel">修改</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <div id="detailResult">
                 </div>
-                <button id="submitBtn" type="button" class="btn btn-primary" data-bs-dismiss="modal">送出</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="editData()">送出</button>
             </div>
         </div>
     </div>
 </div>
 @section Scripts
 {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         $("#searchString").on("keyup",function(){
             const searchString  = $(this).val();
@@ -39,21 +40,21 @@
             })
         });
 
-        // $("#submitBtn").on("click",function(){
-        //     $.ajax({
-        //         type:"POST",
-        //         url:"/TPosts/Update",
-        //         data:{id:$("#editFPostId").text(),isPublic:$('#FIsPublicSelect').val(),searchString:$("#searchString").val()}
-        //     }).done(data=>{
-        //         $("#searchResults").html(data);
-        //     }).fail(err=>{
-        //         alert(err.statusText);
-        //     })
-        // })
+        function editData(){
+            var FPostId = $("#FPostId").text();
+            var FIsPublic = $("#FIsPublic").val();
+            $.ajax({
+                type:"POST",
+                url:"/TPosts/Update",
+                data:{id : FPostId, isPublic : FIsPublic, searchString : $("#searchString").val()}
+            }).done(data=>{
+                $("#searchResults").html(data);
+            }).fail(err=>{
+                alert(err.statusText);
+            })
+        }
 
-        function btnData() {
-            var target = $(event.target);
-            var id = target.data("id");
+        function btnData(id) {
             $.ajax({
                 type:"GET",
                 url:`/TPosts/Details/${id}`
