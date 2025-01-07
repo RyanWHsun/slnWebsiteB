@@ -34,9 +34,9 @@
                 <table class="table table-hover text-center" style="background-color: #FFF3E0;">
                     <thead style="background-color: #FFA726; color: white;">
                         <tr>
-                            <th>@Html.ActionLink("活動名稱", "Index", new { sortOrder = ViewData["NameSortParm"] })</th>
+                            <th>活動名稱</th>
                             <th>描述</th>
-                            <th>@Html.ActionLink("開始日期", "Index", new { sortOrder = ViewData["DateSortParm"] })</th>
+                            <th>開始日期</th>
                             <th>結束日期</th>
                             <th>地點</th>
                             <th>費用</th>
@@ -50,11 +50,15 @@
                         @foreach (var item in Model)
                         {
                             <tr>
-                                <td class="align-middle">@Html.DisplayFor(modelItem => item.FEventName)</td>
-                                <td class="align-middle">@Html.DisplayFor(modelItem => item.FEventDescription)</td>
-                                <td class="align-middle">@Html.DisplayFor(modelItem => item.FEventStartDate)</td>
-                                <td class="align-middle">@Html.DisplayFor(modelItem => item.FEventEndDate)</td>
-                                <td class="align-middle">@Html.DisplayFor(modelItem => item.FEventLocation)</td>
+                                <td class="align-middle">@item.FEventName</td>
+                                <td class="align-middle">@item.FEventDescription</td>
+                                <td class="align-middle">
+                                    @(DateTime.TryParse(item.FEventStartDate, out var startDate) ? startDate.ToShortDateString() : "無效日期")
+                                </td>
+                                <td class="align-middle">
+                                    @(DateTime.TryParse(item.FEventEndDate, out var endDate) ? endDate.ToShortDateString() : "無效日期")
+                                </td>
+                                <td class="align-middle">@item.FEventLocation</td>
                                 <td class="align-middle">
                                     @(item.FEventActivityfee?.ToString("C", System.Globalization.CultureInfo.CurrentCulture) ?? "N/A")
                                 </td>
@@ -63,12 +67,21 @@
                                         ? $"{item.FEventCurrentParticipants}/{item.FEventMaxParticipants}"
                                         : "未定")
                                 </td>
-                                <td class="align-middle">@(item.FEventIsActive.HasValue ? (item.FEventIsActive.Value ? "啟用" : "停用") : "未設定")</td>
-                                <td class="align-middle">@Html.DisplayFor(modelItem => item.FUser.FUserName)</td>
+                                <td class="align-middle">
+                                    @(item.FEventIsActive.HasValue
+                                        ? (item.FEventIsActive.Value ? "啟用" : "停用")
+                                        : "未設定")
+                                </td>
+                                <td class="align-middle">
+                                    @(item.FUser != null ? item.FUser.FUserName : "未知")
+                                </td>
                                 <td class="align-middle">
                                     <div class="d-flex flex-column align-items-center">
                                         <a asp-action="Edit" asp-route-id="@item.FEventId" class="btn btn-sm mb-1" style="background-color: #FF7043; color: white; width: 100px;">編輯</a>
-                                        <a asp-action="Details" asp-route-id="@item.FEventId" class="btn btn-sm mb-1" style="background-color: #FFA726; color: white; width: 100px;">詳細</a>
+                                        <button type="button" class="btn btn-sm mb-1" style="background-color: #FFA726; color: white; width: 100px;"
+                                                data-bs-toggle="modal" data-bs-target="#detailModal" data-id="@item.FEventId">
+                                            詳細
+                                        </button>
                                         <a asp-action="Delete" asp-route-id="@item.FEventId" class="btn btn-sm" style="background-color: #F4511E; color: white; width: 100px;">刪除</a>
                                     </div>
                                 </td>
@@ -80,3 +93,48 @@
         </div>
     </div>
 </div>
+
+<!-- Modal 元件 -->
+<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background-color: #FFE0B2; border-radius: 15px;">
+            <div class="modal-header" style="background-color: #FFA726; color: white;">
+                <h5 class="modal-title" id="detailModalLabel">活動詳細資訊</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="detailContent" style="background-color: #FFF8E7; border-radius: 10px; padding: 15px;">
+                    正在載入中...
+                </div>
+            </div>
+            <div class="modal-footer" style="background-color: #FFA726;">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const detailModal = document.getElementById('detailModal');
+            const detailContent = document.getElementById('detailContent');
+
+            detailModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget; // 觸發按鈕
+                const eventId = button.getAttribute('data-id'); // 獲取活動 ID
+
+                // 發送 AJAX 請求以加載部分視圖內容
+                fetch(`/TEvents/GetDetails/${eventId}`)
+                    .then(response => response.text())
+                    .then(data => {
+                        detailContent.innerHTML = data; // 將部分視圖插入 Modal
+                    })
+                    .catch(error => {
+                        detailContent.innerHTML = '<p class="text-danger">載入詳細資訊時發生錯誤。</p>';
+                        console.error('Error:', error);
+                    });
+            });
+        });
+    </script>
+}

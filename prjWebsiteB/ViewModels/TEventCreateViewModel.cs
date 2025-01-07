@@ -27,6 +27,7 @@ namespace prjWebsiteB.ViewModels
         public int? FEventMaxParticipants { get; set; }
 
         public int FEventId { get; internal set; }
+        public List<IFormFile> UploadedFiles { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

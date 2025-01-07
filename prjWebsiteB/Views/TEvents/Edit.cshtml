@@ -14,11 +14,9 @@
                 <input type="hidden" asp-for="FEventId" />
 
                 <div class="form-group">
-                    <label asp-for="FUserId" class="control-label">建立者</label>
-                    <select asp-for="FUserId" asp-items="ViewBag.FUserId" class="form-control">
-                        <option value="">請選擇建立者</option>
-                    </select>
-                    <span asp-validation-for="FUserId" class="text-danger"></span>
+                    <label class="control-label">建立者</label>
+                    <input type="text" class="form-control"
+                           value="@(Model.FUser != null ? Model.FUser.FUserName : "未知建立者")" readonly />
                 </div>
 
                 <!-- 活動名稱 -->
@@ -34,7 +32,6 @@
                     <textarea asp-for="FEventDescription" class="form-control" placeholder="請輸入活動描述"></textarea>
                     <span asp-validation-for="FEventDescription" class="text-danger"></span>
                 </div>
-               
 
                 <!-- 活動地點 -->
                 <div class="form-group">
@@ -81,16 +78,24 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="uploadedFile">圖片上傳</label>
-                    <input type="file" id="uploadedFile" name="uploadedFile" class="form-control-file" accept="image/*" />
+                    <label for="uploadedFiles">圖片上傳</label>
+                    <input type="file" id="uploadedFiles" name="uploadedFiles" multiple class="form-control-file" accept="image/*" />
 
-                    <img id="previewImage"
-                         src="@(Model.FEventId > 0
-         ? Url.Action("GetEventImage", "TEvents", new { id = Model.FEventId })
-         : "#")"
-                         alt="目前圖片"
-                         class="img-thumbnail mt-3"
-                         style="display: @(Model.FEventId > 0 ? "block" : "none"); max-width: 100%; height: auto;" />
+                    <!-- 顯示現有圖片 -->
+                    @if (Model.TEventImages != null && Model.TEventImages.Any())
+                    {
+                        <div class="mt-3" id="existingImages">
+                            @foreach (var image in Model.TEventImages)
+                            {
+                                <img src="@Url.Action("GetEventImage", "TEvents", new { id = image.FEventImageId })"
+                                     class="img-thumbnail m-1"
+                                     style="width: 150px; height: auto;" />
+                            }
+                        </div>
+                    }
+
+                    <!-- 新圖片預覽 -->
+                    <div id="newImagePreview" class="mt-3"></div>
                 </div>
 
                 <!-- 按鈕 -->
@@ -105,25 +110,36 @@
 
 @section Scripts {
     <script>
-            document.addEventListener('DOMContentLoaded', function () {
-            const uploadedFileInput = document.getElementById('uploadedFile');
-            const previewImage = document.getElementById('previewImage');
-            if (uploadedFileInput && previewImage) {
-                uploadedFileInput.addEventListener('change', function (event) {
-                    const file = event.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function (e) {
-                            previewImage.src = e.target.result; // 更新預覽圖片
-                        };
-                        reader.readAsDataURL(file);
-                    } else {
-                        previewImage.src = '/images/default-image.jpg'; // 使用預設圖片
-                    }
+        document.addEventListener('DOMContentLoaded', function () {
+            const uploadedFilesInput = document.getElementById('uploadedFiles');
+            const newImagePreview = document.getElementById('newImagePreview');
+
+            if (uploadedFilesInput && newImagePreview) {
+                uploadedFilesInput.addEventListener('change', function (event) {
+                    const files = event.target.files;
+                    newImagePreview.innerHTML = ""; // 清空預覽區域
+
+                    // 遍歷文件並生成預覽圖片
+                    Array.from(files).forEach(file => {
+                        if (file && file.type.startsWith('image/')) { // 檢查是否為圖片文件
+                            const reader = new FileReader();
+                            reader.onload = function (e) {
+                                const img = document.createElement("img");
+                                img.src = e.target.result; // 設置圖片來源
+                                img.className = "img-thumbnail m-1";
+                                img.style.width = "150px";
+                                img.style.height = "auto";
+                                newImagePreview.appendChild(img);
+                            };
+                            reader.readAsDataURL(file);
+                        } else {
+                            console.warn("非圖片文件已忽略:", file.name);
+                        }
+                    });
                 });
             }
         });
-    </script>
+    </script>    
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }

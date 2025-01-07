@@ -11,12 +11,39 @@
     <p>@Model.FEventDescription</p>
     <dl class="row">
         <dt class="col-sm-2">開始日期</dt>
-        <dd class="col-sm-10">@Model.FEventStartDate</dd>
+        <dd class="col-sm-10">
+            @DateTime.Parse(Model.FEventStartDate).ToShortDateString()
+        </dd>
         <dt class="col-sm-2">結束日期</dt>
-        <dd class="col-sm-10">@Model.FEventEndDate</dd>
+        <dd class="col-sm-10">
+            @DateTime.Parse(Model.FEventEndDate).ToShortDateString()
+        </dd>
         <dt class="col-sm-2">活動地點</dt>
         <dd class="col-sm-10">@Model.FEventLocation</dd>
     </dl>
-    <a asp-action="Edit" asp-route-id="@Model.FEventId" class="btn btn-primary">編輯</a>
-    <a asp-action="Index" class="btn btn-secondary">返回</a>
+
+    <div>
+        <h4>活動圖片</h4>
+        <!-- 圖片小視窗區域 -->
+        <div class="d-flex flex-wrap">
+            @if (Model.TEventImages != null && Model.TEventImages.Any())
+            {
+                @foreach (var image in Model.TEventImages)
+                {
+                    <a href="@Url.Action("GetEventImage", "TEvents", new { id = image.FEventImageId })" target="_blank" class="m-2">
+                        <img src="@Url.Action("GetEventImage", "TEvents", new { id = image.FEventImageId })"
+                             class="img-thumbnail"
+                             style="width: 150px; height: auto;" />
+                    </a>
+                }
+            }
+            else
+            {
+                <p>目前尚未上傳圖片。</p>
+            }
+        </div>
+    </div>
+
+    <a asp-action="Edit" asp-route-id="@Model.FEventId" class="btn btn-primary mt-3">編輯</a>
+    <a asp-action="Index" class="btn btn-secondary mt-3">返回</a>
 </div>

@@ -1,0 +1,37 @@
+﻿@model prjWebsiteB.Models.TEvent
+
+<h4 style="color: #FFA726;">@Model.FEventName</h4>
+
+<div style="background-color: #FFF8E7; border-radius: 15px; padding: 20px; display: flex; justify-content: space-between;">
+    <div style="flex: 2; margin-right: 20px;">
+        
+        <dl class="row">
+            <dt class="col-sm-3" style="color: #FF7043;">開始日期</dt>
+            <dd class="col-sm-9">@DateTime.Parse(Model.FEventStartDate).ToShortDateString()</dd>
+
+            <dt class="col-sm-3" style="color: #FF7043;">結束日期</dt>
+            <dd class="col-sm-9">@DateTime.Parse(Model.FEventEndDate).ToShortDateString()</dd>
+
+            <dt class="col-sm-3" style="color: #FF7043;">活動地點</dt>
+            <dd class="col-sm-9">@Model.FEventLocation</dd>
+        </dl>
+    </div>
+
+    <div class="d-flex flex-wrap">
+        @if (Model.TEventImages != null && Model.TEventImages.Any())
+        {
+            @foreach (var image in Model.TEventImages)
+            {
+                <a href="@Url.Action("GetEventImage", "TEvents", new { id = image.FEventImageId })" target="_blank" class="m-2">
+                    <img src="@Url.Action("GetEventImage", "TEvents", new { id = image.FEventImageId })"
+                         class="img-thumbnail"
+                         style="width: 150px; height: auto;" />
+                </a>
+            }
+        }
+        else
+        {
+            <p style="color: #FF7043;">目前尚未上傳圖片。</p>
+        }
+    </div>
+</div>
