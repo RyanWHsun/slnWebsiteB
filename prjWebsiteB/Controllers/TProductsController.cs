@@ -20,13 +20,18 @@ namespace prjWebsiteB.Controllers
         }
 
         // GET: TProducts
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString, int? categoryId)
         {
             var productsQuery = _context.TProducts.AsQueryable();
 
             if (!string.IsNullOrEmpty(searchString))
             {
                 productsQuery = productsQuery.Where(p => p.FProductName.Contains(searchString));
+            }
+
+            if (categoryId.HasValue && categoryId.Value > 0)
+            {
+                productsQuery = productsQuery.Where(p => p.FProductCategoryId == categoryId.Value);
             }
 
             var products = await productsQuery.Select(p => new ProductViewModel
@@ -43,10 +48,17 @@ namespace prjWebsiteB.Controllers
                 FCategoryName = p.FProductCategory.FCategoryName,
                 FImage = null,
             }).ToListAsync();
-
+            
+            //給篩選用
+            var productCategories = _context.TProductCategories;
+            ViewBag.ProductCategories = productCategories;
+            ViewBag.SelectedCategoryId = categoryId;
+            ViewBag.SearchString = searchString;
             return View(products);
         }
 
+
+       
         // GET: TProducts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
