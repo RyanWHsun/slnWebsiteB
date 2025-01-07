@@ -19,7 +19,7 @@
             <div class="modal-body">
                 <div id="detailResult">
                 </div>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="editData()">送出</button>
+                @* <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="editData()">送出</button> *@
             </div>
         </div>
     </div>
@@ -41,7 +41,7 @@
         });
 
         function editData(){
-            var FPostId = $("#FPostId").text();
+            var FPostId = $("#FPostIdforDetails").text();
             var FIsPublic = $("#FIsPublic").val();
             $.ajax({
                 type:"POST",
@@ -54,10 +54,33 @@
             })
         }
 
-        function btnData(id) {
+        function deleteData(){
+            var FPostId = $("#FPostIdforDelete").text();
+            $.ajax({
+                type:"POST",
+                url:"/TPosts/Delete",
+                data:{id : FPostId, searchString : $("#searchString").val()}
+            }).done(data=>{
+                $("#searchResults").html(data);
+            }).fail(err=>{
+                alert(err.statusText);
+            })
+        }
+
+        function btnEdit(id) {
             $.ajax({
                 type:"GET",
                 url:`/TPosts/Details/${id}`
+            }).done(data=>{
+                $("#detailResult").html(data);
+            }).fail(err=>{
+                alert(err.statusText);
+            })
+        }
+        function btnDelete(id) {
+            $.ajax({
+                type:"GET",
+                url:`/TPosts/Delete/${id}`
             }).done(data=>{
                 $("#detailResult").html(data);
             }).fail(err=>{

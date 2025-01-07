@@ -95,8 +95,7 @@ namespace prjWebsiteB.Controllers
             }
 
             var tPost = await _context.TPosts
-                .Include(t => t.FCategory)
-                .Include(t => t.FUser)
+                .Include(t => t.TPostImages)
                 .FirstOrDefaultAsync(m => m.FPostId == id);
             if (tPost == null)
             {
@@ -110,36 +109,44 @@ namespace prjWebsiteB.Controllers
         // GET: TPosts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            ViewBag.FIsPublic = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "true", Text = "公開" },
+                new SelectListItem { Value = "false", Text = "私人" }
+            };
             if (id == null)
             {
                 return NotFound();
             }
 
             var tPost = await _context.TPosts
-                .Include(t => t.FCategory)
-                .Include(t => t.FUser)
+                .Include(t => t.TPostImages)
                 .FirstOrDefaultAsync(m => m.FPostId == id);
             if (tPost == null)
             {
                 return NotFound();
             }
 
-            return View(tPost);
+            return PartialView("_DeletePartial", tPost);
         }
 
-        // POST: TPosts/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id, string searchString)
         {
             var tPost = await _context.TPosts.FindAsync(id);
             if (tPost != null)
             {
                 _context.TPosts.Remove(tPost);
             }
-
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            IQueryable<TPost> dbGroupBContext = _context.TPosts.Include(t => t.TPostImages);
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                dbGroupBContext = dbGroupBContext.Where(e => e.FTitle.Contains(searchString) || e.FContent.Contains(searchString));
+            }
+            return PartialView("_PostListPartial", dbGroupBContext);
         }
 
         private bool TPostExists(int id)

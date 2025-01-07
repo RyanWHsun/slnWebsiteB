@@ -60,7 +60,8 @@
                     @(item.FIsPublic.HasValue ? (item.FIsPublic.Value ? "公開" : "私人") : "")
                 </td>
                 <td>
-                    <button type="button" onclick="btnData(@item.FPostId)" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editPostModal">修改</button>
+                    <button type="button" onclick="btnEdit(@item.FPostId)" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editPostModal">修改</button>
+                    <button type="button" onclick="btnDelete(@item.FPostId)" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#editPostModal">刪除</button>
                 </td>
             </tr>
         }
