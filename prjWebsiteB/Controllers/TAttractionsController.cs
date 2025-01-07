@@ -22,6 +22,9 @@ namespace prjWebsiteB.Controllers {
         // GET: TAttractions
         public async Task<IActionResult> Index() {
             var dbGroupBContext = _context.TAttractions.Include(t => t.FCategory);
+
+            ViewBag.Category = new SelectList(_context.TAttractionCategories, "FAttractionCategoryId", "FAttractionCategoryName");
+
             return View(await dbGroupBContext.ToListAsync());
         }
 
@@ -83,6 +86,8 @@ namespace prjWebsiteB.Controllers {
             if (ModelState.IsValid) {
 
                 // 先存入 tAttraction，並確保主鍵已生成
+                tAttraction.FCreatedDate = DateTime.Now;
+                tAttraction.FUpdatedDate = DateTime.Now;
                 _context.Add(tAttraction);
                 await _context.SaveChangesAsync();
 
@@ -128,30 +133,34 @@ namespace prjWebsiteB.Controllers {
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FAttractionId,FAttractionName,FDescription,FAddress,FPhoneNumber,FOpeningTime,FClosingTime,FWebsiteUrl,FLongitude,FLatitude,FRegion,FCategoryId,FCreatedDate,FUpdatedDate,FStatus,FTrafficInformation")] Models.TAttraction tAttraction, IFormFile? FImage) {
-            if (id != tAttraction.FAttractionId) {
-                return NotFound();
-            }
+        public async Task<IActionResult> Edit([Bind("FAttractionId,FAttractionName,FDescription,FAddress,FPhoneNumber,FOpeningTime,FClosingTime,FWebsiteUrl,FLongitude,FLatitude,FRegion,FCategoryId,FCreatedDate,FUpdatedDate,FStatus,FTrafficInformation")] Models.TAttraction tAttraction, List<IFormFile>? FImages) {
+            //if (id != tAttraction.FAttractionId) {
+            //    return NotFound();
+            //}
 
             if (ModelState.IsValid) {
                 try {
+                    tAttraction.FUpdatedDate = DateTime.Now;
                     _context.Update(tAttraction);
                     await _context.SaveChangesAsync();
 
                     //檢查表單中是否包含名為 "Picture" 的檔案，若有則進行圖片讀取。
-                    if (FImage != null && FImage.Length > 0) {
-
-                        //使用 BinaryReader 讀取圖片檔案的內容，並將其轉換為位元組陣列（byte[]）。
-                        //FImage.OpenReadStream()：開啟圖片檔案的串流來讀取內容。
-                        using (BinaryReader br = new BinaryReader(FImage.OpenReadStream())) {
-                            //br.ReadBytes(...)：將圖片檔案的內容讀取為位元組陣列，並存入 category.Picture 屬性中。
-                            TAttractionImage tAttractionImage = new TAttractionImage {
-                                FAttractionId = tAttraction.FAttractionId,
-                                FImage = br.ReadBytes((int)FImage.Length)
-                            };
-                            _context.Add(tAttractionImage);
-                            await _context.SaveChangesAsync();
+                    if (FImages != null && FImages.Count > 0) {
+                        foreach (var image in FImages) {
+                            if (image != null && image.Length > 0) {
+                                //使用 BinaryReader 讀取圖片檔案的內容，並將其轉換為位元組陣列（byte[]）。
+                                //FImage.OpenReadStream()：開啟圖片檔案的串流來讀取內容。
+                                using (BinaryReader br = new BinaryReader(image.OpenReadStream())) {
+                                    //br.ReadBytes(...)：將圖片檔案的內容讀取為位元組陣列，並存入 category.Picture 屬性中。
+                                    TAttractionImage tAttractionImage = new TAttractionImage {
+                                        FAttractionId = tAttraction.FAttractionId,
+                                        FImage = br.ReadBytes((int)image.Length)
+                                    };
+                                    _context.Add(tAttractionImage);
+                                }
+                            }
                         }
+                        await _context.SaveChangesAsync();
                     }
                 }
                 catch (DbUpdateConcurrencyException) {
@@ -178,6 +187,13 @@ namespace prjWebsiteB.Controllers {
             var tAttraction = await _context.TAttractions.FindAsync(id);
             if (tAttraction == null) {
                 return NotFound();
+            }
+
+            // 根據 id(FAttractionId) 找出所有符合的圖片
+            var tAttractionImages = await _context.TAttractionImages.Where(img=>img.FAttractionId == id).ToListAsync();
+            if (tAttractionImages != null) {
+                //使用 RemoveRange 方法一次刪除所有符合條件的圖片記錄。
+                _context.TAttractionImages.RemoveRange(tAttractionImages);
             }
 
             _context.TAttractions.Remove(tAttraction);

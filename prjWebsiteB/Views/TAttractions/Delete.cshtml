@@ -161,18 +161,6 @@
     </dl>
 
     <partial name="~/Views/TAttractionImages/_ShowImagePartial.cshtml" model="@Model" />
-    @* 照片輪播牆 *@
-    @* <div class="carousel">
-        <img id="previous" src="~/img/previous.png" alt="previous" />
-        <img id="carouselImage"
-             src=""
-             alt="attraction image" />
-        <img id="next" src="~/img/next.png" alt="next" />
-
-        <div class="progress-bar-container">
-            <div class="progress-bar"></div>
-        </div>
-    </div> *@
 
     @* 此表單的 asp-action 屬性指定當使用者按下刪除按鈕時，請求將提交至 Delete 動作方法 (GET: Delete)。 *@
     <form id="deleteForm" asp-action="Delete">
@@ -186,63 +174,3 @@
         <a asp-action="Index">Back to List</a>
     </form>
 </div>
-
-@* @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        $(function(){
-            (async function () {
-                const attractionId = @Model?.FAttractionId; // 根據你的需求替換為實際景點的 ID
-                try {
-                    const response = await fetch(`/TAttractions/GetPictures?id=${attractionId}`);
-                    const images = await response.json();
-
-                    if (images.length === 0) {
-                        alert("No images available");
-                        return;
-                    }
-
-                    let currentIndex = 0;
-                    const $carouselImage = $("#carouselImage");
-
-                    // 設置初始圖片
-                    $carouselImage.attr("src", images[currentIndex]);
-
-                    // 綁定上一張與下一張按鈕
-                    $("#previous").on("click", function () {
-                        currentIndex = (currentIndex - 1 + images.length) % images.length;
-                        $carouselImage.attr("src", images[currentIndex]);
-                        // Swal.fire(`${currentIndex}`);
-                    });
-
-                    $("#next").on("click", function () {
-                        currentIndex = (currentIndex + 1) % images.length;
-                        $carouselImage.attr("src", images[currentIndex]);
-                        // Swal.fire(`${currentIndex}`);
-                    });
-
-                } catch (error) {
-                    console.error("Error fetching images:", error);
-                    alert("Failed to load images. Please try again later.");
-                }
-            })();/* IIFE (Immediately Invoked Function Expression)
-                    在結尾加上 () 表示立即呼叫這個函式*/
-
-            $('#btnDelete').on('click', function(e){
-                e.preventDefault();
-                Swal.fire({
-                    title: '確定要刪除這筆資料嗎？',
-                    text: "此操作無法復原！",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: '確定',
-                    cancelButtonText: '取消'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $('#deleteForm').submit();
-                    }
-                });
-            });
-        });
-    </script>
-} *@

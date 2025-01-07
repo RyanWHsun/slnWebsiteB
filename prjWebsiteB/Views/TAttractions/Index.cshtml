@@ -1,7 +1,36 @@
 ﻿@model IEnumerable<prjWebsiteB.Models.TAttraction>
+@inject dbGroupBContext _context;
 
 @{
     ViewData["Title"] = "Index";
+}
+
+@section Styles {
+    <style>
+        .modal-content {
+            border-radius: 20px;
+        }
+
+        .edit-button-container {
+            margin-top: 20px;
+        }
+
+        .carousel-inner {
+            border: solid 3px;
+            border-color: rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+        }
+
+        .btn-detail, .btn-delete {
+            margin: 10px 5px;
+        }
+
+        #FCategoryId, #FRegion, #FStatus {
+            width: 38%;
+            height: 40px;
+            border-radius: 10px;
+        }
+    </style>
 }
 
 <h1>Index</h1>
@@ -10,146 +39,371 @@
     <a asp-action="Create">Create New</a>
 </p>
 
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    Launch demo modal
-</button>
+<div id="myGrid" style="height: 500px"></div>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                ...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+@* detail 和 edit 功能做在同一個 Bootstrap *@
+<form asp-action="Edit" enctype="multipart/form-data">
+    <div class="modal fade" id="mixModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    @* 隱藏的輸入欄位:景點ID (放這個的目的:送出表單可以取到值)*@
+                    <input id="hiddenFAttractionId" name="FAttractionId" type="hidden">
+                    <h5 class="modal-title w-100" id="FAttractionName"></h5>
+                    @* 隱藏的輸入欄位:景點名稱 (放這個的目的:送出表單可以取到值)*@
+                    <input id="hiddenFAttractionName" name="FAttractionName" type="hidden">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @* carousel 顯示已經存進的圖片 *@
+                    <div id="carouselExampleInterval" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                        <div id="displayImageContainer" class="carousel-inner">
+                            @* 這裡生成圖片 *@
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                    <div class="mb-3 edit-button-container">
+                        <button id="btnEdit" type="button" class="btn btn-outline-success">編輯</button>
+                    </div>
+                    <div class="mb-3">
+                        <label for="FCategoryId" class="form-label">分類</label>
+                        <select id="FCategoryId" name="FCategoryId" class="from-control" disabled>
+                            <option value="">請選擇分類</option>
+                            @{
+                                @foreach (var item in ViewBag.Category.Items)
+                                {
+                                    <option value="@item.FAttractionCategoryId">@item.FAttractionCategoryName</option>
+                                }
+                            }
+                        </select>
+                        @* <input id="FCategoryName" name="FCategoryName" type="text" class="form-control" disabled> *@
+                    </div>
+                    <div class="mb-3">
+                        <label for="FDescription" class="form-label">景點介紹</label>
+                        <textarea id="FDescription" name="FDescription" class=" form-control" rows="3" disabled></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="FRegion" class="form-label">地區</label>
+                        <select id="FRegion" name="FRegion" class="from-control" disabled>
+                            <option value="">請選擇區域</option>
+                            <option value="北部">北部</option>
+                            <option value="中部">中部</option>
+                            <option value="南部">南部</option>
+                            <option value="東部">東部</option>
+                            <option value="離島">離島</option>
+                            <option value="國外">國外</option>
+                        </select>
+
+                        @* <label for="fRegion" class="form-label">地區</label>
+                        <input type="text" class="form-control" id="fRegion" disabled> *@
+                    </div>
+                    <div class="mb-3">
+                        <label for="FAddress" class="form-label">地址</label>
+                        <input id="FAddress" name="FAddress" type="text" class="form-control" disabled>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="FStatus" class="form-label">狀態</label>
+                        <select id="FStatus" name="FStatus" class="from-control" disabled>
+                            <option value="">請選擇狀態</option>
+                            <option value="開放中">開放中</option>
+                            <option value="開放時間和平日不同">開放時間和平日不同</option>
+                            <option value="已打烊">已打烊</option>
+                            <option value="24小時營業">24小時營業</option>
+                        </select>
+                        @* <label for="fStatus" class="form-label">狀態</label>
+                        <input type="text" class="form-control" id="fStatus" disabled> *@
+                    </div>
+                    <div class="mb-3">
+                        <label for="FOpeningTime" class="form-label">開放時間</label>
+                        <input id="FOpeningTime" name="FOpeningTime" type="time" class="form-control" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label for="FClosingTime" class="form-label">關閉時間</label>
+                        <input id="FClosingTime" name="FClosingTime" type="time" class="form-control" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label for="FPhoneNumber" class="form-label">電話</label>
+                        <input id="FPhoneNumber" name="FPhoneNumber" type="tel" class="form-control" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label for="FWebsiteUrl" class="form-label">網址</label>
+                        <input id="FWebsiteUrl" name="FWebsiteUrl" type="text" class="form-control" disabled>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="FCreatedDate" class="form-label">建立日期</label>
+                        <input id="FCreatedDate" name="FCreatedDate" type="text" class="form-control" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label for="FUpdatedDate" class="form-label">更新日期</label>
+                        <input id="FUpdatedDate" name="FUpdatedDate" type="text" class="form-control" disabled>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="FTrafficInformation" class="form-label">交通資訊</label>
+                        <textarea id="FTrafficInformation" name="FTrafficInformation" class="form-control" rows="3" disabled></textarea>
+                    </div>
+                    @* 新增圖片 *@
+
+                    @* <img id="imgPreview" src="@Url.Content("~/img/noImage.jpeg")" style="width:320px;height:240px" title="No image" /> *@
+                    @* carousel 預覽預計要存的圖片 *@
+                    <div id="previewCarouselExampleInterval" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                        <div id="previewImageContainer" class="carousel-inner">
+                            @* 這裡生成圖片 *@
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#previewCarouselExampleInterval" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#previewCarouselExampleInterval" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                    <input id="FImages" name="FImages" type="file" accept="image/*" class="form-control" multiple />
+
+                    <div class="image-name-container" id="imageNameContainer"></div>
+                    <div class="d-flex justify-content-between mt-4">
+                        <button id="btnCancel" type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="display: none;">取消</button>
+                        <button id="btnSave" type="submit" class="btn btn-primary" style="display: none;">儲存</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-<div id="myGrid" style="height: 500px"></div>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FAttractionName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FDescription)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FAddress)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FPhoneNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FOpeningTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FClosingTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FWebsiteUrl)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FLongitude)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FLatitude)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FRegion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FCreatedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FUpdatedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FStatus)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FTrafficInformation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FCategory)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FAttractionName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FDescription)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FAddress)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FPhoneNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FOpeningTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FClosingTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FWebsiteUrl)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FLongitude)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FLatitude)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FRegion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FCreatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FUpdatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FStatus)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FTrafficInformation)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FCategory.FAttractionCategoryName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.FAttractionId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.FAttractionId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.FAttractionId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+</form>
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(function(){
+            const previewImageContainer = $('#previewImageContainer');
+            // 建立 carousel-item 元素
+            const $previewCarouselItem = $(`<div class="carousel-item active" data-bs-interval="2000"><img src="@Url.Content("~/img/noImage.jpeg")" class="d-block w-100" alt="景點圖片" style="height: 300px"></div>`);
+
+            // 加入到 carousel-inner
+            previewImageContainer.append($previewCarouselItem);
+
+            function previewImage(inputFile){
+                // 清空預覽圖片欄位的內容
+                previewImageContainer.empty();
+
+                if(!inputFile.files || inputFile.files.length == 0){
+                    return;
+                }
+
+                let allowType = "image.*";
+                let fileList = inputFile.files;
+
+                // 遍歷圖片陣列並生成 carousel-item
+                // $.each 是 jQuery 提供的迴圈方法，用來遍歷 images 陣列。
+                // images 是一個陣列，其中每個元素 image 可能包含圖片的 URL。
+                // index 是陣列中當前元素的索引。
+                // image 是陣列中當前的圖片物件。
+                $.each(fileList, (index, file) => {
+                    if(file.type.match(allowType)){
+                        let reader = new FileReader();
+
+                        // 註冊一個回呼函式(不會立即執行!)，當reader讀取完成後會觸發該函式。
+                        reader.onload = function (e) {
+                            // 第一張圖片設為 active
+                            const isActive = index === 0 ? 'active' : '';
+
+                            // 建立 carousel-item 元素，並設置圖片 src 為讀取的結果
+                            const $previewCarouselItem2 = $(`<div class="carousel-item ${isActive}" data-bs-interval="2000"><img src="${e.target.result}" class="d-block w-100" alt="${file.name}" style="height: 300px"></div>`);
+
+                            // 加入到 carousel-inner
+                            previewImageContainer.append($previewCarouselItem2);
+
+                            // 顯示剛剛添加的圖片檔名
+                            let div = $('<div>').text(file.name);
+                            $('#imageNameContainer').append(div);
+                        };
+
+                        // 使用 readAsDataURL 讀取檔案內容
+                        reader.readAsDataURL(file);
+
+
+
+                        // 第一張圖片設為 active
+                        // const isActive = index === 0 ? 'active' : '';
+
+                        // 建立 carousel-item 元素
+                        // const $previewCarouselItem2 = $(`<div class="carousel-item ${isActive}" data-bs-interval="2000"><img src="${fileList[index]}" class="d-block w-100" alt="景點圖片" style="height: 300px"></div>`);
+
+                        // 加入到 carousel-inner
+                        // previewImageContainer.append($previewCarouselItem2);
+
+                        // 顯示剛剛添加的圖片檔名
+                        // let div = $('<div>').text(file.name); 使用 jQuery 創建 div 並設定內容
+                        // $('#imageNameContainer').append(div);
+
+                    } else {
+                        alert("不支援上傳的檔案格式：" + file.name);
+                    }
+                });
+            }
+
+            $('#FImages').on('change',function(){
+                previewImage(this);
+            })
+
+
+            // carousel
+            const setCarouselImages = async (attractionId) => {
+                try {
+                    // 清空原有的 carousel-inner 內容
+                    const $carouselInner = $('#displayImageContainer');
+                    $carouselInner.empty();
+
+                    const response = await fetch(`/TAttractionImages/GetPictures?id=${attractionId}`);
+                    const images = await response.json();
+
+                    if (images.length === 0) {
+                        // 建立 carousel-item 元素
+                        const $carouselItem = $(`<div class="carousel-item active" data-bs-interval="2000"><img src="~/img/noImage.jpeg" class="d-block w-100" alt="景點圖片" style="height: 300px"></div>`);
+
+                        // 加入到 carousel-inner
+                        $carouselInner.append($carouselItem);
+                        return;
+                    }
+
+                    // 遍歷圖片陣列並生成 carousel-item
+                    // $.each 是 jQuery 提供的迴圈方法，用來遍歷 images 陣列。
+                    // images 是一個陣列，其中每個元素 image 可能包含圖片的 URL。
+                    // index 是陣列中當前元素的索引。
+                    // image 是陣列中當前的圖片物件。
+                    $.each(images, (index, image) => {
+                        const isActive = index === 0 ? 'active' : ''; // 第一張圖片設為 active
+
+                        // 建立 carousel-item 元素
+                        const $carouselItem = $(`<div class="carousel-item ${isActive}" data-bs-interval="2000"><img src="${images[index]}" class="d-block w-100" alt="景點圖片" style="height: 300px"></div>`);
+
+                        // 加入到 carousel-inner
+                        $carouselInner.append($carouselItem);
+                    });
+
+                } catch (error) {
+                    console.error("Error fetching images:", error);
+                    alert("Failed to load images. Please try again later.");
+                }
+            };
+
+            // 點擊 AttractionName 的欄位可以編輯，要把 <h5> 轉成 <input>
+            const editH5Text = function(){
+                let currentText = $(this).text(); // 獲取當前文字內容
+                let inputField = $('<input>', {
+                    type: 'text',
+                    id: 'FAttractionNameInput',
+                    class: 'form-control w-100',
+                    value: currentText
+                });
+
+                // 替換 <h5> 為 <input>
+                $(this).replaceWith(inputField);
+
+                // 當失去焦點時恢復為 <h5>
+                inputField.blur(function () {
+                    let newText;
+                    if($(this).val()==='' || $(this).val()===null){
+                        newText = currentText;
+                    }else{
+                        newText = $(this).val();
+                    }
+
+                    let h5Element = $('<h5>', {
+                        class: 'modal-title w-100',
+                        id: 'FAttractionName',
+                        text: newText
+                    });
+
+                    // 替換回 <h5>，並重新綁定點擊事件
+                    $(this).replaceWith(h5Element);
+                    let attractionName = $('#FAttractionName').text();
+                    $('#hiddenFAttractionName').val(attractionName);
+                    // alert($('#hiddenFAttractionName').val());
+                });
+
+                // 自動聚焦輸入框
+                inputField.focus();
+            }
+
+            // 動態綁定點擊事件
+            $(document).on('click', '#FAttractionName', editH5Text);
+
+            // 點擊 Modal 中的編輯按鈕
+            $('#btnEdit').on('click', function(){
+                $('#FCategoryId').removeAttr('disabled');
+                // $('#FCategoryName').removeAttr('disabled');
+                $('#FDescription').removeAttr('disabled');
+                $('#FRegion').removeAttr('disabled');
+                $('#FAddress').removeAttr('disabled');
+                $('#FStatus').removeAttr('disabled');
+                $('#FOpeningTime').removeAttr('disabled');
+                $('#FClosingTime').removeAttr('disabled');
+                $('#FPhoneNumber').removeAttr('disabled');
+                $('#FWebsiteUrl').removeAttr('disabled');
+                $('#FTrafficInformation').removeAttr('disabled');
+                $('#btnCancel').css("display", "block");
+                $('#btnSave').css("display", "block");
+            });
+
+            // 關閉 Modal 時觸發
+            $('#mixModal').on('hide.bs.modal', function () {
+                $('#FCategoryId').attr('disabled', true);
+                // $('#FCategoryName').attr('disabled', true);
+                $('#FDescription').attr('disabled', true);
+                $('#FRegion').attr('disabled', true);
+                $('#FAddress').attr('disabled', true);
+                $('#FStatus').attr('disabled', true);
+                $('#FOpeningTime').attr('disabled', true);
+                $('#FClosingTime').attr('disabled', true);
+                $('#FPhoneNumber').attr('disabled', true);
+                $('#FWebsiteUrl').attr('disabled', true);
+                $('#FTrafficInformation').attr('disabled', true);
+                $('#btnCancel').css("display", "none");
+                $('#btnSave').css("display", "none");
+
+                $('#imageNameContainer').html(''); // 清空容器
+                $('#FImages').val(''); // 清空圖片輸入欄位
+                
+                // 清空預覽圖片欄位的內容
+                previewImageContainer.empty();
+                // 重設預覽圖片欄位的內容為 noImage.jpeg
+                previewImageContainer.append($previewCarouselItem);
+            });
+
+            async function showDetail(attraction){
+                $('#hiddenFAttractionId').val(attraction.fAttractionId);
+                $('#FAttractionName').text(attraction.fAttractionName);
+                let attractionName = $('#FAttractionName').text();
+                $('#hiddenFAttractionName').val(attractionName);
+                // alert($('#hiddenFAttractionName').val());
+                $('#FCategoryId').val(attraction.fCategoryId);
+                // alert(attraction.fCategory);
+                $('#FDescription').val(attraction.fDescription);
+                $('#FRegion').val(attraction.fRegion);
+                $('#FAddress').val(attraction.fAddress);
+                $('#FStatus').val(attraction.fStatus);
+                $('#FOpeningTime').val(attraction.fOpeningTime);
+                $('#FClosingTime').val(attraction.fClosingTime);
+                $('#FPhoneNumber').val(attraction.fPhoneNumber);
+                $('#FWebsiteUrl').val(attraction.fWebsiteUrl);
+                $('#FTrafficInformation').val(attraction.fTrafficInformation);
+                $('#FCreatedDate').val(attraction.fCreatedDate);
+                $('#FUpdatedDate').val(attraction.fUpdatedDate);
+
+                await setCarouselImages(attraction.fAttractionId);
+            }
 
             function deleteItem(id) {
                 $.ajax({
@@ -162,19 +416,18 @@
                             console.error("更新畫面成功");
                         } else {
                             console.error("Grid API 尚未初始化");
-                        } 
+                        }
                     },
                     error: function () {
                         alert("刪除失敗，請稍後再試！");
                     }
                 });
-                
+
             }
 
             class CustomButtonComponent {
                 eGui;
                 eButtonDetail;
-                eButtonEdit;
                 eButtonDelete;
                 eventListenerDetail;
                 eventListenerEdit;
@@ -185,39 +438,28 @@
 
                     // 詳細資料按鈕
                     this.eButtonDetail = document.createElement("button");
-                    this.eButtonDetail.className = "btn-detail";
+                    this.eButtonDetail.className = "btn-detail btn btn-outline-info";
                     this.eButtonDetail.textContent = "詳細資料";
+                    this.eButtonDetail.setAttribute("data-bs-toggle", "modal");
+                    this.eButtonDetail.setAttribute("data-bs-target", "#mixModal");
                     this.eventListenerDetail = () => {
-                        //window.location.href = `https://localhost:7121/TAttractions/Details/${params.data.fAttractionId}`;
+                        showDetail(params.data);
                     };
                     this.eButtonDetail.addEventListener("click", this.eventListenerDetail);
 
-                    // 編輯按鈕
-                    this.eButtonEdit = document.createElement("button");
-                    this.eButtonEdit.className = "btn-edit";
-                    this.eButtonEdit.textContent = "編輯";
-                    this.eventListenerEdit = () => {
-                        alert(`編輯景點: ${params.data.fAttractionName}`);
-                        // 這裡可以加上編輯的邏輯，例如跳轉到編輯頁面或開啟編輯對話框
-                    };
-                    this.eButtonEdit.addEventListener("click", this.eventListenerEdit);
-
                     // 刪除按鈕
                     this.eButtonDelete = document.createElement("button");
-                    this.eButtonDelete.className = "btn-delete";
+                    this.eButtonDelete.className = "btn-delete btn btn-outline-danger";
                     this.eButtonDelete.textContent = "刪除";
                     this.eventListenerDelete = () => {
                         if (confirm(`確定要刪除景點: ${params.data.fAttractionName}嗎？`)) {
-                            // 這裡可以加上刪除的邏輯，例如呼叫 API 刪除資料
                             deleteItem(params.data.fAttractionId);
-                            //console.log(`刪除景點: ${params.data.fAttractionId}`);
                         }
                     };
                     this.eButtonDelete.addEventListener("click", this.eventListenerDelete);
 
                     // 將按鈕加入到 eGui 中
                     this.eGui.appendChild(this.eButtonDetail);
-                    this.eGui.appendChild(this.eButtonEdit);
                     this.eGui.appendChild(this.eButtonDelete);
                 }
 
@@ -233,40 +475,35 @@
                     if (this.eButtonDetail) {
                         this.eButtonDetail.removeEventListener("click", this.eventListenerDetail);
                     }
-                    if (this.eButtonEdit) {
-                        this.eButtonEdit.removeEventListener("click", this.eventListenerEdit);
-                    }
                     if (this.eButtonDelete) {
                         this.eButtonDelete.removeEventListener("click", this.eventListenerDelete);
                     }
                 }
             }
-           
+
             //const gridOptions={};
             // 將 Model 序列化為 JSON 並賦值給變數
             const rowData = @Html.Raw(Json.Serialize(Model.Select(item =>
+        {
+            return new
             {
-                return new
-                {
-                    item.FAttractionId,
-                    item.FAttractionName,
-                    item.FAddress,
-                    item.FPhoneNumber,
-                    item.FOpeningTime,
-                    item.FClosingTime,
-                    item.FRegion,
-                    FCreatedDate = item.FCreatedDate.HasValue
-                      ? item.FCreatedDate.Value.ToString("yyyy-MM-dd HH:mm:ss")
-                      : string.Empty,
-                    FUpdatedDate = item.FUpdatedDate.HasValue
-                      ? item.FUpdatedDate.Value.ToString("yyyy-MM-dd HH:mm:ss")
-                      : string.Empty,
-                    // item.FCreatedDate,
-                    // item.FUpdatedDate,
-                    item.FStatus,
-                    FCategory = item.FCategory?.FAttractionCategoryName
-                };
-            })));
+         item.FAttractionId,
+         item.FAttractionName,
+         item.FCategoryId,
+         FCategoryName = item.FCategory?.FAttractionCategoryName,
+         item.FDescription,
+         item.FRegion,
+         item.FAddress,
+         item.FStatus,
+         item.FOpeningTime,
+         item.FClosingTime,
+         item.FPhoneNumber,
+         item.FWebsiteUrl,
+         item.FTrafficInformation,
+         FCreatedDate = item.FCreatedDate.HasValue ? item.FCreatedDate.Value.ToString("yyyy-MM-dd HH:mm:ss") : string.Empty,
+         FUpdatedDate = item.FUpdatedDate.HasValue ? item.FUpdatedDate.Value.ToString("yyyy-MM-dd HH:mm:ss") : string.Empty
+            };
+        })))
             // 使用偵錯工具發現rowData裡面的欄位名稱開頭都是小寫f，為什麼
             // 這個問題是由 C# 的屬性名稱序列化時的規則 所導致的。
             // Json.Serialize 或其他類似的序列化方法（如 JsonConvert.SerializeObject 或 System.Text.Json）
@@ -274,20 +511,21 @@
             // 通常建議使用小駝峰命名法（camelCase），因此某些序列化工具會自動將 C# 屬性名稱的首字母小寫。
             console.log(rowData);
             const gridOptions = {
+                rowHeight: 60,
                 rowData: rowData, // 使用序列化後的資料
                 columnDefs: [
-                    {field: "button", cellRenderer: CustomButtonComponent },
-                    // {headerName: "景點ID", field: "fAttractionId"},
+                    {headerName: "", field: "button", cellRenderer: CustomButtonComponent, cellStyle: {width: '200px'}},
                     {headerName: "景點名稱", field: "fAttractionName", filter:true},
+                    // {headerName: "分類ID", field: "fCategoryId", filter:true},
+                    {headerName: "分類", field: "fCategoryName", filter:true},
+                    {headerName: "地區", field: "fRegion", filter:true},
                     {headerName: "地址", field: "fAddress", filter:true},
-                    {headerName: "電話", field: "fPhoneNumber"},
+                    {headerName: "狀態", field: "fStatus", filter:true},
                     {headerName: "開放時間", field: "fOpeningTime"},
                     {headerName: "關閉時間", field: "fClosingTime"},
-                    {headerName: "地區", field: "fRegion", filter:true},
+                    {headerName: "電話", field: "fPhoneNumber"},
                     {headerName: "建立日期", field: "fCreatedDate"},
-                    {headerName: "更新日期", field: "fUpdatedDate"},
-                    {headerName: "狀態", field: "fStatus", filter:true},
-                    {headerName: "分類", field: "fCategory", filter:true}
+                    {headerName: "更新日期", field: "fUpdatedDate"}
                 ],
                 pagination: true,
                 paginationPageSize: 10,
@@ -303,7 +541,7 @@
             };
             console.log(gridOptions);
             const myGridElement = document.querySelector('#myGrid');
-            agGrid.createGrid(myGridElement, gridOptions);       
+            agGrid.createGrid(myGridElement, gridOptions);
         });
     </script>
 }

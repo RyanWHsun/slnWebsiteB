@@ -9,7 +9,7 @@ DbGroupBContext 類別是一個 DI 容器，可以在這裡注入，並使用 _c
 
 <h1>新增景點</h1>
 
-<button class="btn btn-success">填入預設資料</button>
+<button id="btnDefaultData" class="btn btn-success">填入預設資料</button>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -37,13 +37,11 @@ DbGroupBContext 類別是一個 DI 容器，可以在這裡注入，並使用 _c
             </div>
             <div class="form-group">
                 <label asp-for="FOpeningTime" class="control-label"></label>
-                @* <input asp-for="FOpeningTime" class="form-control" /> *@
                 <input type="time" name="FOpeningTime" id="FOpeningTime" class="form-control" />
                 <span asp-validation-for="FOpeningTime" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FClosingTime" class="control-label"></label>
-                @* <input asp-for="FClosingTime" class="form-control" /> *@
                 <input type="time" name="FClosingTime" id="FClosingTime" class="form-control" />
                 <span asp-validation-for="FClosingTime" class="text-danger"></span>
             </div>
@@ -133,6 +131,22 @@ DbGroupBContext 類別是一個 DI 容器，可以在這裡注入，並使用 _c
     }
 
     <script>
+
+        $('#btnDefaultData').on('click',function(){
+            alert('預設資料');
+            $('#FAttractionName').val('南機場夜市');
+            $('#FDescription').val('熱鬧喧囂的夜市，四周林立著數十個美食攤位，供應台灣傳統街頭小吃。');
+            $('#FAddress').val('100台北市中正區中華路二段307巷');
+            $('#FPhoneNumber').val('0900123456');
+            $('#FOpeningTime').val('17:00');
+            $('#FClosingTime').val('00:00');
+            $('#FWebsiteUrl').val('https://www.google.com');
+            $('#FRegion').val('北部');
+            $('#FCategoryId').val(3);
+            $('#FStatus').val('24小時營業');
+            $('#FTrafficInformation').val('捷運龍山寺站：3號出口出站後，循和平西路二段接和平西路三段往中華路步行16分鐘可抵達');
+        });
+
         function previewImage(inputFile){
             if(inputFile.files && inputFile.files[0]){
                 let allowType="image.*";
