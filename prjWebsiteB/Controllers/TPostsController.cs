@@ -42,6 +42,7 @@ namespace prjWebsiteB.Controllers
             return PartialView("_PostListPartial", dbGroupBContext);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(int id, bool isPublic, string searchString)
         {
             ModelState.Remove("searchString");
@@ -136,6 +137,7 @@ namespace prjWebsiteB.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id, string searchString)
         {
             var tPost = await _context.TPosts.FindAsync(id);

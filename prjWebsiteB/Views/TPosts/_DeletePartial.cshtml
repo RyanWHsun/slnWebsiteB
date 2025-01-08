@@ -1,5 +1,6 @@
 ﻿@model prjWebsiteB.Models.TPost
 
+@Html.AntiForgeryToken()
 <dl class="row">
     <dt class="col-sm-3">
         @Html.DisplayNameFor(model => model.FPostId)
@@ -50,4 +51,4 @@
         @(Model.FIsPublic.HasValue ? (Model.FIsPublic.Value ? "公開" : "私人") : "")
     </dd>
 </dl>
-<button type="button" class="btn btn-primary float-right" data-bs-dismiss="modal" onclick="if(confirm('確定要刪除嗎？')) deleteData();">刪除</button>
+<button type="button" class="btn btn-danger float-right" data-bs-dismiss="modal" onclick="if(confirm('確定要刪除嗎？')) deleteData();">刪除</button>

@@ -1,5 +1,6 @@
 ﻿@model prjWebsiteB.Models.TPost
 
+@Html.AntiForgeryToken()
 <dl class="row">
     <dt class="col-sm-3">
         @Html.DisplayNameFor(model => model.FPostId)

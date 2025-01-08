@@ -19,7 +19,6 @@
             <div class="modal-body">
                 <div id="detailResult">
                 </div>
-                @* <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="editData()">送出</button> *@
             </div>
         </div>
     </div>
@@ -41,12 +40,13 @@
         });
 
         function editData(){
+            var token = $('input[name="__RequestVerificationToken"]').val();
             var FPostId = $("#FPostIdforDetails").text();
             var FIsPublic = $("#FIsPublic").val();
             $.ajax({
                 type:"POST",
                 url:"/TPosts/Update",
-                data:{id : FPostId, isPublic : FIsPublic, searchString : $("#searchString").val()}
+                data:{id : FPostId, isPublic : FIsPublic, searchString : $("#searchString").val(), __RequestVerificationToken: token}
             }).done(data=>{
                 $("#searchResults").html(data);
             }).fail(err=>{
@@ -55,11 +55,12 @@
         }
 
         function deleteData(){
+            var token = $('input[name="__RequestVerificationToken"]').val();
             var FPostId = $("#FPostIdforDelete").text();
             $.ajax({
                 type:"POST",
                 url:"/TPosts/Delete",
-                data:{id : FPostId, searchString : $("#searchString").val()}
+                data:{id : FPostId, searchString : $("#searchString").val(), __RequestVerificationToken: token}
             }).done(data=>{
                 $("#searchResults").html(data);
             }).fail(err=>{
