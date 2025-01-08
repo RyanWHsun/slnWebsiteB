@@ -1,7 +1,8 @@
 ﻿@section Styles {
     <link href="~/css/styleposts.css" rel="stylesheet" />
 }
-<button class="btn btn-success" onclick="btnCreate()">新增文章</button>
+<a asp-action="Create">Create New</a>
+<button class="btn btn-success" onclick="btnCreate()" data-bs-toggle="modal" data-bs-target="#editPostModal">新增文章</button>
 <!-- Bootstrap Modal -->
 <div class="modal fade" id="editPostModal" tabindex="-1">
     <div class="modal-dialog">
@@ -17,15 +18,56 @@
         </div>
     </div>
 </div>
-@section Scripts{
-    function btnEdit(id) {
-            $.ajax({
-                type:"GET",
-                url:`/TPosts/Details/${id}`
-            }).done(data=>{
+@section Scripts {
+    <script>
+        async function btnCreate(){
+            var response = await fetch(`/TPosts/Create`,{
+                method:"GET"
+            });
+            if(response.ok){
+                var data = await response.text();
                 $("#detailResult").html(data);
+            }
+        };
+
+        $("#detailResult").on("change","#FImage",function(){
+            previewImageFile(this);
+        })
+        function previewImageFile(inputFile) {
+            if (inputFile.files[0] != null) {
+                var file = inputFile.files[0];
+                var allowType = "image.*";
+                if (file.type.match(allowType)) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $("#FImage").next().attr("src", e.target.result);
+                        $("#FImage").next().attr("title", file.name);
+                    };
+                    reader.readAsDataURL(file);
+                    $(".btn").prop("disabled", false);
+                } else {
+                    alert("不允許的檔案上傳類型!")
+                    inputFile.value = "";
+                    $(".btn").prop("disabled", true);
+                }
+            }
+        }
+
+        function createData(){
+            console.log($("#FTitle").val());
+            var form =new FormData();
+            form.append("FTitle",$("#FTitle").val());
+            $.ajax({
+                type:"POST",
+                url:"/TPosts/Create",
+                data: form,
+                processData: false,
+                contentType: false
+            }).done(data=>{
+                alert("資料新增成功");
             }).fail(err=>{
                 alert(err.statusText);
             })
         }
+        </script>
 }

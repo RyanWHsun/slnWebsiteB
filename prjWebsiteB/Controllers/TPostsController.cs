@@ -29,6 +29,29 @@ namespace prjWebsiteB.Controllers
         {
             return View();
         }
+        public IActionResult Create()
+        {
+            return PartialView("_CreatePartial", new prjWebsiteB.Models.TPost());
+        }
+        [HttpPost]
+        public async Task<IActionResult> Create([Bind("FTitle")] TPost post)
+        {
+            if (Request.Form.Files["FImage"] != null)
+            {
+                using (BinaryReader reader = new BinaryReader(Request.Form.Files["FImage"].OpenReadStream()))
+                {
+                    byte[] imageData = reader.ReadBytes((int)Request.Form.Files["FImage"].Length);
+                    TPostImage postImage = new TPostImage
+                    {
+                        FImage = imageData
+                    };
+                    post.TPostImages.Add(postImage);
+                }
+            }
+            _context.Add(post);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Posts));
+        }
 
         // GET: TPosts/Search/searchString
         [Route("/TPosts/Search/{searchString?}")]

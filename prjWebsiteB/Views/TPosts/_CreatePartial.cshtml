@@ -1,0 +1,17 @@
+﻿@model prjWebsiteB.Models.TPost
+<div class="row">
+    <form id="createForm" enctype="multipart/form-data">
+            <div class="form-group col-4">
+                <label asp-for="FTitle"></label>
+                <input asp-for="FTitle" class="form-control" />
+                <span asp-validation-for="FTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="FImage" class="control-label"></label>
+                <input type="file" name="FImage" id="FImage" class="form-control" accept="image/*" />
+                <img id="imgPreview" src="@Url.Content("~/images/noimage.jpg")" title="尚無圖片" class="img-fluid" style="width:320px;height:240px" />
+                @* <span asp-validation-for="TPostImages.FirstOrDefault().FImage" class="text-danger"></span> *@
+            </div>
+        <button type="button" class="btn btn-primary" onclick="createData()" >Create</button>
+        </form>
+</div>
