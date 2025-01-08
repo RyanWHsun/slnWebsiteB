@@ -249,3 +249,8 @@
         transform: translateY(-15px);
     }
 }
+
+/*custom*/
+.carousel-control-prev-icon, .carousel-control-next-icon {
+    filter: invert(25%);
+}
