@@ -73,8 +73,8 @@
                 <label asp-for="FImage" class="control-label">商品照片</label>
                 <div class="fileSelectorContainer">
                     <div id="div1" class="fileSelectorDiv">點兩下上傳圖片</div>
-                    <div id="div2" class="fileSelectorDiv">點兩下上傳圖片</div>
-                    <div id="div3" class="fileSelectorDiv">點兩下上傳圖片</div>
+                    <div id="div2" class="fileSelectorDiv hidden">點兩下上傳圖片</div>
+                    <div id="div3" class="fileSelectorDiv hidden">點兩下上傳圖片</div>
                 </div>
                 <span asp-validation-for="FImage" class="text-danger"></span>
                 <input type="file" id="imageUpload1" class="fileSelector" name="imageUpload1" accept="image/*" />
@@ -99,7 +99,6 @@
 
         $(document).ready(function() {
             var p = encodeURI('@Model.FProductId');
-
             $.ajax({
                 url: `${baseAddress}/TProducts/GetPictures/${p}`,
                 type: 'GET',
@@ -122,6 +121,10 @@
                         $(containers[i]).empty();
                         // 將 img 元素添加到 div 中
                         $(containers[i]).append(img);
+                        // 動態顯示下一個文件選擇器
+                        if (i < containers.length - 1) {
+                            $(containers[i + 1]).removeClass("hidden");
+                        }
                     }
                 }
             })
@@ -172,6 +175,14 @@
                     div.style.backgroundSize = "cover";
                     div.style.backgroundPosition = "center";
                     div.textContent = ""; // 移除提示文字
+                
+                    // 動態顯示下一個文件選擇器
+                    if (div.id === "div1") {
+                        $("#div2").removeClass("hidden");
+                    }
+                    if (div.id === "div2") {
+                        $("#div3").removeClass("hidden");
+                    }
                 }
                 reader.readAsDataURL(file);
             }
