@@ -170,6 +170,18 @@ namespace prjWebsiteB.Controllers
         [HttpPost]
         public async Task<IActionResult> EditByUser(TPost post)
         {
+            var tImage = _context.TPostImages.FirstOrDefault(i => i.FPostId == post.FPostId);
+            if (Request.Form.Files["FImage"] != null)
+            {
+                using (BinaryReader reader = new BinaryReader(Request.Form.Files["FImage"].OpenReadStream()))
+                {
+                    byte[] imageData = reader.ReadBytes((int)Request.Form.Files["FImage"].Length);
+                    tImage.FImage = imageData;
+                    _context.Update(tImage);
+                    await _context.SaveChangesAsync();
+
+                }
+            }
             if (post.FPostId == null)
             {
                 return NotFound();
@@ -191,7 +203,7 @@ namespace prjWebsiteB.Controllers
                 try
                 {
                     _context.Update(tPost);
-                    //await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -205,17 +217,7 @@ namespace prjWebsiteB.Controllers
                     }
                 }
             }
-            var tImages = _context.TPostImages.Where(i=>i.FPostId == post.FPostId);
-            if (Request.Form.Files["FImage"] != null)
-            {
-                using (BinaryReader reader = new BinaryReader(Request.Form.Files["FImage"].OpenReadStream()))
-                {
-                    byte[] imageData = reader.ReadBytes((int)Request.Form.Files["FImage"].Length);
-                    tImages.FirstOrDefault().FImage = imageData;
-                    _context.Update(tImages);
-                    await _context.SaveChangesAsync();
-                }
-            }
+            
             int loginId = 1; //待串登入資料
             var dbGroupBContext = _context.TPosts.Include(t => t.TPostImages).Where(t => t.FUserId == loginId);
             return PartialView("_UserPostsPartial", dbGroupBContext);
@@ -281,7 +283,7 @@ namespace prjWebsiteB.Controllers
         {
             return _context.TPosts.Any(e => e.FPostId == id);
         }
-
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<FileResult> GetPicture(int id)
         {
             var tPost = _context.TPosts.Include(t => t.TPostImages).FirstOrDefault(p => p.FPostId == id);
