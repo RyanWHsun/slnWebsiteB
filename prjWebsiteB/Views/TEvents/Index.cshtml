@@ -1,4 +1,5 @@
-﻿@model IEnumerable<prjWebsiteB.Models.TEvent>
+﻿@using prjWebsiteB.Helpers
+@model PaginatedList<prjWebsiteB.Models.TEvent>
 
 @{
     ViewData["Title"] = "活動管理";
@@ -78,11 +79,16 @@
                                 <td class="align-middle">
                                     <div class="d-flex flex-column align-items-center">
                                         <a asp-action="Edit" asp-route-id="@item.FEventId" class="btn btn-sm mb-1" style="background-color: #FF7043; color: white; width: 100px;">編輯</a>
+
                                         <button type="button" class="btn btn-sm mb-1" style="background-color: #FFA726; color: white; width: 100px;"
                                                 data-bs-toggle="modal" data-bs-target="#detailModal" data-id="@item.FEventId">
                                             詳細
                                         </button>
-                                        <a asp-action="Delete" asp-route-id="@item.FEventId" class="btn btn-sm" style="background-color: #F4511E; color: white; width: 100px;">刪除</a>
+
+                                        <form asp-action="Delete" asp-route-id="@item.FEventId" method="post" style="display: inline;">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm mb-1" style="background-color: #F4511E; color: white; width: 100px;">刪除</button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
@@ -92,6 +98,40 @@
             </div>
         </div>
     </div>
+</div>
+<div class="d-flex justify-content-center mt-3">
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                <a class="page-link" asp-route-pageNumber="1"
+                   asp-route-search="@ViewData["CurrentSearch"]"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]">最前頁</a>
+            </li>
+            <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                <a class="page-link" asp-route-pageNumber="@(Model.PageIndex - 1)"
+                   asp-route-search="@ViewData["CurrentSearch"]"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]">上一頁</a>
+            </li>
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                    <a class="page-link" asp-route-pageNumber="@i"
+                       asp-route-search="@ViewData["CurrentSearch"]"
+                       asp-route-sortOrder="@ViewData["CurrentSort"]">@i</a>
+                </li>
+            }
+            <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                <a class="page-link" asp-route-pageNumber="@(Model.PageIndex + 1)"
+                   asp-route-search="@ViewData["CurrentSearch"]"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]">下一頁</a>
+            </li>
+            <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                <a class="page-link" asp-route-pageNumber="@(Model.TotalPages)"
+                   asp-route-search="@ViewData["CurrentSearch"]"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]">最後頁</a>
+            </li>
+        </ul>
+    </nav>
 </div>
 
 <!-- Modal 元件 -->
@@ -126,7 +166,12 @@
 
                 // 發送 AJAX 請求以加載部分視圖內容
                 fetch(`/TEvents/GetDetails/${eventId}`)
-                    .then(response => response.text())
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.text();
+                    })
                     .then(data => {
                         detailContent.innerHTML = data; // 將部分視圖插入 Modal
                     })

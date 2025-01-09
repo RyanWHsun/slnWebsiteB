@@ -4,32 +4,38 @@
     ViewData["Title"] = "新增活動項目";
 }
 
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <h1 class="text-center mb-4">新增項目</h1>
-            <hr />
+<div class="container mt-5" style="max-width: 900px;">
+    <div class="text-center mb-4">
+        <h1 class="display-4 font-weight-bold" style="color: #FFA726;">新增活動</h1>
+        <p class="lead" style="color: #FF7043;">請輸入以下資訊以新增活動項目。</p>
+    </div>
+
+    <div class="card shadow-lg border-0" style="background-color: #FFF8E7; border-radius: 15px; overflow: hidden;">
+        <div class="card-header text-white text-center" style="background-color: #FFA726; font-size: 20px;">
+            活動資訊
+        </div>
+        <div class="card-body" style="padding: 30px;">
             <form asp-action="Create" enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                 <!-- 活動名稱 -->
                 <div class="form-group">
-                    <label asp-for="FEventName" class="control-label">活動名稱</label>
-                    <input asp-for="FEventName" class="form-control" placeholder="請輸入活動名稱" />
+                    <label asp-for="FEventName" class="control-label" style="color: #FF7043;">活動名稱</label>
+                    <input asp-for="FEventName" class="form-control" placeholder="請輸入活動名稱" style="border: 1px solid #FFA726;" />
                     <span asp-validation-for="FEventName" class="text-danger"></span>
                 </div>
 
                 <!-- 活動描述 -->
                 <div class="form-group">
-                    <label asp-for="FEventDescription" class="control-label">活動說明</label>
-                    <textarea asp-for="FEventDescription" class="form-control" placeholder="請輸入活動描述"></textarea>
+                    <label asp-for="FEventDescription" class="control-label" style="color: #FF7043;">活動說明</label>
+                    <textarea asp-for="FEventDescription" class="form-control" placeholder="請輸入活動描述" style="border: 1px solid #FFA726;"></textarea>
                     <span asp-validation-for="FEventDescription" class="text-danger"></span>
                 </div>
 
                 <!-- 活動類型 -->
                 <div class="form-group">
-                    <label asp-for="FEventCategoryId" class="control-label">活動類型</label>
-                    <select asp-for="FEventCategoryId" asp-items="ViewBag.CategoryList" class="form-control">
+                    <label asp-for="FEventCategoryId" class="control-label" style="color: #FF7043;">活動類型</label>
+                    <select asp-for="FEventCategoryId" asp-items="ViewBag.CategoryList" class="form-control" style="border: 1px solid #FFA726;">
                         <option value="">請選擇活動類型</option>
                     </select>
                     <span asp-validation-for="FEventCategoryId" class="text-danger"></span>
@@ -37,51 +43,53 @@
 
                 <!-- 活動地點 -->
                 <div class="form-group">
-                    <label asp-for="FEventLocation" class="control-label">活動地點</label>
-                    <input asp-for="FEventLocation" class="form-control" placeholder="請輸入活動地點" />
+                    <label asp-for="FEventLocation" class="control-label" style="color: #FF7043;">活動地點</label>
+                    <input asp-for="FEventLocation" class="form-control" placeholder="請輸入活動地點" style="border: 1px solid #FFA726;" />
                     <span asp-validation-for="FEventLocation" class="text-danger"></span>
                 </div>
 
                 <!-- 活動日期 -->
-                <div class="form-group">
-                    <label asp-for="FEventStartDate" class="control-label">開始日期</label>
-                    <input asp-for="FEventStartDate" type="date" class="form-control" />
-                    <span asp-validation-for="FEventStartDate" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="FEventEndDate" class="control-label">結束日期</label>
-                    <input asp-for="FEventEndDate" type="date" class="form-control" />
-                    <span asp-validation-for="FEventEndDate" class="text-danger"></span>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="FEventStartDate" class="control-label" style="color: #FF7043;">開始日期</label>
+                        <input asp-for="FEventStartDate" type="date" class="form-control" style="border: 1px solid #FFA726;" />
+                        <span asp-validation-for="FEventStartDate" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="FEventEndDate" class="control-label" style="color: #FF7043;">結束日期</label>
+                        <input asp-for="FEventEndDate" type="date" class="form-control" style="border: 1px solid #FFA726;" />
+                        <span asp-validation-for="FEventEndDate" class="text-danger"></span>
+                    </div>
                 </div>
 
                 <!-- 活動費用 -->
                 <div class="form-group">
-                    <label asp-for="FEventActivityfee" class="control-label">報名費用</label>
-                    <input asp-for="FEventActivityfee" type="number" class="form-control" placeholder="請輸入報名費用" />
+                    <label asp-for="FEventActivityfee" class="control-label" style="color: #FF7043;">報名費用</label>
+                    <input asp-for="FEventActivityfee" type="number" class="form-control" placeholder="請輸入報名費用" style="border: 1px solid #FFA726;" />
                     <span asp-validation-for="FEventActivityfee" class="text-danger"></span>
                 </div>
 
                 <!-- 人數限制 -->
                 <div class="form-group">
-                    <label asp-for="FEventMaxParticipants" class="control-label">人數上限</label>
-                    <input asp-for="FEventMaxParticipants" type="number" class="form-control" placeholder="請輸入人數上限" />
+                    <label asp-for="FEventMaxParticipants" class="control-label" style="color: #FF7043;">人數上限</label>
+                    <input asp-for="FEventMaxParticipants" type="number" class="form-control" placeholder="請輸入人數上限" style="border: 1px solid #FFA726;" />
                     <span asp-validation-for="FEventMaxParticipants" class="text-danger"></span>
                 </div>
 
                 <!-- 活動狀態 -->
                 <div class="form-group">
-                    <label asp-for="FEventIsActive" class="control-label">活動狀態</label>
-                    <select asp-for="FEventIsActive" class="form-control">
+                    <label asp-for="FEventIsActive" class="control-label" style="color: #FF7043;">活動狀態</label>
+                    <select asp-for="FEventIsActive" class="form-control" style="border: 1px solid #FFA726;">
                         <option value="true">啟用</option>
                         <option value="false">停用</option>
                     </select>
                     <span asp-validation-for="FEventIsActive" class="text-danger"></span>
                 </div>
 
+                <!-- 上傳圖片 -->
                 <div class="form-group">
-                    <label for="UploadedFiles">上傳圖片</label>
-                    <input type="file" id="UploadedFiles" name="UploadedFiles" multiple class="form-control" />
+                    <label for="UploadedFiles" style="color: #FF7043;">上傳圖片</label>
+                    <input type="file" id="UploadedFiles" name="UploadedFiles" multiple class="form-control" style="border: 1px solid #FFA726;" />
                 </div>
 
                 <div id="image-preview" style="margin-top: 10px;">
@@ -89,9 +97,9 @@
                 </div>
 
                 <!-- 按鈕 -->
-                <div class="form-group text-right">
-                    <button type="submit" class="btn btn-primary">保存</button>
-                    <a asp-action="Index" class="btn btn-secondary">取消</a>
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-warning btn-lg px-5" style="background-color: #FFA726; color: white; border-radius: 50px;">保存</button>
+                    <a asp-action="Index" class="btn btn-secondary btn-lg px-5 ml-3" style="border-radius: 50px;">取消</a>
                 </div>
             </form>
         </div>
@@ -100,7 +108,7 @@
 
 @section Scripts {
     <script>
-            document.getElementById("UploadedFiles").addEventListener("change", function (event) {
+        document.getElementById("UploadedFiles").addEventListener("change", function (event) {
             const preview = document.getElementById("image-preview");
             preview.innerHTML = ""; // 清空預覽區域
 
@@ -111,13 +119,12 @@
                     img.src = e.target.result;
                     img.style.width = "150px";
                     img.style.margin = "5px";
+                    img.style.borderRadius = "10px";
+                    img.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)";
                     preview.appendChild(img);
                 };
                 reader.readAsDataURL(file);
             });
         });
     </script>
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
 }

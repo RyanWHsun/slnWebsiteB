@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using prjWebsiteB.Helpers;
 using prjWebsiteB.Models;
 using prjWebsiteB.ViewModels;
 
@@ -20,9 +21,28 @@ namespace prjWebsiteB.Controllers
             _context = context;
         }
 
-        // GET: TEvents
-        public async Task<IActionResult> Index(string search, string sortOrder, int? userId)
+        public async Task<IActionResult> GetDetails(int id)
         {
+            var tEvent = await _context.TEvents
+                .Include(t => t.TEventImages)
+                .FirstOrDefaultAsync(m => m.FEventId == id);
+
+            if (tEvent == null)
+            {
+                return NotFound();
+            }
+
+            // 確認資料是否正確
+            Console.WriteLine($"Loading Event ID: {id}, Name: {tEvent.FEventName}");
+
+            return PartialView("_EventDetailsPartial", tEvent);
+        }
+
+        // GET: TEvents
+        public async Task<IActionResult> Index(string search, string sortOrder, int? userId, int? pageNumber)
+        {
+            int pageSize = 5; // 每頁顯示的項目數
+
             // 包含建立者的查詢
             var events = _context.TEvents
                 .Include(e => e.FUser)
@@ -37,15 +57,9 @@ namespace prjWebsiteB.Controllers
                     e.FUser.FUserName.Contains(search)); // 加入建立者名字的搜尋
             }
 
-            // 篩選建立者
-            if (userId.HasValue)
-            {
-                events = events.Where(e => e.FUserId == userId.Value);
-            }
-
             // 排序功能
-            ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            ViewData["DateSortParm"] = sortOrder == "date_asc" ? "date_desc" : "date_asc";
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["CurrentSearch"] = search;
 
             events = sortOrder switch
             {
@@ -55,10 +69,8 @@ namespace prjWebsiteB.Controllers
                 _ => events.OrderBy(e => e.FEventName),
             };
 
-            // 傳遞建立者的篩選清單到 View
-            ViewData["UserList"] = new SelectList(await _context.TUsers.ToListAsync(), "FUserId", "FUserName");
-
-            return View(await events.ToListAsync());
+            // 分頁功能
+            return View(await PaginatedList<TEvent>.CreateAsync(events.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: TEvents/Details/5
@@ -84,8 +96,6 @@ namespace prjWebsiteB.Controllers
         // GET: TEvents/Create
         public IActionResult Create()
         {
-            // 提供使用者選單
-            ViewData["FUserId"] = new SelectList(_context.TUsers, "FUserId", "FUserName");
             // 提供活動類型選單
             ViewData["CategoryList"] = new SelectList(_context.TEventCategories, "FEventCategoryId", "FEventCategoryName");
             return View();
@@ -105,7 +115,7 @@ namespace prjWebsiteB.Controllers
                     FEventEndDate = model.FEventEndDate,
                     FEventLocation = model.FEventLocation,
                     FEventActivityfee = model.FEventActivityfee,
-                    FUserId = model.FUserId,
+                    FUserId = 1, // 自動設定為 UserId = 1
                     FEventIsActive = model.FEventIsActive,
                     FEventMaxParticipants = model.FEventMaxParticipants,
                     FEventCreatedDate = model.FEventCreatedDate ?? DateTime.Now,
@@ -115,20 +125,19 @@ namespace prjWebsiteB.Controllers
                 _context.TEvents.Add(tEvent);
                 await _context.SaveChangesAsync();
 
-                // 儲存活動類型對應關係到 TEventCategoryMapping 表
+                // 儲存活動類型對應
                 if (model.FEventCategoryId.HasValue)
                 {
                     var eventCategoryMapping = new TEventCategoryMapping
                     {
-                        FEventId = tEvent.FEventId, // 新增活動的 ID
-                        FEventCategoryId = model.FEventCategoryId.Value // 選擇的類型 ID
+                        FEventId = tEvent.FEventId,
+                        FEventCategoryId = model.FEventCategoryId.Value
                     };
-
                     _context.TEventCategoryMappings.Add(eventCategoryMapping);
                     await _context.SaveChangesAsync();
                 }
 
-                // 儲存圖片到 TEventImage 表
+                // 儲存圖片
                 if (model.UploadedFiles != null && model.UploadedFiles.Any())
                 {
                     foreach (var uploadedFile in model.UploadedFiles)
@@ -138,18 +147,15 @@ namespace prjWebsiteB.Controllers
                             using (var memoryStream = new MemoryStream())
                             {
                                 await uploadedFile.CopyToAsync(memoryStream);
-
                                 var tEventImage = new TEventImage
                                 {
-                                    FEventId = tEvent.FEventId, // 新增活動的 ID
-                                    FEventImage = memoryStream.ToArray() // 儲存為二進位資料
+                                    FEventId = tEvent.FEventId,
+                                    FEventImage = memoryStream.ToArray()
                                 };
-
                                 _context.TEventImages.Add(tEventImage);
                             }
                         }
                     }
-
                     await _context.SaveChangesAsync();
                 }
 
@@ -157,7 +163,6 @@ namespace prjWebsiteB.Controllers
             }
 
             // 如果驗證失敗，重新載入下拉選單資料
-            ViewData["FUserId"] = new SelectList(_context.TUsers, "FUserId", "FUserName", model.FUserId);
             ViewData["CategoryList"] = new SelectList(_context.TEventCategories, "FEventCategoryId", "FEventCategoryName", model.FEventCategoryId);
             return View(model);
         }
@@ -180,7 +185,7 @@ namespace prjWebsiteB.Controllers
                 return NotFound();
             }
 
-            // 加入建立者的下拉選單資料
+            // 提供使用者選單，將當前的建立者設為選中項目
             ViewData["FUserId"] = new SelectList(_context.TUsers, "FUserId", "FUserName", tEvent.FUserId);
 
             return View(tEvent);
@@ -273,13 +278,16 @@ namespace prjWebsiteB.Controllers
             var tEventImage = await _context.TEventImages.FirstOrDefaultAsync(img => img.FEventImageId == id);
             if (tEventImage == null || tEventImage.FEventImage == null)
             {
-                // 返回默認佔位圖片
+                // 如果圖片不存在，返回預設佔位圖片
                 var defaultImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "default-image.jpg");
-                var defaultImage = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
-                return File(defaultImage, "image/jpeg");
+                if (System.IO.File.Exists(defaultImagePath))
+                {
+                    var defaultImage = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                    return File(defaultImage, "image/jpeg");
+                }
+                return NotFound();
             }
 
-            // 返回圖片數據
             return File(tEventImage.FEventImage, "image/jpeg");
         }
 
@@ -303,17 +311,24 @@ namespace prjWebsiteB.Controllers
             return View(tEvent);
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var tEvent = await _context.TEvents
                 .Include(e => e.TEventImages) // 包含圖片資料
+                .Include(e => e.TEventCategoryMappings) // 包含類型對應資料
                 .FirstOrDefaultAsync(e => e.FEventId == id);
 
             if (tEvent != null)
             {
-                // 刪除相關圖片
+                // 刪除關聯的類型對應
+                if (tEvent.TEventCategoryMappings != null && tEvent.TEventCategoryMappings.Any())
+                {
+                    _context.TEventCategoryMappings.RemoveRange(tEvent.TEventCategoryMappings);
+                }
+
+                // 刪除關聯的圖片
                 if (tEvent.TEventImages != null && tEvent.TEventImages.Any())
                 {
                     _context.TEventImages.RemoveRange(tEvent.TEventImages);
@@ -326,20 +341,6 @@ namespace prjWebsiteB.Controllers
             }
 
             return RedirectToAction(nameof(Index));
-        }
-
-        public async Task<IActionResult> GetDetails(int id)
-        {
-            var tEvent = await _context.TEvents
-                .Include(t => t.FUser)
-                .FirstOrDefaultAsync(t => t.FEventId == id);
-
-            if (tEvent == null)
-            {
-                return NotFound();
-            }
-
-            return PartialView("_EventDetailsPartial", tEvent);
         }
     }
 }
