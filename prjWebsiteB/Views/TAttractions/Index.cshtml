@@ -222,6 +222,8 @@
             previewImageContainer.append($previewCarouselItem);
 
             function previewImage(inputFile){
+                // 清空 imageNameContainer 的內容
+                $('#imageNameContainer').find('div').remove();
                 // 清空預覽圖片欄位的內容
                 previewImageContainer.empty();
 
