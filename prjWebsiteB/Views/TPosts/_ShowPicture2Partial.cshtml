@@ -1,0 +1,15 @@
+﻿@model TPost
+
+@inject dbGroupBContext _context
+@{
+    TPost? post = await _context.TPosts.FindAsync(Model.FPostId);
+
+    if (post != null && post.TPostImages.Count>0)
+    {
+        <img class="img-fluid w-100" src="@Url.Action("GetPicture","TPosts",new{id=Model.FPostId})" asp-append-version="true" />
+    }
+    else
+    {
+        <img class="img-fluid w-100" src="@Url.Content("~/images/noImage.jpg")" asp-append-version="true" />
+    }
+}

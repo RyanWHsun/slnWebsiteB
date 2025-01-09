@@ -1,0 +1,178 @@
+﻿@section Styles {
+    <link href="~/css/styleposts.css" rel="stylesheet" />
+}
+<h1 id="postsPage" name="Posts">個人文章</h1>
+<div class="form-inline">
+    <label for="searchString" class="form-label mr-2">關鍵字搜尋:</label>
+    <input id="searchString" name="searchString" class="form-control" />
+</div>
+<button class="btn btn-success" onclick="btnCreate()" data-bs-toggle="modal" data-bs-target="#editPostModal">新增文章</button>
+<div id="searchResults">
+    <partial name="_UserPostsPartial" />
+</div>
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="editPostModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPostModalLabel">修改</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="partialResult">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $("#searchString").on("keyup", function () {
+            const searchString = encodeURIComponent($(this).val());
+            $.ajax({
+                type: "GET",
+                url: `TPosts/Search/${searchString}`
+            }).done(data => {
+                $("#searchResults").html(data);
+            }).fail(err => {
+                alert(err.statusText);
+            })
+        });
+
+        function editData() {
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            var FPostId = $("#FPostIdforDetails").text();
+            var FIsPublic = $("#FIsPublic").val();
+            $.ajax({
+                type: "POST",
+                url: "/TPosts/Edit",
+                data: { id: FPostId, isPublic: FIsPublic, searchString: $("#searchString").val(), page: $("#postsPage").attr("name"), __RequestVerificationToken: token }
+            }).done(data => {
+                $("#searchResults").html(data);
+            }).fail(err => {
+                alert(err.statusText);
+            })
+        }
+
+        function deleteData() {
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            var FPostId = $("#FPostIdforDelete").text();
+            $.ajax({
+                type: "POST",
+                url: "/TPosts/Delete",
+                data: { id: FPostId, searchString: $("#searchString").val(), __RequestVerificationToken: token }
+            }).done(data => {
+                $("#searchResults").html(data);
+            }).fail(err => {
+                alert(err.statusText);
+            })
+        }
+        async function btnCreate(){
+            var response = await fetch(`/TPosts/Create`,{
+                method:"GET"
+            });
+            if(response.ok){
+                var data = await response.text();
+                $("#partialResult").html(data);
+            }
+        };
+
+        $("#partialResult").on("change","#FImage",function(){
+            previewImageFile(this);
+        })
+        function previewImageFile(inputFile) {
+            if (inputFile.files[0] != null) {
+                var file = inputFile.files[0];
+                var allowType = "image.*";
+                if (file.type.match(allowType)) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $("#FImage").next().attr("src", e.target.result);
+                        $("#FImage").next().attr("title", file.name);
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    alert("不允許的檔案上傳類型!")
+                    inputFile.value = "";
+                }
+            }
+        }
+
+        function createData(){
+            var form =new FormData();
+            form.append("FTitle",$("#FTitle").val());
+            form.append("FImage",document.getElementById("FImage").files[0]);
+            form.append("FContent",$("#FContent").val());
+            form.append("FIsPublic",$("#FIsPublic").val());
+            $.ajax({
+                type:"POST",
+                url:"/TPosts/Create",
+                data: form,
+                processData: false,
+                contentType: false
+            }).done(data=>{
+                $("#searchResults").html(data);
+            }).fail(err=>{
+                alert(err.statusText);
+            })
+        }
+        function btnDetails(event,id) {
+            event.preventDefault();
+            $.ajax({
+                type:"GET",
+                url:`/TPosts/Details/${id}`
+            }).done(data=>{
+                $("#partialResult").html(data);
+            }).fail(err=>{
+                alert(err.statusText);
+            })
+        }
+        function btnDelete(event, id) {
+            event.preventDefault();
+            $.ajax({
+                type: "GET",
+                url: `/TPosts/Delete/${id}`
+            }).done(data => {
+                $("#partialResult").html(data);
+            }).fail(err => {
+                alert(err.statusText);
+            })
+        }
+        function btnEditByUser(event, id) {
+            event.preventDefault();
+            $.ajax({
+                type: "GET",
+                url: `/TPosts/EditByUser/${id}`
+            }).done(data => {
+                $("#partialResult").html(data);
+            }).fail(err => {
+                alert(err.statusText);
+            })
+        }
+        function editDataByUser(id){
+            var form =new FormData();
+            form.append("FTitle",$("#FTitle").val());
+            form.append("FImage",document.getElementById("FImage").files[0]);
+            form.append("FContent",$("#FContent").val());
+            form.append("FIsPublic",$("#FIsPublic").val());
+            form.append("FPostId",id);
+            console.log(document.getElementById("FImage").files[0]);
+            $.ajax({
+                type:"POST",
+                url:"/TPosts/EditByUser",
+                data: form,
+                processData: false,
+                contentType: false
+            }).done(data=>{
+                alert("修改資料成功")
+                $("#searchResults").html(data);
+                console.log("12");
+            }).fail(err=>{
+                alert(err.statusText);
+            })
+        }
+    </script>
+}

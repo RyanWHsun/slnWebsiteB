@@ -1,0 +1,54 @@
+﻿@model prjWebsiteB.Models.TPost
+
+@Html.AntiForgeryToken()
+<dl class="row">
+    <dt class="col-sm-3">
+        @Html.DisplayNameFor(model => model.FPostId)
+    </dt>
+    <dd class="col-sm-9" id="FPostIdforDelete">
+        @Html.DisplayFor(model => model.FPostId)
+    </dd>
+    <dt class="col-sm-3">
+        @Html.DisplayNameFor(model => model.FUserId)
+    </dt>
+    <dd class="col-sm-9">
+        @Html.DisplayFor(model => model.FUserId)
+    </dd>
+    <dt class="col-sm-3">
+        @Html.DisplayNameFor(model => model.TPostImages.First().FImage)
+    </dt>
+    <dd class="col-sm-9">
+        <partial name="_ShowPicturePartial" model="@Model" />
+    </dd>
+    <dt class="col-sm-3">
+        @Html.DisplayNameFor(model => model.FTitle)
+    </dt>
+    <dd class="col-sm-9">
+        @Html.DisplayFor(model => model.FTitle)
+    </dd>
+    <dt class="col-sm-3">
+        @Html.DisplayNameFor(model => model.FContent)
+    </dt>
+    <dd class="col-sm-9">
+        @Html.DisplayFor(model => model.FContent)
+    </dd>
+    <dt class="col-sm-3">
+        @Html.DisplayNameFor(model => model.FCreatedAt)
+    </dt>
+    <dd class="col-sm-9">
+        @Html.DisplayFor(model => model.FCreatedAt)
+    </dd>
+    <dt class="col-sm-3">
+        @Html.DisplayNameFor(model => model.FUpdatedAt)
+    </dt>
+    <dd class="col-sm-9">
+        @Html.DisplayFor(model => model.FUpdatedAt)
+    </dd>
+    <dt class="col-sm-3">
+        @Html.DisplayNameFor(model => model.FIsPublic)
+    </dt>
+    <dd class="col-sm-9">
+        @(Model.FIsPublic.HasValue ? (Model.FIsPublic.Value ? "公開" : "私人") : "")
+    </dd>
+</dl>
+<button type="button" class="btn btn-danger float-right" data-bs-dismiss="modal" onclick="if(confirm('確定要刪除嗎？')) deleteData();">刪除</button>

@@ -1,11 +1,11 @@
 ﻿@model IEnumerable<prjWebsiteB.Models.TPost>
 
-<p>
-    <a asp-action="Create" class="btn btn-success">Create New</a>
-</p>
 <table class="table table-striped table-hover table-bordered">
     <thead class="table-success">
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TPostImages.First().FImage)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.FPostId)
             </th>
@@ -27,9 +27,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.FIsPublic)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FCategory.FName)
-            </th>
 
             <th></th>
         </tr>
@@ -38,6 +35,9 @@
         @foreach (var item in Model)
         {
             <tr>
+                <td>
+                    <partial name="_ShowPicturePartial" model="@item" />
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.FPostId)
                 </td>
@@ -60,15 +60,11 @@
                     @(item.FIsPublic.HasValue ? (item.FIsPublic.Value ? "公開" : "私人") : "")
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.FCategory.FName)
-                </td>
-
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.FPostId" class="btn btn-primary">Edit</a>
-                    <a asp-action="Details" asp-route-id="@item.FPostId" class="btn btn-info">Details</a>
-                    <a asp-action="Delete" asp-route-id="@item.FPostId" class="btn btn-danger">Delete</a>
+                    <button type="button" onclick="btnEdit(@item.FPostId)" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editPostModal">修改</button>
+                    <button type="button" onclick="btnDelete(@item.FPostId)" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#editPostModal">刪除</button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+

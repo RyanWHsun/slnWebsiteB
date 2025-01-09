@@ -1,0 +1,55 @@
+﻿@model prjWebsiteB.Models.TPost
+
+@Html.AntiForgeryToken()
+<dl class="row">
+    <dt class="col-sm-3">
+        @Html.DisplayNameFor(model => model.FPostId)
+    </dt>
+    <dd class="col-sm-9" id="FPostIdforDetails">
+        @Html.DisplayFor(model => model.FPostId)
+    </dd>
+    <dt class="col-sm-3">
+        @Html.DisplayNameFor(model => model.FUserId)
+    </dt>
+    <dd class="col-sm-9">
+        @Html.DisplayFor(model => model.FUserId)
+    </dd>
+    <dt class="col-sm-3">
+        @Html.DisplayNameFor(model => model.TPostImages.First().FImage)
+    </dt>
+    <dd class="col-sm-9">
+        <partial name="_ShowPicturePartial" model="@Model" />
+    </dd>
+    <dt class="col-sm-3">
+        @Html.DisplayNameFor(model => model.FTitle)
+    </dt>
+    <dd class="col-sm-9">
+        @Html.DisplayFor(model => model.FTitle)
+    </dd>
+    <dt class="col-sm-3">
+        @Html.DisplayNameFor(model => model.FContent)
+    </dt>
+    <dd class="col-sm-9">
+        @Html.DisplayFor(model => model.FContent)
+    </dd>
+    <dt class="col-sm-3">
+        @Html.DisplayNameFor(model => model.FCreatedAt)
+    </dt>
+    <dd class="col-sm-9">
+        @Html.DisplayFor(model => model.FCreatedAt)
+    </dd>
+    <dt class="col-sm-3">
+        @Html.DisplayNameFor(model => model.FUpdatedAt)
+    </dt>
+    <dd class="col-sm-9">
+        @Html.DisplayFor(model => model.FUpdatedAt)
+    </dd>
+    <dt class="col-sm-3">
+    <label asp-for="FIsPublic" class="control-label"></label>
+    </dt>
+    <dd class="col-sm-9 w-25">
+        <select asp-for="FIsPublic" class="form-control" asp-items="ViewBag.FIsPublic"></select>
+        <span asp-validation-for="FIsPublic" class="text-danger"></span>
+    </dd>
+</dl>
+<button type="button" class="btn btn-primary float-right" data-bs-dismiss="modal" onclick="editData()">送出</button>
