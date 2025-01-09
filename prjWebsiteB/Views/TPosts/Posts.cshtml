@@ -159,9 +159,12 @@
                 processData: false,
                 contentType: false
             }).done(data=>{
-                alert("修改資料成功")
                 $("#searchResults").html(data);
-                console.log("12");
+                const response = JSON.parse(data);
+                if (response.imageUrl) {
+                    const timestamp = new Date().getTime();
+                    $('#postImage').attr('src', `${response.imageUrl}?t=${timestamp}`);
+                }
             }).fail(err=>{
                 alert(err.statusText);
             })
