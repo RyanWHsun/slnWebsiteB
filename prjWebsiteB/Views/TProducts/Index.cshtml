@@ -5,31 +5,32 @@
 }
 @section Styles
 {
+    <link href="~/css/productstylesheet.css" rel="stylesheet" />
     <style>
-        .container {
-            max-width: 100%;
-            margin: 0 auto;
-            padding: 50px;
-            
-        }
-
-        .topic {
-            margin: 20px;
-            text-align:center;
-        }
-
-        .tableView{
-            border-radius:15px;
+        .tableView {
+            table-layout: fixed;
+            width: 100%;
+            border-radius: 15px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            background-color:white;
+            background-color: white;
             padding-right: 50px;
+            text-align: center;
+        }
+
+        .toolBar {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        thead {
+            background-color: rgb(242,159,112);
+            color: white;
         }
 
         .searchBar {
             display: flex;
-            justify-content: flex-end;
-            gap:10px;
+            gap: 10px;
         }
 
         .searchBar .form-control {
@@ -38,55 +39,66 @@
 
         .content {
             margin: 20px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .hidden-column {
             display: none;
         }
+
     </style>
 }
 
 <div class="container">
     <div class="topic">
-        <h1>商品管理</h1>
+        <h1 class="text-orange">商品管理</h1>
     </div>
 
-    <button class="btn btn-info">
-        <a asp-action="Create">Create New</a>
-    </button>
+
     <form method="get" id="filterForm">
-        <div class="searchBar">
-            <div class="mb-3 ">            
-                <select id="categoryFilter" class="form-select" name="categoryId">
-                    <option value="">所有類別</option>
-                    @foreach (var category in ViewBag.ProductCategories)
-                    {
-                    <option value="@category.FProductCategoryId">@category.FCategoryName</option>
-                    }
-                </select>
+        <div class="toolBar">
+            <div>
+                <button class="btn btn-orange">
+                    <a asp-action="Create"><i class="fa-solid fa-plus"></i> 新增商品</a>
+                </button>
             </div>
-            <div class="mb-3 searchBar">
-                <input type="text" name="searchString" class="form-control" placeholder="搜尋商品名稱" />
-                <button type="button" class="btn btn-primary" onclick="submitFilterForm()">搜尋</button>
-                <button type="button" class="btn btn-secondary" onclick="resetFilterForm()">重置</button>
+
+            <div class="searchBar">
+                <div class="mb-3 ">            
+                    <select id="categoryFilter" class="form-select" name="categoryId">
+                        <option value="">所有類別</option>
+                        @foreach (var category in ViewBag.ProductCategories)
+                        {
+                        <option value="@category.FProductCategoryId">@category.FCategoryName</option>
+                        }
+                    </select>
+                </div>
+                <div class="mb-3 searchBar">
+                    <input type="text" name="searchString" class="form-control" placeholder="搜尋商品名稱" />
+                    <button type="button" class="btn btn-orange" onclick="submitFilterForm()">搜尋</button>
+                    <button type="button" class="btn btn-yellow" onclick="resetFilterForm()">重置</button>
+                </div>
             </div>
         </div>
     </form>
+
     <div class="tableView">
         <table class="table content table-bordered table-hover">
-            <thead class="table-warning">
+            <thead>
                 <tr>
                     <th class="col-1"></th>
                     <th class="hidden-column">@Html.DisplayNameFor(model => model.FProductId)</th>
                     <th>@Html.DisplayNameFor(model => model.FImage)</th>
                     <th>@Html.DisplayNameFor(model => model.FProductName)</th>
+                    <th>@Html.DisplayNameFor(model => model.FCategoryName)</th>
                     <th class="hidden-column">@Html.DisplayNameFor(model => model.FProductDescription)</th>
                     <th>@Html.DisplayNameFor(model => model.FProductPrice)</th>
                     <th>@Html.DisplayNameFor(model => model.FIsOnSale)</th>
                     <th>@Html.DisplayNameFor(model => model.FProductDateAdd)</th>
                     <th>@Html.DisplayNameFor(model => model.FProductUpdated)</th>
                     <th>@Html.DisplayNameFor(model => model.FStock)</th>
-                    <th>@Html.DisplayNameFor(model => model.FCategoryName)</th>
                     </tr>
             </thead>
             <tbody>
@@ -94,16 +106,16 @@
                 {
                     <tr>
                         <td>
-                            <div class="mb-2">
-                                <a class="btn btn-success" asp-action="Details" asp-route-id="@item.FProductId">明細</a>
+                            <div class="mb-1">
+                                <a class="btn btn-orange" asp-action="Details" asp-route-id="@item.FProductId"><i class="fa-solid fa-circle-info"></i></a>
                             </div>
-                            <div class="mb-2">
-                                <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.FProductId">修改</a>
+                            <div class="mb-1">
+                                <a class="btn btn-yellow" asp-action="Edit" asp-route-id="@item.FProductId"><i class="fa-solid fa-pen-to-square"></i></a>
                             </div>
-                            <div class="mb-2">
-                                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                            <div class="mb-0">
+                                <button class="btn btn-orange" data-bs-toggle="modal" data-bs-target="#deleteModal"
                                         onclick="setDeleteId(@item.FProductId)">
-                                    刪除
+                                    <i class="fa-solid fa-trash"></i>                                    
                                 </button>
                             </div>
                         </td>
@@ -112,6 +124,7 @@
                             <img src="@Url.Action("GetPicture","TProducts", new{id=@item.FProductId})" style="width:100px" />
                         </td>
                         <td>@Html.DisplayFor(modelItem => item.FProductName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.FCategoryName)</td>
                         <td class="hidden-column">@Html.DisplayFor(modelItem => item.FProductDescription)</td>
                         <td>@Html.DisplayFor(modelItem => item.FProductPrice)</td>
                         <td>
@@ -120,7 +133,6 @@
                         <td>@Html.DisplayFor(modelItem => item.FProductDateAdd)</td>
                         <td>@Html.DisplayFor(modelItem => item.FProductUpdated)</td>
                         <td>@Html.DisplayFor(modelItem => item.FStock)</td>
-                        <td>@Html.DisplayFor(modelItem => item.FCategoryName)</td>
                     </tr>
                 }
             </tbody>
@@ -139,8 +151,8 @@
                     您確定要刪除此商品嗎？
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-danger" onclick="confirmDelete()">確認刪除</button>
+                    <button type="button" class="btn btn-yellow" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-orange" onclick="confirmDelete()">確認刪除</button>
                 </div>
             </div>
         </div>
@@ -178,6 +190,5 @@
             document.querySelector("input[name='searchString']").value = "";
             document.getElementById("filterForm").submit();
         }
-
     </script>
 }

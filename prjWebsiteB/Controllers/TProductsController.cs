@@ -212,7 +212,7 @@ namespace prjWebsiteB.Controllers
                 FProductCategoryId = tProduct.FProductCategoryId,
                 FProductName = tProduct.FProductName,
                 FProductDescription = tProduct.FProductDescription,
-                FProductPrice = tProduct.FProductPrice,
+                FProductPrice = (int)tProduct.FProductPrice,
                 FIsOnSale = tProduct.FIsOnSales,
                 FProductDateAdd = tProduct.FProductDateAdd,
                 FProductUpdated = tProduct.FProductUpdated,

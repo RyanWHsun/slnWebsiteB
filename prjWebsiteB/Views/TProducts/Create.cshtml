@@ -6,52 +6,30 @@
 
 @section Styles
 {
+    <link href="~/css/productstylesheet.css" rel="stylesheet" />
     <style>
+        .row{
+            max-width: 100%;
+        }
         .content {            
-            margin: 20px;
-            padding-left: 50px;
-            width: 60%;
-            align-items: center;            
-        }
-
-        .fileSelectorDiv {
-            border: 1px dashed #ccc;
-            width: 150px;
-            height: 150px;
-            display: flex;
-            line-height: 30px;
-            justify-content: center;
+            margin: 0 auto;            
             align-items: center;
-            text-align: center;
-            cursor: pointer;
-            
-        }
-        .fileSelector {
-            display: none;
-        }
-
-        .fileSelectorContainer {
-            display: flex;
-            gap: 10px;            
-        }
-
-        .form-group .form-control {
-            width: 100%; /* 確保表單控制項在 form-group 內占滿寬度 */
+            width: 50%;
         }
     </style>
 }
+<div class="topic">
+    <h1 class="text-orange">新增商品 <i id="demoBtn" class="fa-solid fa-star fa-rotate-90 fa-2xs"></i></h1>
+</div>
 
-<h1>Create</h1>
-
-<h4>TProduct</h4>
 <hr />
+
 <div class="row">
     <div class="col-md-4 content">
         <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="FUserId" class="control-label"></label>
-                <select asp-for="FUserId" class="form-control" asp-items="ViewBag.FUserId"></select>
+            <div class="form-group" style="display:none;">
+                <input type="hidden" asp-for="FUserId" class="form-control" />
             </div>
             <div class="form-group">
                 <label asp-for="FProductCategoryId" class="control-label"></label>
@@ -65,7 +43,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="FProductPrice" class="control-label"></label>
-                <input asp-for="FProductPrice" class="form-control" />
+                <input asp-for="FProductPrice" class="form-control" type="number" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '');" />
                 <span asp-validation-for="FProductPrice" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -91,27 +69,26 @@
                 <span asp-validation-for="FStock" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FImage" class="control-label">Product Image</label>
+                <label asp-for="FImage" class="control-label">照片上傳</label>
                 <div class="fileSelectorContainer">
-                    <div id="div1" class="fileSelectorDiv">點兩下上傳圖片</div>
-                    <div id="div2" class="fileSelectorDiv">點兩下上傳圖片</div>
-                    <div id="div3" class="fileSelectorDiv">點兩下上傳圖片</div>
+                    <div id="div1" class="fileSelectorDiv text-content">點兩下上傳圖片</div>
+                    <div id="div2" class="fileSelectorDiv text-content hidden">點兩下上傳圖片</div>
+                    <div id="div3" class="fileSelectorDiv text-content hidden">點兩下上傳圖片</div>
              </div>
                 <span asp-validation-for="FImage" class="text-danger"></span>
                     <input type="file" id="imageUpload1" class="fileSelector" name="imageUpload1" accept="image/*" />
                     <input type="file" id="imageUpload2" class="fileSelector" name="imageUpload2" accept="image/*" />
                     <input type="file" id="imageUpload3" class="fileSelector" name="imageUpload3" accept="image/*" />
             </div>
+            <hr />
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <a class="btn btn-orange" asp-action="Index"><i class="fa-solid fa-left-long" style="color: #ffffff;"></i></a>
+                <input type="submit" value="新增商品" class="btn btn-orange" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
     @{
@@ -119,26 +96,34 @@
     }
     <script>
         // 當雙擊 div 時觸發對應的文件選擇器
-        document.getElementById("div1").addEventListener("dblclick", function() {
-            document.getElementById("imageUpload1").click();
+        $("#div1").dblclick(function() {
+            $("#imageUpload1").click();
         });
-        document.getElementById("div2").addEventListener("dblclick", function() {
-            document.getElementById("imageUpload2").click();
+        $("#div2").dblclick(function() {
+            $("#imageUpload2").click();
         });
-        document.getElementById("div3").addEventListener("dblclick", function() {
-            document.getElementById("imageUpload3").click();
+        $("#div3").dblclick(function() {
+            $("#imageUpload3").click();
         });
-
 
         // 在選擇文件後顯示圖片並進行驗證
-        document.getElementById("imageUpload1").addEventListener("change", function() {
-            validateImage(this, document.getElementById("div1"));
+        $("#imageUpload1").change(function() {
+            validateImage(this, $("#div1")[0]);
         });
-        document.getElementById("imageUpload2").addEventListener("change", function() {
-            validateImage(this, document.getElementById("div2"));
+        $("#imageUpload2").change(function() {
+            validateImage(this, $("#div2")[0]);
         });
-        document.getElementById("imageUpload3").addEventListener("change", function() {
-            validateImage(this, document.getElementById("div3"));
+        $("#imageUpload3").change(function() {
+            validateImage(this, $("#div3")[0]);
+        });
+
+        //Demo按鈕
+        $("#demoBtn").click(function(){
+            $('#FProductCategoryId').val($('#FProductCategoryId option:eq(3)').val());
+            $("#FProductName").val("全家吉伊卡哇行李箱");
+            $("#FProductPrice").val("5000");
+            $("#FProductDescription").val("2025全家限定 新年福袋 吉伊卡哇行李箱\n不附抽獎卷 24吋\n超級可愛哦");
+            $("#FStock").val("5");
         });
 
         function validateImage(input, div) {
@@ -148,7 +133,7 @@
 
                 // 只允許圖片類型
                 if (!fileType.startsWith('image/')) {
-                    alert("請選擇圖片文件");
+                    alert("請選擇正確圖片");
                     input.value = ""; // 清空文件選擇
                     div.style.backgroundImage = "";
                     div.textContent = "點兩下上傳圖片";
@@ -161,10 +146,17 @@
                     div.style.backgroundSize = "cover";
                     div.style.backgroundPosition = "center";
                     div.textContent = ""; // 移除提示文字
+
+                    // 動態顯示下一個文件選擇器
+                    if (div.id === "div1") {
+                        $("#div2").removeClass("hidden");                        
+                    }
+                    if(div.id=="div2"){
+                        $("#div3").removeClass("hidden");
+                    }
                 }
                 reader.readAsDataURL(file);
             }
         }
     </script>
-
 }

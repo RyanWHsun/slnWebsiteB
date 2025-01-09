@@ -6,98 +6,91 @@
 
 @section Styles
 {
+    <link href="~/css/productstylesheet.css" rel="stylesheet" />
     <style>
         .content {
-            margin: 20px;
-            padding-left: 50px;
-        }
-
-        .image-container {
-        }
-
-        .img-thumbnail {
-            margin-right: 10px; /* 可根據需要調整間距 */
+            margin: 0 auto;
+            align-items: center;
+            width: 60%;
         }
     </style>
 }
 
-<h1>商品明細</h1>
+<div class="topic">
+    <h1 class="text-orange">商品明細</h1>
+</div>
 
-<div>
-    <hr />
+<hr />
+<div class="container">
     <dl class="row content">
-        <dt class="col-sm-2">
+        <dt class="col-sm-2 text-content">
             @Html.DisplayNameFor(model => model.FProductId)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.FProductId)
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FProductName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FProductName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FProductDescription)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FProductDescription)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FProductPrice)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FProductPrice)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FIsOnSale)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FIsOnSale)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FProductDateAdd)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FProductDateAdd)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FProductUpdated)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FProductUpdated)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FStock)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FStock)
-        </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-2 text-content">
             @Html.DisplayNameFor(model => model.FCategoryName)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.FCategoryName)
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FUserId)
+        <dt class="col-sm-2 text-content">
+            @Html.DisplayNameFor(model => model.FProductName)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FUserId)
+            @Html.DisplayFor(model => model.FProductName)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-2 text-content">
+            @Html.DisplayNameFor(model => model.FProductPrice)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FProductPrice)
+        </dd>
+        <dt class="col-sm-2 text-content">
+            @Html.DisplayNameFor(model => model.FIsOnSale)
+        </dt>
+        <dd class="col-sm-10">
+            @(Model.FIsOnSale.GetValueOrDefault() ? "上架" : "下架")
+        </dd>
+        <dt class="col-sm-2 text-content">
+            @Html.DisplayNameFor(model => model.FProductDescription)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FProductDescription)
+        </dd>
+        <dt class="col-sm-2 text-content">
+            @Html.DisplayNameFor(model => model.FProductDateAdd)
+        </dt>
+        <dd class="col-sm-10">
+            @Model.FProductDateAdd?.ToString("yyyy/MM/dd HH:mm:ss")
+        </dd>
+        <dt class="col-sm-2 text-content">
+            @Html.DisplayNameFor(model => model.FProductUpdated)
+        </dt>
+        <dd class="col-sm-10">
+            @Model.FProductDateAdd?.ToString("yyyy/MM/dd HH:mm:ss")
+        </dd>
+        <dt class="col-sm-2 text-content">
+            @Html.DisplayNameFor(model => model.FStock)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FStock)
+        </dd>
+        <dt class="col-sm-2 text-content">
             @Html.DisplayNameFor(model => model.FImage)
         </dt>
         <dd class="col-sm-10">
             <div id="imagesContainer" class="image-container"></div>
         </dd>
+        <hr />
+        <div>
+            <a class="btn btn-orange" asp-action="Index"><i class="fa-solid fa-left-long"></i></a>
+            <a class="btn btn-orange" asp-action="Edit" asp-route-id="@Model?.FProductId">修改商品</a>  
+        </div>
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.FProductId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
 
 @section Scripts {
     <script>
