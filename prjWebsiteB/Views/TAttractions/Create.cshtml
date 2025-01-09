@@ -9,11 +9,11 @@ DbGroupBContext 類別是一個 DI 容器，可以在這裡注入，並使用 _c
 
 @section Styles {
     <style>
-        
+
         /* 確保整個區域的高度占滿畫面 */
-        .full-height {
+        /* .full-height {
             height: 100vh;
-        }
+        } */
 
         input {
             border-radius: 20px;
@@ -45,7 +45,8 @@ DbGroupBContext 類別是一個 DI 容器，可以在這裡注入，並使用 _c
     </style>
 }
 
-<button id="btnDefaultData" class="btn btn-outline-info">填入預設資料</button>
+<button id="btnDefaultData" class="btn btn-outline-info"><i class="fas fa-download"></i> 填入預設資料</button>
+<a asp-action="Index" class="btn btn-outline-secondary"><i class="fas fa-angle-double-left"></i> 回上一頁</a>
 <hr />
 <div class="container full-height d-flex justify-content-center align-items-center">
     <div class="card p-4 shadow-lg" style="width: 100%; max-width: 600px;">
@@ -156,8 +157,17 @@ DbGroupBContext 類別是一個 DI 容器，可以在這裡注入，並使用 _c
                 <div class="image-name-container" id="imageNameContainer"></div>
             </div>
             <div class="d-grid">
-                <input type="submit" value="新增景點" class="btn btn-outline-primary" />
+                <button type="submit" class="btn btn-outline-primary d-flex justify-content-center align-items-center">
+                    <i class="fas fa-save me-2"></i>
+                    新增景點
+                </button>
             </div>
+
+
+            @* <div class="d-grid">
+                <i class="far fa-save"></i>
+                <input type="submit" value="新增景點" class="btn btn-outline-primary" />
+            </div> *@
             @* <div class="form-group">
                 <label asp-for="FLongitude" class="control-label"></label>
                 <input asp-for="FLongitude" class="form-control" />
@@ -179,9 +189,7 @@ DbGroupBContext 類別是一個 DI 容器，可以在這裡注入，並使用 _c
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
 
 @section Scripts {
     @{

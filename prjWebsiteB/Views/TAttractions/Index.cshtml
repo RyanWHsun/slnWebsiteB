@@ -36,7 +36,7 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-outline-success"><i class="fas fa-plus"></i> Create New</a>
 </p>
 
 <div id="myGrid" style="height: 500px"></div>
@@ -145,24 +145,29 @@
                         <label for="FTrafficInformation" class="form-label">交通資訊</label>
                         <textarea id="FTrafficInformation" name="FTrafficInformation" class="form-control" rows="3" disabled></textarea>
                     </div>
-                    @* carousel 預覽預計要存的圖片 *@
-                    <div id="previewCarouselExampleInterval" class="carousel slide carousel-fade" data-bs-ride="carousel">
-                        <div id="previewImageContainer" class="carousel-inner">
-                            @* 這裡生成圖片 *@
+                    <div class="mb-3">
+                        @* carousel 預覽預計要存的圖片 *@
+                        <div id="previewCarouselExampleInterval" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                            <div id="previewImageContainer" class="carousel-inner">
+                                @* 這裡生成圖片 *@
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#previewCarouselExampleInterval" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#previewCarouselExampleInterval" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
                         </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#previewCarouselExampleInterval" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#previewCarouselExampleInterval" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </button>
                     </div>
                     @* 存圖片的輸入欄位 *@
-                    <input id="FImages" name="FImages" type="file" accept="image/*" class="form-control" multiple disabled />
-
-                    <div class="image-name-container" id="imageNameContainer"></div>
+                    <div class="mb-3">
+                        <input id="FImages" name="FImages" type="file" accept="image/*" class="form-control" multiple disabled />
+                    </div>
+                    <div class="mb-3">
+                        <div class="image-name-container" id="imageNameContainer"></div>
+                    </div>
                     <div class="d-flex justify-content-between mt-4">
                         <button id="btnCancel" type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" style="display: none;">取消</button>
                         <button id="btnSave" type="submit" class="btn btn-outline-primary" style="display: none;">儲存</button>
@@ -255,7 +260,16 @@
                         // 使用 readAsDataURL 讀取檔案內容
                         reader.readAsDataURL(file);
                     } else {
-                        alert("不支援上傳的檔案格式：" + file.name);
+                        Swal.fire({
+                            icon: "error",
+                            title: "錯誤",
+                            text: `不支援上傳的檔案格式：${file.name}`,
+                        });
+                        $('#FImages').val('');
+                        $('#imageNameContainer').find('div').remove();
+
+                        // 加入到 carousel-inner
+                        previewImageContainer.append($previewCarouselItem);
                     }
                 });
             }
@@ -296,9 +310,9 @@
                     formData.append(`fImages`, files[i]);
                 }
 
-                for (var [key, value] of formData.entries()) {
-                    console.log('Key:', key, 'Value:', value);
-                }
+                // for (var [key, value] of formData.entries()) {
+                //     console.log('Key:', key, 'Value:', value);
+                // }
 
                 // 使用 AJAX 發送請求
                 $.ajax({
@@ -309,10 +323,16 @@
                     contentType: false,
                     success: function (response) {
                         // 處理成功的回應
-                        alert('儲存成功！');
-                        $('#mixModal').modal('hide');
+                        Swal.fire({
+                            title: "儲存成功!",
+                            icon: "success",
+                        }).then((result)=>{
+                            if(result.isConfirmed){
+                                $('#mixModal').modal('hide');
+                            }
+                        });
 
-                        console.log(`response: ${response.updatedData}`);
+                        //console.log(`response: ${response.updatedData}`);
                         
                         // 更新 AG Grid 中的資料
                         gridOptions.api.applyTransaction({
@@ -343,7 +363,11 @@
                             error: error                     // 錯誤描述
                         });
 
-                    alert('儲存失敗！\n狀態碼：' + xhr.status + '\n錯誤訊息：' + xhr.responseText);
+                        Swal.fire({
+                            icon: "error",
+                            title: "錯誤",
+                            text: `請求失敗`,
+                        });
                     }
                 });
             }
@@ -384,7 +408,11 @@
 
                 } catch (error) {
                     console.error("Error fetching images:", error);
-                    alert("Failed to load images. Please try again later.");
+                    Swal.fire({
+                        icon: "error",
+                        title: "錯誤",
+                        text: `載入圖片失敗，請稍後再試！`,
+                    });
                 }
             };
 
@@ -501,7 +529,10 @@
                     url: '/TAttractions/Delete?id=' + id,
                     type: 'POST',
                     success: function () {
-                        alert("刪除成功！");
+                        Swal.fire({
+                            title: "刪除成功!",
+                            icon: "success"
+                        });
                         if (gridOptions.api){
                             gridOptions.api.applyTransaction({ remove: [{ fAttractionId: id }] });
                             console.error("更新畫面成功");
@@ -510,7 +541,11 @@
                         }
                     },
                     error: function () {
-                        alert("刪除失敗，請稍後再試！");
+                         Swal.fire({
+                            icon: "error",
+                            title: "錯誤",
+                            text: `刪除失敗，請稍後再試！`
+                        });
                     }
                 });
 
@@ -533,6 +568,7 @@
                     this.eButtonDetail.textContent = "詳細資料";
                     this.eButtonDetail.setAttribute("data-bs-toggle", "modal");
                     this.eButtonDetail.setAttribute("data-bs-target", "#mixModal");
+                    this.eButtonDetail.insertAdjacentHTML('afterbegin', '<i class="fas fa-info-circle me-2"></i>');
                     this.eventListenerDetail = async() => {
                         await showDetails(params.data.fAttractionId);
                         await setCarouselImages(params.data.fAttractionId);
@@ -543,10 +579,25 @@
                     this.eButtonDelete = document.createElement("button");
                     this.eButtonDelete.className = "btn-delete btn btn-outline-danger";
                     this.eButtonDelete.textContent = "刪除";
+                    this.eButtonDelete.insertAdjacentHTML('afterbegin', '<i class="fas fa-trash-alt"></i>');
                     this.eventListenerDelete = () => {
-                        if (confirm(`確定要刪除景點: ${params.data.fAttractionName}嗎？`)) {
-                            deleteItem(params.data.fAttractionId);
-                        }
+                        Swal.fire({
+                            title: "確定要刪除嗎?",
+                            text: "此操作無法回復",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#d33",
+                            cancelButtonColor: "#3085d6",
+                            confirmButtonText: "刪除",
+                            cancelButtonText: "取消"
+                        }).then((result)=>{
+                            if(result.isConfirmed){
+                                deleteItem(params.data.fAttractionId);
+                            }
+                        });
+                        // if (confirm(`確定要刪除景點: ${params.data.fAttractionName}嗎？`)) {
+                        //     deleteItem(params.data.fAttractionId);
+                        // }
                     };
                     this.eButtonDelete.addEventListener("click", this.eventListenerDelete);
 
@@ -606,19 +657,23 @@
                 rowHeight: 60,
                 rowData: rowData, // 使用序列化後的資料
                 columnDefs: [
-                    {headerName: "", field: "button", cellRenderer: CustomButtonComponent, cellStyle: {width: '200px'}},
+                    {headerName: "", field: "button", cellRenderer: CustomButtonComponent, minWidth: 230},
                     {headerName: "景點名稱", field: "fAttractionName", filter:true},
                     // {headerName: "分類ID", field: "fCategoryId", filter:true},
-                    {headerName: "分類", field: "fCategoryName", filter:true},
-                    {headerName: "地區", field: "fRegion", filter:true},
+                    {headerName: "分類", field: "fCategoryName", filter:true, minWidth: 50},
+                    {headerName: "地區", field: "fRegion", filter:true, minWidth: 50},
                     {headerName: "地址", field: "fAddress", filter:true},
-                    {headerName: "狀態", field: "fStatus", filter:true},
-                    {headerName: "開放時間", field: "fOpeningTime"},
-                    {headerName: "關閉時間", field: "fClosingTime"},
-                    {headerName: "電話", field: "fPhoneNumber"},
-                    {headerName: "建立日期", field: "fCreatedDate"},
-                    {headerName: "更新日期", field: "fUpdatedDate"}
+                    {headerName: "狀態", field: "fStatus", filter:true, minWidth: 50},
+                    {headerName: "開放時間", field: "fOpeningTime", minWidth: 50},
+                    {headerName: "關閉時間", field: "fClosingTime", minWidth: 50},
+                    {headerName: "電話", field: "fPhoneNumber", minWidth: 50},
+                    {headerName: "建立日期", field: "fCreatedDate", minWidth: 50},
+                    {headerName: "更新日期", field: "fUpdatedDate", minWidth: 50}
                 ],
+                defaultColDef: {
+                    resizable: true,  // 允許拖曳調整欄位寬度
+                    minWidth: 50      // 設定所有欄位的最小寬度
+                },
                 pagination: true,
                 paginationPageSize: 10,
                 paginationPageSizeSelector: [10, 25, 50],
@@ -634,6 +689,7 @@
             console.log(gridOptions);
             const myGridElement = document.querySelector('#myGrid');
             agGrid.createGrid(myGridElement, gridOptions);
+            //gridOptions.api.autoSizeColumns(['button']);
         });
     </script>
 }
