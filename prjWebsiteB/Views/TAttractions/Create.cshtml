@@ -7,64 +7,77 @@ DbGroupBContext 類別是一個 DI 容器，可以在這裡注入，並使用 _c
     ViewData["Title"] = "Create";
 }
 
-<h1>新增景點</h1>
+@section Styles {
+    <style>
 
-<button class="btn btn-success">填入預設資料</button>
+        /* 確保整個區域的高度占滿畫面 */
+        /* .full-height {
+            height: 100vh;
+        } */
+
+        input {
+            border-radius: 20px;
+        }
+
+        .modal-content {
+            border-radius: 20px;
+        }
+
+        .edit-button-container {
+            margin-top: 20px;
+        }
+
+        .carousel-inner {
+            border: solid 3px;
+            border-color: rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+        }
+
+        .btn-detail, .btn-delete {
+            margin: 10px 5px;
+        }
+
+        #FCategoryId, #FRegion, #FStatus {
+            width: 38%;
+            height: 40px;
+            border-radius: 10px;
+        }
+    </style>
+}
+
+<button id="btnDefaultData" class="btn btn-outline-info"><i class="fas fa-download"></i> 填入預設資料</button>
+<a asp-action="Index" class="btn btn-outline-secondary"><i class="fas fa-angle-double-left"></i> 回上一頁</a>
 <hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="container full-height d-flex justify-content-center align-items-center">
+    <div class="card p-4 shadow-lg" style="width: 100%; max-width: 600px;">
+        <h3 class="text-center mb-4">新增景點</h3>
         <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+            <div class="mb-3">
                 <label asp-for="FAttractionName" class="control-label"></label>
                 <input asp-for="FAttractionName" class="form-control" />
                 <span asp-validation-for="FAttractionName" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            @* 下拉式選單 *@
+            <div class="mb-3">
+                <label asp-for="FCategoryId" class="control-label"></label>
+                <select name="FCategoryId" class="from-control" id="FCategoryId">
+                    <option value="">請選擇分類</option>
+                    @{
+                        @foreach (var item in ViewBag.Category.Items)
+                        {
+                            <option value="@item.FAttractionCategoryId">@item.FAttractionCategoryName</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="mb-3">
                 <label asp-for="FDescription" class="control-label"></label>
                 <input asp-for="FDescription" class="form-control" />
                 <span asp-validation-for="FDescription" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="FAddress" class="control-label"></label>
-                <input asp-for="FAddress" class="form-control" />
-                <span asp-validation-for="FAddress" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FPhoneNumber" class="control-label"></label>
-                <input asp-for="FPhoneNumber" class="form-control" />
-                <span asp-validation-for="FPhoneNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FOpeningTime" class="control-label"></label>
-                @* <input asp-for="FOpeningTime" class="form-control" /> *@
-                <input type="time" name="FOpeningTime" id="FOpeningTime" class="form-control" />
-                <span asp-validation-for="FOpeningTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FClosingTime" class="control-label"></label>
-                @* <input asp-for="FClosingTime" class="form-control" /> *@
-                <input type="time" name="FClosingTime" id="FClosingTime" class="form-control" />
-                <span asp-validation-for="FClosingTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FWebsiteUrl" class="control-label"></label>
-                <input asp-for="FWebsiteUrl" class="form-control" />
-                <span asp-validation-for="FWebsiteUrl" class="text-danger"></span>
-            </div>
-            @* <div class="form-group">
-                <label asp-for="FLongitude" class="control-label"></label>
-                <input asp-for="FLongitude" class="form-control" />
-                <span asp-validation-for="FLongitude" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FLatitude" class="control-label"></label>
-                <input asp-for="FLatitude" class="form-control" />
-                <span asp-validation-for="FLatitude" class="text-danger"></span>
-            </div> *@
-
             @* 下拉式選單 *@
-            <div class="form-group">
+            <div class="mb-3">
                 <label asp-for="FRegion" class="control-label"></label>
                 <select name="FRegion" class="from-control" id="FRegion">
                     <option value="">請選擇區域</option>
@@ -77,22 +90,12 @@ DbGroupBContext 類別是一個 DI 容器，可以在這裡注入，並使用 _c
                 </select>
                 <span asp-validation-for="FRegion" class="text-danger"></span>
             </div>
-
-            @* 下拉式選單 *@
-            <div class="form-grup">
-                <label asp-for="FCategoryId" class="control-label"></label>
-                <select name="FCategoryId" class="from-control" id="FCategoryId">
-                    <option value="">請選擇分類</option>
-                    @{
-                        @foreach (var item in ViewBag.Category.Items)
-                        {
-                            <option value="@item.FAttractionCategoryId">@item.FAttractionCategoryName</option>
-                        }
-                    }
-                </select>
+            <div class="mb-3">
+                <label asp-for="FAddress" class="control-label"></label>
+                <input asp-for="FAddress" class="form-control" />
+                <span asp-validation-for="FAddress" class="text-danger"></span>
             </div>
-
-            <div class="form-group">
+            <div class="mb-3">
                 <label asp-for="FStatus" class="control-label"></label>
                 <select name="FStatus" class="" id="FStatus">
                     <option value="">請選擇狀態</option>
@@ -103,57 +106,176 @@ DbGroupBContext 類別是一個 DI 容器，可以在這裡注入，並使用 _c
                 </select>
                 <span asp-validation-for="FStatus" class="text-danger"></span>
             </div>
-
-            @* 圖片 *@
             <div class="mb-3">
-                <label for="FImage" class="control-label"></label>
-                <img id="imgPreview" src="@Url.Content("~/img/noImage.jpeg")" style="width:320px;height:240px" title="No image" />
-                <input id="FImage" name="FImage" type="file" accept="image/*" class="form-control" />   
+                <label asp-for="FOpeningTime" class="control-label"></label>
+                <input type="time" name="FOpeningTime" id="FOpeningTime" class="form-control" />
+                <span asp-validation-for="FOpeningTime" class="text-danger"></span>
             </div>
-
-            <div class="form-group">
+            <div class="mb-3">
+                <label asp-for="FClosingTime" class="control-label"></label>
+                <input type="time" name="FClosingTime" id="FClosingTime" class="form-control" />
+                <span asp-validation-for="FClosingTime" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="FPhoneNumber" class="control-label"></label>
+                <input asp-for="FPhoneNumber" class="form-control" />
+                <span asp-validation-for="FPhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="FWebsiteUrl" class="control-label"></label>
+                <input asp-for="FWebsiteUrl" class="form-control" />
+                <span asp-validation-for="FWebsiteUrl" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
                 <label asp-for="FTrafficInformation" class="control-label"></label>
                 <input asp-for="FTrafficInformation" class="form-control" />
                 <span asp-validation-for="FTrafficInformation" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+
+            <div class="mb-3">
+                @* carousel 預覽預計要存的圖片 *@
+                <div id="previewCarouselExampleInterval" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                    <div id="previewImageContainer" class="carousel-inner">
+                        @* 這裡生成圖片 *@
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#previewCarouselExampleInterval" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#previewCarouselExampleInterval" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
             </div>
+           
+            <div class="mb-3">
+                @* 存圖片的輸入欄位 *@
+                <input id="FImages" name="FImages" type="file" accept="image/*" class="form-control" multiple />
+            </div>
+            <div class="mb-3">
+                <div class="image-name-container" id="imageNameContainer"></div>
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-outline-primary d-flex justify-content-center align-items-center">
+                    <i class="fas fa-save me-2"></i>
+                    新增景點
+                </button>
+            </div>
+
+
+            @* <div class="d-grid">
+                <i class="far fa-save"></i>
+                <input type="submit" value="新增景點" class="btn btn-outline-primary" />
+            </div> *@
+            @* <div class="form-group">
+                <label asp-for="FLongitude" class="control-label"></label>
+                <input asp-for="FLongitude" class="form-control" />
+                <span asp-validation-for="FLongitude" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FLatitude" class="control-label"></label>
+                <input asp-for="FLatitude" class="form-control" />
+                <span asp-validation-for="FLatitude" class="text-danger"></span>
+            </div> *@
+            @* 圖片 *@
+            @* <div class="mb-3">
+                <label for="FImage" class="control-label"></label>
+                <img id="imgPreview" src="@Url.Content("~/img/noImage.jpeg")" style="width:320px;height:240px" title="No image" />
+                <input id="FImage" name="FImage" type="file" accept="image/*" class="form-control" />   
+            </div> *@
+            
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        function previewImage(inputFile){
-            if(inputFile.files && inputFile.files[0]){
-                let allowType="image.*";
-                if(inputFile.files[0].type.match(allowType)){
-                    let reader = new FileReader();
-                    reader.onload = function(e){
-                        $('#FImage').prev().attr('src', e.target.result);
-                        $('#FImage').prev().attr('title', inputFile[0].files[0].name);
-                    }
-                    reader.readAsDataURL(inputFile.files[0]);
-                    $('.btn').prop('disabled', false);
-                }else{
-                    alert("不支援上傳的檔案格式");
-                    $('.btn').prop('disabled', true);
-                    inputFile.value="";
-                }
-            }
-        }
+        $(function(){
+            const previewImageContainer = $('#previewImageContainer');
+            // 建立 carousel-item 元素
+            const $previewCarouselItem = $(`<div class="carousel-item active" data-bs-interval="2000"><img src="@Url.Content("~/img/noImage.jpeg")" class="d-block w-100" alt="景點圖片" style="height: 300px"></div>`);
 
-        $('#FImage').on('change', function(){
-            previewImage(this);
+            // 加入到 carousel-inner
+            previewImageContainer.append($previewCarouselItem);
+
+            function previewImage(inputFile){
+                // 清空預覽圖片欄位的內容
+                previewImageContainer.empty();
+
+                if(!inputFile.files || inputFile.files.length == 0){
+                    return;
+                }
+
+                let allowType = "image.*";
+                let fileList = inputFile.files;
+
+                // 遍歷圖片陣列並生成 carousel-item
+                // $.each 是 jQuery 提供的迴圈方法，用來遍歷 images 陣列。
+                // images 是一個陣列，其中每個元素 image 可能包含圖片的 URL。
+                // index 是陣列中當前元素的索引。
+                // image 是陣列中當前的圖片物件。
+                $.each(fileList, (index, file) => {
+                    if(file.type.match(allowType)){
+                        let reader = new FileReader();
+
+                        // 註冊一個回呼函式(不會立即執行!)，當reader讀取完成後會觸發該函式。
+                        reader.onload = function (e) {
+                            // 第一張圖片設為 active
+                            const isActive = index === 0 ? 'active' : '';
+
+                            // 建立 carousel-item 元素，並設置圖片 src 為讀取的結果
+                            const $previewCarouselItem2 = $(`<div class="carousel-item ${isActive}" data-bs-interval="2000"><img src="${e.target.result}" class="d-block w-100" alt="${file.name}" style="height: 300px"></div>`);
+
+                            // 加入到 carousel-inner
+                            previewImageContainer.append($previewCarouselItem2);
+
+                            // 顯示剛剛添加的圖片檔名
+                            let div = $('<div>').text(file.name);
+                            $('#imageNameContainer').append(div);
+                        };
+
+                        // 使用 readAsDataURL 讀取檔案內容
+                        reader.readAsDataURL(file);
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "錯誤",
+                            text: `不支援上傳的檔案格式：${file.name}`,
+                        });
+                        $('#FImages').val('');
+                        $('#imageNameContainer').find('div').remove();
+
+                        // 加入到 carousel-inner
+                        previewImageContainer.append($previewCarouselItem);
+                    }
+                });
+            }
+
+            $('#btnDefaultData').on('click',function(){
+                $('#FAttractionName').val('南機場夜市');
+                $('#FDescription').val('熱鬧喧囂的夜市，四周林立著數十個美食攤位，供應台灣傳統街頭小吃。');
+                $('#FAddress').val('100台北市中正區中華路二段307巷');
+                $('#FPhoneNumber').val('0900123456');
+                $('#FOpeningTime').val('17:00');
+                $('#FClosingTime').val('00:00');
+                $('#FWebsiteUrl').val('https://www.google.com');
+                $('#FRegion').val('北部');
+                $('#FCategoryId').val(3);
+                $('#FStatus').val('24小時營業');
+                $('#FTrafficInformation').val('捷運龍山寺站：3號出口出站後，循和平西路二段接和平西路三段往中華路步行16分鐘可抵達');
+            });
+
+            $('#FImages').on('change', function(){
+                previewImage(this);
+            });
         });
+        
     </script>
 }

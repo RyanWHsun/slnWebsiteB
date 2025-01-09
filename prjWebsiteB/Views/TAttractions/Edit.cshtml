@@ -7,6 +7,9 @@
 <h1>Edit</h1>
 
 <h4>TAttraction</h4>
+
+<button id="btnDefaultData" class="btn btn-success">填入預設資料</button>
+
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -58,16 +61,6 @@
                 <input asp-for="FLatitude" class="form-control" />
                 <span asp-validation-for="FLatitude" class="text-danger"></span>
             </div>
-            @* <div class="form-group">
-                <label asp-for="FRegion" class="control-label"></label>
-                <input asp-for="FRegion" class="form-control" />
-                <span asp-validation-for="FRegion" class="text-danger"></span>
-            </div> *@
-            @* <div class="form-group">
-                <label asp-for="FCategoryId" class="control-label"></label>
-                <select asp-for="FCategoryId" class="form-control" asp-items="ViewBag.FCategoryId"></select>
-                <span asp-validation-for="FCategoryId" class="text-danger"></span>
-            </div> *@
             <div class="form-group">
                 <label asp-for="FCreatedDate" class="control-label"></label>
                 <input asp-for="FCreatedDate" class="form-control" />
@@ -78,12 +71,6 @@
                 <input asp-for="FUpdatedDate" class="form-control" />
                 <span asp-validation-for="FUpdatedDate" class="text-danger"></span>
             </div>
-            @* <div class="form-group">
-                <label asp-for="FStatus" class="control-label"></label>
-                <input asp-for="FStatus" class="form-control" />
-                <span asp-validation-for="FStatus" class="text-danger"></span>
-            </div> *@
-
             @* 下拉式選單 *@
             <div class="form-group">
                 <label asp-for="FRegion" class="control-label"></label>
@@ -158,6 +145,20 @@
 
     <script>
         $(function(){
+
+            $('#btnDefaultData').on('click',function(){
+                $('#FAttractionName').val('南機場夜市');
+                $('#FDescription').val('熱鬧喧囂的夜市，四周林立著數十個美食攤位，供應台灣傳統街頭小吃。');
+                $('#FAddress').val('100台北市中正區中華路二段307巷');
+                $('#FPhoneNumber').val('0900123456');
+                $('#FOpeningTime').val('17:00');
+                $('#FClosingTime').val('00:00');
+                $('#FWebsiteUrl').val('https://www.google.com');
+                $('#FRegion').val('北部');
+                $('#FCategoryId').val(3);
+                $('#FStatus').val('24小時營業');
+                $('#FTrafficInformation').val('捷運龍山寺站：3號出口出站後，循和平西路二段接和平西路三段往中華路步行16分鐘可抵達');
+            });
             
             //console.log('@Html.Raw(Model.FRegion)');
             $('#FRegion').val('@Html.Raw(Model.FRegion)');
