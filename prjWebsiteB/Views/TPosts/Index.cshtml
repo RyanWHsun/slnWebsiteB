@@ -1,8 +1,8 @@
-﻿<h1>文章管理</h1>
-    <div class="form-inline">
+﻿<h1 id="postsPage" name="Index">文章管理</h1>
+<div class="form-inline">
     <label for="searchString" class="form-label mr-2">關鍵字搜尋:</label>
     <input id="searchString" name="searchString" class="form-control" />
-    </div>
+</div>
 <div id="searchResults">
     <partial name="_PostListPartial" />
 </div>
@@ -23,66 +23,67 @@
 </div>
 @section Scripts
 {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
     <script>
-        $("#searchString").on("keyup",function(){
+        $("#searchString").on("keyup", function () {
             const searchString = encodeURIComponent($(this).val());
             $.ajax({
-                type:"GET",
-                url:`TPosts/Search/${searchString}`
-            }).done(data=>{
+                type: "GET",
+                url: `TPosts/Search/${searchString}`
+            }).done(data => {
                 $("#searchResults").html(data);
-            }).fail(err=>{
+            }).fail(err => {
                 alert(err.statusText);
             })
         });
 
-        function editData(){
+        function editData() {
             var token = $('input[name="__RequestVerificationToken"]').val();
             var FPostId = $("#FPostIdforDetails").text();
             var FIsPublic = $("#FIsPublic").val();
             $.ajax({
-                type:"POST",
-                url:"/TPosts/Edit",
-                data:{id : FPostId, isPublic : FIsPublic, searchString : $("#searchString").val(), __RequestVerificationToken: token}
-            }).done(data=>{
+                type: "POST",
+                url: "/TPosts/Edit",
+                data: { id: FPostId, isPublic: FIsPublic, searchString: $("#searchString").val(), __RequestVerificationToken: token }
+            }).done(data => {
                 $("#searchResults").html(data);
-            }).fail(err=>{
+            }).fail(err => {
                 alert(err.statusText);
             })
         }
 
-        function deleteData(){
+        function deleteData() {
             var token = $('input[name="__RequestVerificationToken"]').val();
             var FPostId = $("#FPostIdforDelete").text();
             $.ajax({
-                type:"POST",
-                url:"/TPosts/Delete",
-                data:{id : FPostId, searchString : $("#searchString").val(), __RequestVerificationToken: token}
-            }).done(data=>{
+                type: "POST",
+                url: "/TPosts/Delete",
+                data: { id: FPostId, searchString: $("#searchString").val(), __RequestVerificationToken: token }
+            }).done(data => {
                 $("#searchResults").html(data);
-            }).fail(err=>{
+            }).fail(err => {
                 alert(err.statusText);
             })
         }
-
         function btnEdit(id) {
             $.ajax({
-                type:"GET",
-                url:`/TPosts/Edit/${id}`
-            }).done(data=>{
+                type: "GET",
+                url: `/TPosts/Edit/${id}`
+            }).done(data => {
                 $("#partialResult").html(data);
-            }).fail(err=>{
+            }).fail(err => {
                 alert(err.statusText);
             })
         }
         function btnDelete(id) {
             $.ajax({
-                type:"GET",
-                url:`/TPosts/Delete/${id}`
-            }).done(data=>{
+                type: "GET",
+                url: `/TPosts/Delete/${id}`
+            }).done(data => {
                 $("#partialResult").html(data);
-            }).fail(err=>{
+            }).fail(err => {
                 alert(err.statusText);
             })
         }

@@ -12,6 +12,16 @@
                 <img id="imgPreview" src="@Url.Content("~/images/noimage.jpg")" title="尚無圖片" class="img-fluid" style="width:320px;height:240px" />
                 <span asp-validation-for="TPostImages.FirstOrDefault().FImage" class="text-danger"></span>
             </div>
+            <div class="form-group col-4">
+                <label asp-for="FContent"></label>
+                <textarea asp-for="FContent" rows="5" cols="40"></textarea>
+                <span asp-validation-for="FContent" class="text-danger"></span>
+            </div>
+            <div>
+                <label asp-for="FIsPublic" class="control-label"></label>
+                <select asp-for="FIsPublic" class="form-control" asp-items="ViewBag.FIsPublic"></select>
+                <span asp-validation-for="FIsPublic" class="text-danger"></span>
+            </div>
         <button type="button" class="btn btn-primary" onclick="createData()" data-bs-dismiss="modal">Create</button>
         </form>
 </div>

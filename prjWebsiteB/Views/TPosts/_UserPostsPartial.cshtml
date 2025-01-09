@@ -10,8 +10,8 @@
                         <partial name="_ShowPicture2Partial" model="@item" />
                         <div class="product-action">
                             <a class="btn btn-outline-dark btn-square" href="" onclick="btnDetails(event,@item.FPostId)" data-bs-toggle="modal" data-bs-target="#editPostModal"><i class="fa fa-search"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-edit"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fas fa-trash-alt"></i></a>
+                            <a class="btn btn-outline-dark btn-square" href="" onclick="btnEditByUser(event,@item.FPostId)" data-bs-toggle="modal" data-bs-target="#editPostModal"><i class="far fa-edit"></i></a>
+                            <a class="btn btn-outline-dark btn-square" href="" onclick="btnDelete(event,@item.FPostId)" data-bs-toggle="modal" data-bs-target="#editPostModal"><i class="fas fa-trash-alt"></i></a>
                         </div>
                     </div>
                 </div>
