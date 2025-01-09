@@ -18,14 +18,12 @@ namespace prjWebsiteB.Controllers
             _context = context;
         }
 
-        // GET: TUsers
-        public async Task<IActionResult> Index(string sortOrder)
-        {
-            //ViewBag.FUserRankIdSortParm = String.IsNullOrEmpty(sortOrder) ?
-            //    "FUserRankId_desc" : "";
-            //ViewBag.FUserRankIdSortParm = String.IsNullOrEmpty(sortOrder) ?
 
-            //return View(_context.TUsers);
+
+        // GET: TUsers
+        
+            public async Task<IActionResult> Index()
+        {
             return View(
                 _context.TUsers.Select(u => new TUser
             {
@@ -55,6 +53,36 @@ namespace prjWebsiteB.Controllers
             byte[]? content = user?.FUserImage;
             return File(content, "image/jpeg");
         }
+
+
+        ////排序
+        //public async Task<IActionResult> Index(string sortOrder, string crrentFilter, string searchString)
+        //{
+            
+        //    //ViewBag.FUserRankIdSortParm = String.IsNullOrEmpty(sortOrder) ?
+        //    //    "FUserRankId_desc" : "";
+        //    ViewBag.UnitFUserRankIdSortParm = sortOrder ==
+        //        "UnitUserRankId" ? "UnitUserRankId_desc" : "UnitUserRankId";
+        //    IQueryable<TUser> result = _context.TUsers;
+        //    switch (sortOrder)
+        //    {
+        //        case ("FUserRankId_desc"):
+        //            result = result.OrderByDescending(s => s.FUserRankId);
+        //            break;
+        //        case ("UnitUserRankId"):
+        //            result = result.OrderBy(s => s.FUserRankId);
+        //            break;
+
+        //        default:
+        //            result = result.OrderBy(s => s.FUserRankId);
+        //            break;
+        //    }
+
+        //    return View(result);
+        //}
+
+
+
 
 
         // GET: TUsers/Details/5

@@ -20,6 +20,7 @@
                 @* <input asp-for="FUserRankId" class="form-control" /> *@
                     <select asp-for="FUserRankId" class="form-control">
                         <option value="1">普通用戶</option>
+                        <option value="2">幽靈用戶</option>
                         <option value="99">管理員用戶</option>
                     </select>
                 <span asp-validation-for="FUserRankId" class="text-danger"></span>
@@ -108,7 +109,7 @@
 </div>
 
 <div>
-    <a asp-action="Index" class="">Back to List</a>
+        <a asp-action="Index" class="btn btn-primary">Back to List</a>
 </div>
 </div>
 

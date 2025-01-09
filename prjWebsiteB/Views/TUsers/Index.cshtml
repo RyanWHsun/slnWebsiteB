@@ -10,7 +10,7 @@
     <a asp-action="Create" class=" btn btn-primary">新增會員</a>
 </p>
 
-<table class="table table-responsive table-hover table-striped">
+    <table class="table table-responsive table-hover table-striped" id="userTable" style="height:600px">
     <thead>
         <tr>
             <th></th>
@@ -54,9 +54,12 @@
         {
             <tr>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.FUserId" class=" btn btn-primary">修改</a> 
-                    <a asp-action="Details" asp-route-id="@item.FUserId" class=" btn btn-primary">詳細</a> 
-                    <a asp-action="Delete" asp-route-id="@item.FUserId" class=" btn btn-primary">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.FUserId" class=" btn btn-primary m-1">修改</a> 
+                    <a asp-action="Details" asp-route-id="@item.FUserId" class=" btn btn-primary m-1">詳細</a> 
+                        @* <form method="post" action="@Url.Action("UpdateUserRank2")"> *@
+                        @*     <input type="hidden" name="userId" value="@item" /> *@
+                        @*     <button type="submit" class=" btn btn-primary m-1">更改為幽靈用戶</button> *@
+                        @* </form> *@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.FUserRankId)
@@ -101,10 +104,18 @@
 
 @section Scripts {
     @* <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script> *@
+    @* <script src="~/freezeheader/jquery.freezeheader.min.js" asp-append-version="true"></script> *@
+    <script src="~/freezeheader/jquery.freezeheader.js" asp-append-version="true"></script>
     <script>
 
-
-
+        $(document).ready(function(){
+            $("#userTable").freezeHeader(
+                {
+                    "width":"100%",
+                    "height":"100%",
+                }
+            );
+        });
 
 
     </script>
