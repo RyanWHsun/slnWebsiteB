@@ -22,10 +22,10 @@ namespace prjWebsiteB.Controllers
 
         // GET: TUsers
         
-            public async Task<IActionResult> Index()
+            public async Task<IActionResult> Index(int? FUserRankId)
         {
-            return View(
-                _context.TUsers.Select(u => new TUser
+            
+                var usersQuery =_context.TUsers.Select(u => new TUser
             {
                 FUserId=u.FUserId,
                 FUserRankId = u.FUserRankId,
@@ -39,7 +39,14 @@ namespace prjWebsiteB.Controllers
                 FUserComeDate = u.FUserComeDate,
                 FUserPassword = u.FUserPassword,
                 FUserImage = null
-            }));
+            });
+            if (FUserRankId.HasValue)
+            {
+                usersQuery = usersQuery.Where(u => u.FUserRankId == FUserRankId);
+            }
+            var users = await usersQuery.ToListAsync();
+            return View(users);
+
         }
 
         public JsonResult IndexJson()
@@ -58,7 +65,6 @@ namespace prjWebsiteB.Controllers
         ////排序
         //public async Task<IActionResult> Index(string sortOrder, string crrentFilter, string searchString)
         //{
-            
         //    //ViewBag.FUserRankIdSortParm = String.IsNullOrEmpty(sortOrder) ?
         //    //    "FUserRankId_desc" : "";
         //    ViewBag.UnitFUserRankIdSortParm = sortOrder ==
@@ -77,11 +83,24 @@ namespace prjWebsiteB.Controllers
         //            result = result.OrderBy(s => s.FUserRankId);
         //            break;
         //    }
-
         //    return View(result);
         //}
 
 
+        //更改Rank資料
+        [HttpPost]
+        public async Task<IActionResult> UpdateUserRank(int userId)
+        {
+            // 查詢用戶資料
+            var user =await  _context.TUsers.FirstOrDefaultAsync(u => u.FUserId == userId);
+
+            if (user != null)
+            {
+                user.FUserRankId = 2;
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("Index");
+        }
 
 
 
