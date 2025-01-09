@@ -27,7 +27,9 @@ namespace prjWebsiteB.Controllers
         }
         public async Task<IActionResult> Posts()
         {
-            return View();
+            int loginId = 1; //待串登入資料
+            var dbGroupBContext = _context.TPosts.Include(t => t.TPostImages).Where(t=> t.FUserId==loginId);
+            return View(dbGroupBContext);
         }
         public IActionResult Create()
         {
@@ -48,6 +50,7 @@ namespace prjWebsiteB.Controllers
                     post.TPostImages.Add(postImage);
                 }
             }
+            post.FUserId = 1;
             _context.Add(post);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Posts));
@@ -66,7 +69,7 @@ namespace prjWebsiteB.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update(int id, bool isPublic, string searchString)
+        public async Task<IActionResult> Edit(int id, bool isPublic, string searchString)
         {
             ModelState.Remove("searchString");
             if (id == null)
@@ -110,7 +113,7 @@ namespace prjWebsiteB.Controllers
         }
 
         // GET: TPosts/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             ViewBag.FIsPublic = new List<SelectListItem>
             {
@@ -130,18 +133,13 @@ namespace prjWebsiteB.Controllers
                 return NotFound();
             }
 
-            return PartialView("_DetailsPartial", tPost);
+            return PartialView("_EditPartial", tPost);
         }
 
 
         // GET: TPosts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            ViewBag.FIsPublic = new List<SelectListItem>
-            {
-                new SelectListItem { Value = "true", Text = "公開" },
-                new SelectListItem { Value = "false", Text = "私人" }
-            };
             if (id == null)
             {
                 return NotFound();
@@ -176,6 +174,23 @@ namespace prjWebsiteB.Controllers
                 dbGroupBContext = dbGroupBContext.Where(e => e.FTitle.Contains(searchString) || e.FContent.Contains(searchString));
             }
             return PartialView("_PostListPartial", dbGroupBContext);
+        }
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var tPost = await _context.TPosts
+                .Include(t => t.TPostImages)
+                .FirstOrDefaultAsync(m => m.FPostId == id);
+            if (tPost == null)
+            {
+                return NotFound();
+            }
+
+            return PartialView("_DetailsPartial", tPost);
         }
 
         private bool TPostExists(int id)

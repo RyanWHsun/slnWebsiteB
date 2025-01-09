@@ -15,7 +15,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <div id="detailResult">
+                <div id="partialResult">
                 </div>
             </div>
         </div>
@@ -43,7 +43,7 @@
             var FIsPublic = $("#FIsPublic").val();
             $.ajax({
                 type:"POST",
-                url:"/TPosts/Update",
+                url:"/TPosts/Edit",
                 data:{id : FPostId, isPublic : FIsPublic, searchString : $("#searchString").val(), __RequestVerificationToken: token}
             }).done(data=>{
                 $("#searchResults").html(data);
@@ -69,9 +69,9 @@
         function btnEdit(id) {
             $.ajax({
                 type:"GET",
-                url:`/TPosts/Details/${id}`
+                url:`/TPosts/Edit/${id}`
             }).done(data=>{
-                $("#detailResult").html(data);
+                $("#partialResult").html(data);
             }).fail(err=>{
                 alert(err.statusText);
             })
@@ -81,7 +81,7 @@
                 type:"GET",
                 url:`/TPosts/Delete/${id}`
             }).done(data=>{
-                $("#detailResult").html(data);
+                $("#partialResult").html(data);
             }).fail(err=>{
                 alert(err.statusText);
             })

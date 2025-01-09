@@ -7,11 +7,11 @@
                 <span asp-validation-for="FTitle" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label for="FImage" class="control-label"></label>
-                <input type="file" name="FImage" id="FImage" class="form-control" accept="image/*" />
+                <label asp-for="TPostImages.FirstOrDefault().FImage" class="control-label"></label>
+                <input type="file" asp-for="TPostImages.FirstOrDefault().FImage" class="form-control" accept="image/*" />
                 <img id="imgPreview" src="@Url.Content("~/images/noimage.jpg")" title="尚無圖片" class="img-fluid" style="width:320px;height:240px" />
-                @* <span asp-validation-for="TPostImages.FirstOrDefault().FImage" class="text-danger"></span> *@
+                <span asp-validation-for="TPostImages.FirstOrDefault().FImage" class="text-danger"></span>
             </div>
-        <button type="button" class="btn btn-primary" onclick="createData()" >Create</button>
+        <button type="button" class="btn btn-primary" onclick="createData()" data-bs-dismiss="modal">Create</button>
         </form>
 </div>

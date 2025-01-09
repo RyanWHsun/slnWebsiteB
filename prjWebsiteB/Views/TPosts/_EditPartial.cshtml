@@ -5,7 +5,7 @@
     <dt class="col-sm-3">
         @Html.DisplayNameFor(model => model.FPostId)
     </dt>
-    <dd class="col-sm-9" id="FPostIdforDelete">
+    <dd class="col-sm-9" id="FPostIdforDetails">
         @Html.DisplayFor(model => model.FPostId)
     </dd>
     <dt class="col-sm-3">
@@ -45,9 +45,11 @@
         @Html.DisplayFor(model => model.FUpdatedAt)
     </dd>
     <dt class="col-sm-3">
-        @Html.DisplayNameFor(model => model.FIsPublic)
+    <label asp-for="FIsPublic" class="control-label"></label>
     </dt>
-    <dd class="col-sm-9">
-        @(Model.FIsPublic.HasValue ? (Model.FIsPublic.Value ? "公開" : "私人") : "")
+    <dd class="col-sm-9 w-25">
+        <select asp-for="FIsPublic" class="form-control" asp-items="ViewBag.FIsPublic"></select>
+        <span asp-validation-for="FIsPublic" class="text-danger"></span>
     </dd>
 </dl>
+<button type="button" class="btn btn-primary float-right" data-bs-dismiss="modal" onclick="editData()">送出</button>

@@ -16,7 +16,7 @@ namespace prjWebsiteB.Models
         public DateTime? FCreatedAt { get; set; }
         [Display(Name = "最後修改時間")]
         public DateTime? FUpdatedAt { get; set; }
-        [Display(Name = "是否公開")]
+        [Display(Name = "文章狀態")]
         public bool? FIsPublic { get; set; }
         [Display(Name = "類別編號")]
         public int? FCategoryId { get; set; }

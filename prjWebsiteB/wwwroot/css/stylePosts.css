@@ -151,6 +151,7 @@
 
 .product-item {
     transition: .5s;
+    box-shadow: 5px 5px 15px #DDDDDD
 }
 
 .product-action {
@@ -173,7 +174,7 @@
     }
 
 .product-item:hover {
-    box-shadow: 0 0 30px #DDDDDD;
+    box-shadow: 0 0 20px #DDDDDD;
 }
 
     .product-item:hover .product-action {
