@@ -1,29 +1,34 @@
 ﻿@model prjWebsiteB.Models.TPost
-
-@Html.AntiForgeryToken()
-<div class="row">
-    <form id="editByUserForm" enctype="multipart/form-data">
-        <div class="form-group col-4">
-            <label asp-for="FTitle"></label>
-            <input asp-for="FTitle" class="form-control" />
-            <span asp-validation-for="FTitle" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="TPostImages.FirstOrDefault().FImage" class="control-label"></label>
-            <input type="file" asp-for="TPostImages.FirstOrDefault().FImage" class="form-control" accept="image/*" />
-            <partial name="_ShowPicturePartial"/>
-            <span asp-validation-for="TPostImages.FirstOrDefault().FImage" class="text-danger"></span>
-        </div>
-        <div class="form-group col-4">
-            <label asp-for="FContent"></label>
-            <textarea asp-for="FContent" rows="5" cols="40"></textarea>
-            <span asp-validation-for="FContent" class="text-danger"></span>
-        </div>
-        <div>
-            <label asp-for="FIsPublic" class="control-label"></label>
-            <select asp-for="FIsPublic" class="form-control" asp-items="ViewBag.FIsPublic"></select>
-            <span asp-validation-for="FIsPublic" class="text-danger"></span>
-        </div>
-        <button type="button" class="btn btn-primary" onclick="editDataByUser(@Model.FPostId)" data-bs-dismiss="modal">送出</button>
-    </form>
+<div class="modal-header">
+    <h5 class="modal-title" id="addPostModalLabel">修改</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body">
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <form id="editByUserForm" enctype="multipart/form-data">
+            <div class="form-group col-4">
+                <label asp-for="FTitle"></label>
+                <input asp-for="FTitle" class="form-control" />
+                <span asp-validation-for="FTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TPostImages.FirstOrDefault().FImage" class="control-label"></label>
+                <input type="file" asp-for="TPostImages.FirstOrDefault().FImage" class="form-control" accept="image/*" />
+                <partial name="_ShowPicturePartial" />
+                <span asp-validation-for="TPostImages.FirstOrDefault().FImage" class="text-danger"></span>
+            </div>
+            <div class="form-group col-4">
+                <label asp-for="FContent"></label>
+                <textarea asp-for="FContent" rows="5" cols="40"></textarea>
+                <span asp-validation-for="FContent" class="text-danger"></span>
+            </div>
+            <div>
+                <label asp-for="FIsPublic" class="control-label"></label>
+                <select asp-for="FIsPublic" class="form-control" asp-items="ViewBag.FIsPublic"></select>
+                <span asp-validation-for="FIsPublic" class="text-danger"></span>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="editDataByUser(@Model.FPostId)" data-bs-dismiss="modal">送出</button>
+        </form>
+    </div>
 </div>

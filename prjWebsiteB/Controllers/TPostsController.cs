@@ -76,6 +76,18 @@ namespace prjWebsiteB.Controllers
             }
             return PartialView("_PostListPartial", dbGroupBContext);
         }
+        // GET: TPosts/SearchByUser
+        [Route("/TPosts/SearchByUser/{searchString?}")]
+        public async Task<IActionResult> SearchByUser(string searchString)
+        {
+            int loginId = 1; //待串登入資料
+            IQueryable<TPost> dbGroupBContext = _context.TPosts.Include(t => t.TPostImages).Where(e=>e.FUserId==loginId);
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                dbGroupBContext = dbGroupBContext.Where(e => e.FTitle.Contains(searchString) || e.FContent.Contains(searchString));
+            }
+            return PartialView("_UserPostsPartial", dbGroupBContext);
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, bool isPublic, string searchString)
@@ -241,6 +253,23 @@ namespace prjWebsiteB.Controllers
 
             return PartialView("_DeletePartial", tPost);
         }
+        public async Task<IActionResult> DeleteByUser(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var tPost = await _context.TPosts
+                .Include(t => t.TPostImages)
+                .FirstOrDefaultAsync(m => m.FPostId == id);
+            if (tPost == null)
+            {
+                return NotFound();
+            }
+
+            return PartialView("_DeleteByUserPartial", tPost);
+        }
 
 
         [HttpPost]
@@ -261,6 +290,24 @@ namespace prjWebsiteB.Controllers
             }
             return PartialView("_PostListPartial", dbGroupBContext);
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteByUser(int id, string searchString, string page)
+        {
+            var tPost = await _context.TPosts.FindAsync(id);
+            if (tPost != null)
+            {
+                _context.TPosts.Remove(tPost);
+            }
+            await _context.SaveChangesAsync();
+            int loginId = 1; //待串登入資料
+            IQueryable<TPost> dbGroupBContext = _context.TPosts.Include(t => t.TPostImages).Where(e=>e.FUserId == loginId);
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                dbGroupBContext = dbGroupBContext.Where(e => e.FTitle.Contains(searchString) || e.FContent.Contains(searchString));
+            }
+            return PartialView("_UserPostsPartial", dbGroupBContext);
+        }
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -277,6 +324,23 @@ namespace prjWebsiteB.Controllers
             }
 
             return PartialView("_DetailsPartial", tPost);
+        }
+        public async Task<IActionResult> DetailsByUser(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var tPost = await _context.TPosts
+                .Include(t => t.TPostImages)
+                .FirstOrDefaultAsync(m => m.FPostId == id);
+            if (tPost == null)
+            {
+                return NotFound();
+            }
+
+            return PartialView("_DetailsByUserPartial", tPost);
         }
 
         private bool TPostExists(int id)

@@ -13,15 +13,8 @@
 <!-- Bootstrap Modal -->
 <div class="modal fade" id="editPostModal" tabindex="-1">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addPostModalLabel">修改</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div id="partialResult">
-                </div>
-            </div>
+        <div class="modal-content" id="partialResult">
+            
         </div>
     </div>
 </div>
@@ -34,7 +27,7 @@
             const searchString = encodeURIComponent($(this).val());
             $.ajax({
                 type: "GET",
-                url: `TPosts/Search/${searchString}`
+                url: `/TPosts/SearchByUser/${searchString}`
             }).done(data => {
                 $("#searchResults").html(data);
             }).fail(err => {
@@ -57,13 +50,12 @@
             })
         }
 
-        function deleteData() {
+        function deleteDataByUser(id) {
             var token = $('input[name="__RequestVerificationToken"]').val();
-            var FPostId = $("#FPostIdforDelete").text();
             $.ajax({
                 type: "POST",
-                url: "/TPosts/Delete",
-                data: { id: FPostId, searchString: $("#searchString").val(), __RequestVerificationToken: token }
+                url: "/TPosts/DeleteByUser",
+                data: { id: id, searchString: $("#searchString").val(), __RequestVerificationToken: token }
             }).done(data => {
                 $("#searchResults").html(data);
             }).fail(err => {
@@ -123,7 +115,7 @@
             event.preventDefault();
             $.ajax({
                 type:"GET",
-                url:`/TPosts/Details/${id}`
+                url:`/TPosts/DetailsByUser/${id}`
             }).done(data=>{
                 $("#partialResult").html(data);
             }).fail(err=>{
@@ -134,7 +126,7 @@
             event.preventDefault();
             $.ajax({
                 type: "GET",
-                url: `/TPosts/Delete/${id}`
+                url: `/TPosts/DeleteByUser/${id}`
             }).done(data => {
                 $("#partialResult").html(data);
             }).fail(err => {
