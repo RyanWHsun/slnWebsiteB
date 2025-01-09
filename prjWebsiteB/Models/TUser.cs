@@ -2,33 +2,49 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace prjWebsiteB.Models;
 
 public partial class TUser
 {
+
     public int FUserId { get; set; }
 
+    [Display(Name = "權限")]
     public int? FUserRankId { get; set; }
 
+    [Display(Name = "用戶名稱")]
+    [Required(ErrorMessage = "必填")]
     public string FUserName { get; set; }
 
+    [Display(Name = "頭像")]
     public byte[] FUserImage { get; set; }
 
+    [Display(Name = "暱稱")]
     public string FUserNickName { get; set; }
 
+    [Display(Name = "性別")]
     public string FUserSex { get; set; }
 
+    [Display(Name = "生日")]
     public DateTime? FUserBirthday { get; set; }
 
+    [Display(Name = "連絡電話")]
     public string FUserPhone { get; set; }
 
+    [Display(Name = "電子信箱")]
+    [Required(ErrorMessage = "必填")]
     public string FUserEmail { get; set; }
 
+    [Display(Name = "地址")]
     public string FUserAddress { get; set; }
 
+    [Display(Name = "註冊日期")]
     public DateTime? FUserComeDate { get; set; }
 
+    [Display(Name = "密碼")]
+    [Required(ErrorMessage = "必填")]
     public string FUserPassword { get; set; }
 
     public bool? FUserNotify { get; set; }

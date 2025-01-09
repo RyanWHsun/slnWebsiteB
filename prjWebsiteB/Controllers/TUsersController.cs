@@ -19,10 +19,17 @@ namespace prjWebsiteB.Controllers
         }
 
         // GET: TUsers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            return View(_context.TUsers.Select(u => new TUser
+            //ViewBag.FUserRankIdSortParm = String.IsNullOrEmpty(sortOrder) ?
+            //    "FUserRankId_desc" : "";
+            //ViewBag.FUserRankIdSortParm = String.IsNullOrEmpty(sortOrder) ?
+
+            //return View(_context.TUsers);
+            return View(
+                _context.TUsers.Select(u => new TUser
             {
+                FUserId=u.FUserId,
                 FUserRankId = u.FUserRankId,
                 FUserName = u.FUserName,
                 FUserNickName = u.FUserNickName,
@@ -60,6 +67,7 @@ namespace prjWebsiteB.Controllers
 
             var tUser = await _context.TUsers.Select(u => new TUser
             {
+                FUserId = u.FUserId,
                 FUserRankId = u.FUserRankId,
                 FUserName = u.FUserName,
                 FUserNickName = u.FUserNickName,
@@ -76,7 +84,6 @@ namespace prjWebsiteB.Controllers
             {
                 return NotFound();
             }
-
             return View(tUser);
         }
 
@@ -95,6 +102,14 @@ namespace prjWebsiteB.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (Request.Form.Files["FUserImage"] != null)
+                {
+                    using (BinaryReader br = new BinaryReader(Request.Form.Files["FUserImage"].OpenReadStream()))
+                    {
+                        //將圖片內容讀進去
+                        tUser.FUserImage = br.ReadBytes((int)Request.Form.Files["FUserImage"].Length);
+                    }
+                }
                 _context.Add(tUser);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -112,6 +127,7 @@ namespace prjWebsiteB.Controllers
 
             var tUser = await _context.TUsers.Select(u => new TUser
             {
+                FUserId = u.FUserId,
                 FUserRankId = u.FUserRankId,
                 FUserName = u.FUserName,
                 FUserNickName = u.FUserNickName,
@@ -136,6 +152,9 @@ namespace prjWebsiteB.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        //限制圖片大小
+        [RequestFormLimits(MultipartBodyLengthLimit =8192000)]
+        [RequestSizeLimit(8192000)]
         public async Task<IActionResult> Edit(int id, [Bind("FUserId,FUserRankId,FUserName,FUserImage,FUserNickName,FUserSex,FUserBirthday,FUserPhone,FUserEmail,FUserAddress,FUserComeDate,FUserPassword,FUserNotify,FUserOnLine")] TUser tUser)
         {
             if (id != tUser.FUserId)
@@ -145,6 +164,23 @@ namespace prjWebsiteB.Controllers
 
             if (ModelState.IsValid)
             {
+                //取得原圖
+                TUser u = await _context.TUsers.FindAsync(tUser.FUserId);
+                if (Request.Form.Files["FUserImage"] != null)
+                {
+                    using (BinaryReader br = new BinaryReader(Request.Form.Files["FUserImage"].OpenReadStream()))
+                    {
+                        //將圖片內容讀進去
+                        tUser.FUserImage=br.ReadBytes((int)Request.Form.Files["FUserImage"].Length);
+                    }
+                }
+                else {
+                    //未上傳圖案維持原值
+                    tUser.FUserImage = u.FUserImage;
+                }
+                //卸離u,只追蹤tUser
+                _context.Entry(u).State=EntityState.Detached;
+
                 try
                 {
                     _context.Update(tUser);
@@ -176,6 +212,7 @@ namespace prjWebsiteB.Controllers
 
             var tUser = await _context.TUsers.Select(u => new TUser
             {
+                FUserId = u.FUserId,
                 FUserRankId = u.FUserRankId,
                 FUserName = u.FUserName,
                 FUserNickName = u.FUserNickName,

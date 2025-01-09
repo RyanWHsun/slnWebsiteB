@@ -4,7 +4,7 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1 class="text-center">詳細資料</h1>
 
 <div>
     <h4>TUser</h4>
@@ -26,6 +26,7 @@
             @Html.DisplayNameFor(model => model.FUserImage)
         </dt>
         <dd class = "col-sm-10">
+            @* @Html.DisplayFor(model => model.FUserImage) *@
             <partial name="_ShowUserImage" />
         </dd>
         <dt class = "col-sm-2">
@@ -76,21 +77,21 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.FUserPassword)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FUserNotify)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FUserNotify)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FUserOnLine)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FUserOnLine)
-        </dd>
+        @* <dt class = "col-sm-2"> *@
+        @*     @Html.DisplayNameFor(model => model.FUserNotify) *@
+        @* </dt> *@
+        @* <dd class = "col-sm-10"> *@
+        @*     @Html.DisplayFor(model => model.FUserNotify) *@
+        @* </dd> *@
+        @* <dt class = "col-sm-2"> *@
+        @*     @Html.DisplayNameFor(model => model.FUserOnLine) *@
+        @* </dt> *@
+        @* <dd class = "col-sm-10"> *@
+        @*     @Html.DisplayFor(model => model.FUserOnLine) *@
+        @* </dd> *@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.FUserId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    @* <a asp-action="Edit" asp-route-id="@Model?.FUserId">Edit</a> | *@
+    @* <a asp-action="Index">Back to List</a> *@
 </div>
