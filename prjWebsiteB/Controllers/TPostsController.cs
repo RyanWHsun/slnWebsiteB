@@ -28,7 +28,7 @@ namespace prjWebsiteB.Controllers
         }
         public async Task<IActionResult> Posts()
         {
-            int loginId = 1; //待串登入資料
+            int loginId = 5; //待串登入資料
             var dbGroupBContext = _context.TPosts.Include(t => t.TPostImages).Where(t => t.FUserId == loginId);
             return View(dbGroupBContext);
         }
@@ -44,7 +44,7 @@ namespace prjWebsiteB.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([Bind("FTitle", "FContent", "FIsPublic")] TPost post)
         {
-            int loginId = 1; //待串登入資料
+            int loginId = 5; //待串登入資料
             if (Request.Form.Files["FImage"] != null)
             {
                 using (BinaryReader reader = new BinaryReader(Request.Form.Files["FImage"].OpenReadStream()))
@@ -80,7 +80,7 @@ namespace prjWebsiteB.Controllers
         [Route("/TPosts/SearchByUser/{searchString?}")]
         public async Task<IActionResult> SearchByUser(string searchString)
         {
-            int loginId = 1; //待串登入資料
+            int loginId = 5; //待串登入資料
             IQueryable<TPost> dbGroupBContext = _context.TPosts.Include(t => t.TPostImages).Where(e => e.FUserId == loginId);
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -247,7 +247,7 @@ namespace prjWebsiteB.Controllers
                 }
             }
 
-            int loginId = 1; //待串登入資料
+            int loginId = 5; //待串登入資料
             var dbGroupBContext = _context.TPosts.Include(t => t.TPostImages).Where(t => t.FUserId == loginId);
             return PartialView("_UserPostsPartial", dbGroupBContext);
         }
@@ -317,7 +317,7 @@ namespace prjWebsiteB.Controllers
                 _context.TPosts.Remove(tPost);
             }
             await _context.SaveChangesAsync();
-            int loginId = 1; //待串登入資料
+            int loginId = 5; //待串登入資料
             IQueryable<TPost> dbGroupBContext = _context.TPosts.Include(t => t.TPostImages).Where(e => e.FUserId == loginId);
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -364,7 +364,7 @@ namespace prjWebsiteB.Controllers
         {
             return _context.TPosts.Any(e => e.FPostId == id);
         }
-        //[ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<FileResult> GetPicture(int id)
         {
             var tPost = _context.TPosts.Include(t => t.TPostImages).FirstOrDefault(p => p.FPostId == id);
