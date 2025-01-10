@@ -5,9 +5,9 @@
 }
 
 <h1 class="text-center">詳細資料</h1>
-
+<div class="m-5">
 <div>
-    <h4>TUser</h4>
+    <h4>用戶資料</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -92,6 +92,7 @@
     </dl>
 </div>
 <div>
-    @* <a asp-action="Edit" asp-route-id="@Model?.FUserId">Edit</a> | *@
-    @* <a asp-action="Index">Back to List</a> *@
+    <a asp-action="Edit" asp-route-id="@Model?.FUserId"class="btn btn-dark">修改資料</a> 
+        <a asp-action="Index" class="btn btn-light">返回</a>
+</div>
 </div>
