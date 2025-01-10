@@ -364,7 +364,7 @@ namespace prjWebsiteB.Controllers
         {
             return _context.TPosts.Any(e => e.FPostId == id);
         }
-        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+        //[ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<FileResult> GetPicture(int id)
         {
             var tPost = _context.TPosts.Include(t => t.TPostImages).FirstOrDefault(p => p.FPostId == id);
