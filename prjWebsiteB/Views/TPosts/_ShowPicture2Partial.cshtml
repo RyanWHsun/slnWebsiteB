@@ -6,7 +6,7 @@
 
     if (post != null && post.TPostImages.Count>0)
     {
-        <img id="postImage" class="img-fluid w-100" src="@Url.Action("GetPicture","TPosts",new{id=Model.FPostId, v = DateTime.Now.Ticks})" asp-append-version="true" />
+        <img id="postImage" class="img-fluid w-100" style='height:400px;object-fit: fill' src="@Url.Action("GetPicture","TPosts",new{id=Model.FPostId, v = DateTime.Now.Ticks})" asp-append-version="true" />
     }
     else
     {
