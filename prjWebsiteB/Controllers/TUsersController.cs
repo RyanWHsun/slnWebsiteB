@@ -89,14 +89,15 @@ namespace prjWebsiteB.Controllers
 
         //更改Rank資料
         [HttpPost]
-        public async Task<IActionResult> UpdateUserRank(int userId)
+        public async Task<IActionResult> UpdateUserRank(int id)
         {
             // 查詢用戶資料
-            var user =await  _context.TUsers.FirstOrDefaultAsync(u => u.FUserId == userId);
+            var user =await  _context.TUsers.FirstOrDefaultAsync(u => u.FUserId == id);
 
             if (user != null)
             {
                 user.FUserRankId = 2;
+                _context.Update(user);
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction("Index");

@@ -68,10 +68,8 @@
                 <td>
                         <a asp-action="Edit" asp-route-id="@item.FUserId" class=" btn btn-dark m-1">修改</a>
                         <a asp-action="Details" asp-route-id="@item.FUserId" class=" btn btn-dark m-1">詳細</a>
-
-                        <form method="post" action="@Url.Action("UpdateUserRank")">
-                            <input type="hidden" name="userId" value="@item" />
-                            <button type="submit" class=" btn btn-light m-1">設為幽靈用戶</button>
+                        <form asp-action="UpdateUserRank" asp-route-id="@item.FUserId" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-dark m-1">設為幽靈用戶</button>
                         </form>
                 </td>
                 <td>
