@@ -76,6 +76,18 @@ namespace prjWebsiteB.Controllers
             }
             return PartialView("_PostListPartial", dbGroupBContext);
         }
+        // GET: TPosts/SearchByUser
+        [Route("/TPosts/SearchByUser/{searchString?}")]
+        public async Task<IActionResult> SearchByUser(string searchString)
+        {
+            int loginId = 1; //待串登入資料
+            IQueryable<TPost> dbGroupBContext = _context.TPosts.Include(t => t.TPostImages).Where(e => e.FUserId == loginId);
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                dbGroupBContext = dbGroupBContext.Where(e => e.FTitle.Contains(searchString) || e.FContent.Contains(searchString));
+            }
+            return PartialView("_UserPostsPartial", dbGroupBContext);
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, bool isPublic, string searchString)
@@ -173,27 +185,44 @@ namespace prjWebsiteB.Controllers
             var tImage = _context.TPostImages.FirstOrDefault(i => i.FPostId == post.FPostId);
             if (Request.Form.Files["FImage"] != null)
             {
-                using (BinaryReader reader = new BinaryReader(Request.Form.Files["FImage"].OpenReadStream()))
+                if (tImage != null)
                 {
-                    byte[] imageData = reader.ReadBytes((int)Request.Form.Files["FImage"].Length);
-                    tImage.FImage = imageData;
+                    using (BinaryReader reader = new BinaryReader(Request.Form.Files["FImage"].OpenReadStream()))
+                    {
+                        byte[] imageData = reader.ReadBytes((int)Request.Form.Files["FImage"].Length);
+                        tImage.FImage = imageData;
+                    }
                     _context.Update(tImage);
-                    await _context.SaveChangesAsync();
 
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    using (BinaryReader reader = new BinaryReader(Request.Form.Files["FImage"].OpenReadStream()))
+                    {
+                        byte[] imageData = reader.ReadBytes((int)Request.Form.Files["FImage"].Length);
+                        TPostImage newImage = new TPostImage();
+                        newImage.FPostId = post.FPostId;
+                        newImage.FImage = imageData;
+                        _context.Add(newImage);
+                    }
+                    await _context.SaveChangesAsync();
                 }
             }
+
+
             if (post.FPostId == null)
             {
                 return NotFound();
             }
 
-            var tPost = _context.TPosts.FirstOrDefault(e=>e.FPostId==post.FPostId);
+            var tPost = _context.TPosts.FirstOrDefault(e => e.FPostId == post.FPostId);
 
             if (tPost == null)
             {
                 return NotFound();
             }
-            
+
             tPost.FTitle = post.FTitle;
             tPost.FContent = post.FContent;
             tPost.FIsPublic = post.FIsPublic;
@@ -217,7 +246,7 @@ namespace prjWebsiteB.Controllers
                     }
                 }
             }
-            
+
             int loginId = 1; //待串登入資料
             var dbGroupBContext = _context.TPosts.Include(t => t.TPostImages).Where(t => t.FUserId == loginId);
             return PartialView("_UserPostsPartial", dbGroupBContext);
@@ -241,6 +270,23 @@ namespace prjWebsiteB.Controllers
 
             return PartialView("_DeletePartial", tPost);
         }
+        public async Task<IActionResult> DeleteByUser(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var tPost = await _context.TPosts
+                .Include(t => t.TPostImages)
+                .FirstOrDefaultAsync(m => m.FPostId == id);
+            if (tPost == null)
+            {
+                return NotFound();
+            }
+
+            return PartialView("_DeleteByUserPartial", tPost);
+        }
 
 
         [HttpPost]
@@ -261,6 +307,24 @@ namespace prjWebsiteB.Controllers
             }
             return PartialView("_PostListPartial", dbGroupBContext);
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteByUser(int id, string searchString, string page)
+        {
+            var tPost = await _context.TPosts.FindAsync(id);
+            if (tPost != null)
+            {
+                _context.TPosts.Remove(tPost);
+            }
+            await _context.SaveChangesAsync();
+            int loginId = 1; //待串登入資料
+            IQueryable<TPost> dbGroupBContext = _context.TPosts.Include(t => t.TPostImages).Where(e => e.FUserId == loginId);
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                dbGroupBContext = dbGroupBContext.Where(e => e.FTitle.Contains(searchString) || e.FContent.Contains(searchString));
+            }
+            return PartialView("_UserPostsPartial", dbGroupBContext);
+        }
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -278,17 +342,35 @@ namespace prjWebsiteB.Controllers
 
             return PartialView("_DetailsPartial", tPost);
         }
+        public async Task<IActionResult> DetailsByUser(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var tPost = await _context.TPosts
+                .Include(t => t.TPostImages)
+                .FirstOrDefaultAsync(m => m.FPostId == id);
+            if (tPost == null)
+            {
+                return NotFound();
+            }
+
+            return PartialView("_DetailsByUserPartial", tPost);
+        }
 
         private bool TPostExists(int id)
         {
             return _context.TPosts.Any(e => e.FPostId == id);
         }
-        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+        //[ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<FileResult> GetPicture(int id)
         {
             var tPost = _context.TPosts.Include(t => t.TPostImages).FirstOrDefault(p => p.FPostId == id);
             var image = tPost?.TPostImages.FirstOrDefault().FImage;
-            return File(image, "image/jpeg");
+            var version = DateTime.Now.Ticks;
+            return File(image, "image/jpeg", version.ToString());
         }
     }
 }
