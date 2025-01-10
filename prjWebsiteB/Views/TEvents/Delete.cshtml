@@ -1,0 +1,62 @@
+﻿@model prjWebsiteB.Models.TEvent
+
+@{
+    ViewData["Title"] = "刪除活動";
+}
+
+<div class="container mt-5" style="max-width: 900px;">
+    <div class="text-center mb-4">
+        <h1 class="display-4 font-weight-bold" style="color: #FFA726;">刪除活動</h1>
+        <p class="lead" style="color: #FF7043; font-size: 18px;">確定要刪除此活動嗎？此操作無法復原。</p>
+    </div>
+
+    <div class="card shadow-lg border-0" style="background-color: #FFF8E7; border-radius: 15px; overflow: hidden;">
+        <div class="card-header text-white text-center" style="background-color: #FFA726; font-size: 20px;">
+            活動資訊
+        </div>
+        <div class="card-body" style="padding: 30px;">
+            <table class="table table-borderless text-center mb-4">
+                <tbody>
+                    <tr>
+                        <th class="text-right" style="width: 30%; color: #FF7043;">活動名稱：</th>
+                        <td class="text-left" style="font-weight: bold; color: #6D4C41;">@Model.FEventName</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right" style="color: #FF7043;">描述：</th>
+                        <td class="text-left" style="color: #6D4C41;">@Model.FEventDescription</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right" style="color: #FF7043;">開始日期：</th>
+                        <td class="text-left" style="color: #6D4C41;">
+                            @(DateTime.TryParse(Model.FEventStartDate, out var startDate) ? startDate.ToShortDateString() : "無效日期")
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="text-right" style="color: #FF7043;">結束日期：</th>
+                        <td class="text-left" style="color: #6D4C41;">
+                            @(DateTime.TryParse(Model.FEventEndDate, out var endDate) ? endDate.ToShortDateString() : "無效日期")
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="text-right" style="color: #FF7043;">地點：</th>
+                        <td class="text-left" style="color: #6D4C41;">@Model.FEventLocation</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right" style="color: #FF7043;">費用：</th>
+                        <td class="text-left" style="color: #6D4C41;">
+                            @(Model.FEventActivityfee?.ToString("C", System.Globalization.CultureInfo.CurrentCulture) ?? "N/A")
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="text-center mt-4">
+                <form asp-action="DeleteConfirmed" asp-route-id="@Model.FEventId" method="post" style="display: inline-block;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger btn-lg px-5" style="background-color: #FF7043; color: white; border-radius: 50px;">刪除</button>
+                </form>
+                <a asp-action="Index" class="btn btn-secondary btn-lg px-5 ml-3" style="background-color: #FFA726; color: white; border-radius: 50px;">返回</a>
+            </div>
+        </div>
+    </div>
+</div>

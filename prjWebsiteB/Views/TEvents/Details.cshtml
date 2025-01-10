@@ -1,0 +1,66 @@
+﻿@model prjWebsiteB.Models.TEvent
+
+@{
+    ViewData["Title"] = "檢視活動";
+}
+
+<div style="background-color: #FFF8E7; border-radius: 15px; padding: 20px; display: flex; justify-content: space-between; align-items: flex-start;">
+    <!-- 活動描述 -->
+    <div style="flex: 1; margin-right: 40px;">
+        <h4 style="color: #FFA726; margin-bottom: 15px;">@Model.FEventName</h4>
+
+        <dl class="row" style="font-size: 14px; line-height: 1.8;">
+            <dt class="col-sm-4" style="color: #FF7043; margin-bottom: 8px;">開始日期</dt>
+            <dd class="col-sm-8" style="margin-bottom: 8px;">@DateTime.Parse(Model.FEventStartDate).ToShortDateString()</dd>
+
+            <dt class="col-sm-4" style="color: #FF7043; margin-bottom: 8px;">結束日期</dt>
+            <dd class="col-sm-8" style="margin-bottom: 8px;">@DateTime.Parse(Model.FEventEndDate).ToShortDateString()</dd>
+
+            <dt class="col-sm-4" style="color: #FF7043; margin-bottom: 8px;">活動地點</dt>
+            <dd class="col-sm-8" style="margin-bottom: 8px;">@Model.FEventLocation</dd>
+        </dl>
+    </div>
+
+    <!-- 活動圖片 -->
+    <div style="flex: 1.5; text-align: center;">
+        @if (Model.TEventImages != null && Model.TEventImages.Any())
+        {
+            <h5 style="color: #FFA726; margin-bottom: 15px;">活動圖片</h5>
+            <div id="eventImageCarousel" class="carousel slide" data-bs-ride="carousel" style="max-width: 350px; margin: 0 auto;">
+                <!-- Indicators -->
+                <div class="carousel-indicators">
+                    @for (int i = 0; i < Model.TEventImages.Count; i++)
+                    {
+                        <button type="button" data-bs-target="#eventImageCarousel" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-current="@(i == 0 ? "true" : "false")" aria-label="Slide @i"></button>
+                    }
+                </div>
+
+                <!-- Slides -->
+                <div class="carousel-inner">
+                    @foreach (var image in Model.TEventImages)
+                    {
+                        <div class="carousel-item @(image.Equals(Model.TEventImages.First()) ? "active" : "")">
+                            <img src="@Url.Action("GetEventImage", "TEvents", new { id = image.FEventImageId })"
+                                 class="d-block w-100 img-thumbnail"
+                                 style="max-height: 300px; object-fit: contain;" />
+                        </div>
+                    }
+                </div>
+
+                <!-- Controls -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#eventImageCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">上一張</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#eventImageCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">下一張</span>
+                </button>
+            </div>
+        }
+        else
+        {
+            <p style="color: #FF7043;">目前尚未上傳圖片。</p>
+        }
+    </div>
+</div>

@@ -34,3 +34,14 @@ body {
     background-color: #D94600; /* 設定懸停時的背景顏色 */
     transition: background-color 0.3s ease, color 0.3s ease; /* 添加過渡效果 */
 }
+
+#wrapper {
+    height: 100%;
+    display: flex;
+    margin: 0;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}

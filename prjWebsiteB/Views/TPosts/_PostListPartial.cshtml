@@ -1,0 +1,70 @@
+﻿@model IEnumerable<prjWebsiteB.Models.TPost>
+
+<table class="table table-striped table-hover table-bordered">
+    <thead class="table-success">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TPostImages.First().FImage)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FPostId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FUserId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FTitle)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FContent)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FCreatedAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FUpdatedAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FIsPublic)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <partial name="_ShowPicturePartial" model="@item" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FPostId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FUserId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FTitle)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FContent)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FCreatedAt)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FUpdatedAt)
+                </td>
+                <td>
+                    @(item.FIsPublic.HasValue ? (item.FIsPublic.Value ? "公開" : "私人") : "")
+                </td>
+                <td>
+                    <button type="button" onclick="btnEdit(@item.FPostId)" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editPostModal">修改</button>
+                    <button type="button" onclick="btnDelete(@item.FPostId)" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#editPostModal">刪除</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

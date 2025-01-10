@@ -1,0 +1,153 @@
+﻿@model TEvent
+
+@{
+    ViewData["Title"] = "編輯活動";
+}
+
+<div class="container mt-5" style="max-width: 900px;">
+    <div class="text-center mb-4">
+        <h1 class="display-4 font-weight-bold" style="color: #FFA726;">編輯活動</h1>
+        <p class="lead" style="color: #FF7043;">請更新以下資訊以修改活動。</p>
+    </div>
+
+    <div class="card shadow-lg border-0" style="background-color: #FFF8E7; border-radius: 15px; overflow: hidden;">
+        <div class="card-header text-white text-center" style="background-color: #FFA726; font-size: 20px;">
+            活動資訊
+        </div>
+        <div class="card-body" style="padding: 30px;">
+            <form asp-action="Edit" asp-controller="TEvents" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="FEventId" />
+
+                <!-- 建立者 -->
+                <div class="form-group">
+                    <label asp-for="FUserId" class="control-label" style="color: #FF7043;">建立者</label>
+                    <select asp-for="FUserId" asp-items="ViewBag.FUserId" class="form-control" style="border: 1px solid #FFA726;">
+                        <option value="">請選擇建立者</option>
+                    </select>
+                    <span asp-validation-for="FUserId" class="text-danger"></span>
+                </div>
+
+                <!-- 活動名稱 -->
+                <div class="form-group">
+                    <label asp-for="FEventName" class="control-label" style="color: #FF7043;">活動名稱</label>
+                    <input asp-for="FEventName" class="form-control" placeholder="請輸入活動名稱" style="border: 1px solid #FFA726;" />
+                    <span asp-validation-for="FEventName" class="text-danger"></span>
+                </div>
+
+                <!-- 活動描述 -->
+                <div class="form-group">
+                    <label asp-for="FEventDescription" class="control-label" style="color: #FF7043;">活動說明</label>
+                    <textarea asp-for="FEventDescription" class="form-control" placeholder="請輸入活動描述" style="border: 1px solid #FFA726;"></textarea>
+                    <span asp-validation-for="FEventDescription" class="text-danger"></span>
+                </div>
+
+                <!-- 活動地點 -->
+                <div class="form-group">
+                    <label asp-for="FEventLocation" class="control-label" style="color: #FF7043;">活動地點</label>
+                    <input asp-for="FEventLocation" class="form-control" placeholder="請輸入活動地點" style="border: 1px solid #FFA726;" />
+                    <span asp-validation-for="FEventLocation" class="text-danger"></span>
+                </div>
+
+                <!-- 活動日期 -->
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="FEventStartDate" class="control-label" style="color: #FF7043;">開始日期</label>
+                        <input asp-for="FEventStartDate" type="date" class="form-control" style="border: 1px solid #FFA726;" />
+                        <span asp-validation-for="FEventStartDate" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="FEventEndDate" class="control-label" style="color: #FF7043;">結束日期</label>
+                        <input asp-for="FEventEndDate" type="date" class="form-control" style="border: 1px solid #FFA726;" />
+                        <span asp-validation-for="FEventEndDate" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- 活動費用 -->
+                <div class="form-group">
+                    <label asp-for="FEventActivityfee" class="control-label" style="color: #FF7043;">報名費用</label>
+                    <input asp-for="FEventActivityfee" type="number" class="form-control" placeholder="請輸入報名費用" style="border: 1px solid #FFA726;" />
+                    <span asp-validation-for="FEventActivityfee" class="text-danger"></span>
+                </div>
+
+                <!-- 人數上限 -->
+                <div class="form-group">
+                    <label asp-for="FEventMaxParticipants" class="control-label" style="color: #FF7043;">人數上限</label>
+                    <input asp-for="FEventMaxParticipants" type="number" class="form-control" placeholder="請輸入人數上限" style="border: 1px solid #FFA726;" />
+                    <span asp-validation-for="FEventMaxParticipants" class="text-danger"></span>
+                </div>
+
+                <!-- 活動狀態 -->
+                <div class="form-group">
+                    <label asp-for="FEventIsActive" class="control-label" style="color: #FF7043;">活動狀態</label>
+                    <select asp-for="FEventIsActive" class="form-control" style="border: 1px solid #FFA726;">
+                        <option value="true">啟用</option>
+                        <option value="false">停用</option>
+                    </select>
+                    <span asp-validation-for="FEventIsActive" class="text-danger"></span>
+                </div>
+
+                <!-- 圖片上傳 -->
+                <div class="form-group">
+                    <label for="uploadedFiles" style="color: #FF7043;">圖片上傳</label>
+                    <input type="file" id="uploadedFiles" name="uploadedFiles" multiple class="form-control" accept="image/*" style="border: 1px solid #FFA726;" />
+
+                    <!-- 顯示現有圖片 -->
+                    @if (Model.TEventImages != null && Model.TEventImages.Any())
+                    {
+                        <div class="mt-3" id="existingImages">
+                            @foreach (var image in Model.TEventImages)
+                            {
+                                <img src="@Url.Action("GetEventImage", "TEvents", new { id = image.FEventImageId })"
+                                     class="img-thumbnail m-1"
+                                     style="width: 150px; height: auto;" />
+                            }
+                        </div>
+                    }
+
+                    <!-- 新圖片預覽 -->
+                    <div id="newImagePreview" class="mt-3"></div>
+                </div>
+
+                <!-- 按鈕 -->
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-warning btn-lg px-5" style="background-color: #FFA726; color: white; border-radius: 50px;">保存</button>
+                    <a asp-action="Index" class="btn btn-secondary btn-lg px-5 ml-3" style="border-radius: 50px;">取消</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const uploadedFilesInput = document.getElementById('uploadedFiles');
+            const newImagePreview = document.getElementById('newImagePreview');
+
+            if (uploadedFilesInput && newImagePreview) {
+                uploadedFilesInput.addEventListener('change', function (event) {
+                    const files = event.target.files;
+                    newImagePreview.innerHTML = ""; // 清空預覽區域
+
+                    // 遍歷文件並生成預覽圖片
+                    Array.from(files).forEach(file => {
+                        if (file && file.type.startsWith('image/')) { // 檢查是否為圖片文件
+                            const reader = new FileReader();
+                            reader.onload = function (e) {
+                                const img = document.createElement("img");
+                                img.src = e.target.result; // 設置圖片來源
+                                img.className = "img-thumbnail m-1";
+                                img.style.width = "150px";
+                                img.style.height = "auto";
+                                newImagePreview.appendChild(img);
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+}
+

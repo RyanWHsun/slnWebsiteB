@@ -1,0 +1,146 @@
+﻿@model prjWebsiteB.Models.TUser
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1 class="text-center">新增用戶</h1>
+
+<div class="m-5">
+    <h4 id="add">用戶資料</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                @* 權限 *@
+            <div class="form-group">
+                <label asp-for="FUserRankId" class="control-label"></label>
+                    <select asp-for="FUserRankId" class="form-control"  >
+                        <option value="1">普通用戶</option>
+                        <option value="99">管理員用戶</option>
+                    </select>
+                    @* <input asp-for="FUserRankId" class="form-control" /> *@
+                <span asp-validation-for="FUserRankId" class="text-danger"></span>
+            </div>
+                @* 用戶名稱 *@
+            <div class="form-group">
+                <label asp-for="FUserName" class="control-label"></label>
+                <input asp-for="FUserName" class="form-control" />
+                <span asp-validation-for="FUserName" class="text-danger"></span>
+            </div>
+                @* 頭像 *@
+            <div class="form-group">
+                <label asp-for="FUserImage" class="control-label"></label>
+                    <img id="imgPreview" class="m-2"  src="~/images/usernoimage.jpeg"  title="尚無圖片" style="width:200px"/>
+                <input type="file" asp-for="FUserImage" class="form-control" accept="image/*" />
+                <span asp-validation-for="FUserImage" class="text-danger"></span>
+            </div>
+                @* 暱稱 *@
+            <div class="form-group">
+                <label asp-for="FUserNickName" class="control-label"></label>
+                <input asp-for="FUserNickName" class="form-control" />
+                <span asp-validation-for="FUserNickName" class="text-danger"></span>
+            </div>
+                @* 性別 *@
+            <div class="form-group">
+                <label asp-for="FUserSex" class="control-label"></label>
+                    <select asp-for="FUserSex" class="form-control">
+                        <option value="男">男</option>
+                        <option value="女">女</option>
+                </select>
+                <span asp-validation-for="FUserSex" class="text-danger"></span>
+            </div>
+                @* 生日 *@
+            <div class="form-group">
+                <label asp-for="FUserBirthday" class="control-label"></label>
+                <input type="date" value="1990-01-01" asp-for="FUserBirthday" class="form-control" />
+                <span asp-validation-for="FUserBirthday" class="text-danger"></span>
+            </div>
+                @* 連絡電話 *@
+            <div class="form-group">
+                <label asp-for="FUserPhone" class="control-label"></label>
+                <input asp-for="FUserPhone" class="form-control" />
+                <span asp-validation-for="FUserPhone" class="text-danger"></span>
+            </div>
+                @* 電子信箱 *@
+            <div class="form-group">
+                <label asp-for="FUserEmail" class="control-label"></label>
+                <input type="email"  asp-for="FUserEmail" class="form-control" />
+                <span asp-validation-for="FUserEmail" class="text-danger"></span>
+            </div>
+                @* 地址 *@
+            <div class="form-group">
+                <label asp-for="FUserAddress" class="control-label"></label>
+                <input asp-for="FUserAddress" class="form-control" />
+                <span asp-validation-for="FUserAddress" class="text-danger"></span>
+            </div>
+                @* 註冊日期 *@
+            <div class="form-group">
+                <label asp-for="FUserComeDate" class="control-label"></label>
+                    <input asp-for="FUserComeDate" class="form-control comeDate" value="@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")" disabled />
+                <span asp-validation-for="FUserComeDate" class="text-danger"></span>
+            </div>
+                @* 密碼 *@
+            <div class="form-group">
+                <label asp-for="FUserPassword" class="control-label"></label>
+                <input asp-for="FUserPassword" class="form-control" />
+                <span asp-validation-for="FUserPassword" class="text-danger"></span>
+            </div>
+
+            @* <div class="form-group"> *@
+            @*     <label asp-for="FUserNotify" class="control-label"></label> *@
+            @*     <input asp-for="FUserNotify" class="form-control" /> *@
+            @*     <span asp-validation-for="FUserNotify" class="text-danger"></span> *@
+            @* </div> *@
+
+            @* <div class="form-group"> *@
+            @*     <label asp-for="FUserOnLine" class="control-label"></label> *@
+            @*     <input asp-for="FUserOnLine" class="form-control" /> *@
+            @*     <span asp-validation-for="FUserOnLine" class="text-danger"></span> *@
+            @* </div> *@
+            <div class="form-group">
+                    <input type="submit" value="確認" class="btn btn-warning" />
+                    <a asp-action="Index" class="btn " style="background-color:gold">返回</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        
+
+        function previewImg(inputFile){
+            if(inputFile.files[0]!=null){
+                //驗證是否為圖片
+                var file = inputFile.files[0];
+                var type = "image.*";
+                if(file.type.match(type)){
+                    var reader = new FileReader();
+                    reader.onload = function(e){
+                        $("#FUserImage").prev().attr("src",e.target.result);
+                        $("#FUserImage").prev().attr("title",file.name);
+                    };
+                    reader.readAsDataURL(file);
+                }
+                else{
+                    alert("檔案格式錯誤!"); 
+                    inputFile.value = "";
+                }
+            }
+        }
+
+        $("#FUserImage").on("change",function(){
+            previewImg(this);
+        })
+
+        
+    </script>
+
+}

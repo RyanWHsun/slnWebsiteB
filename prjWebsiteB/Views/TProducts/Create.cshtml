@@ -1,0 +1,162 @@
+﻿@model prjWebsiteB.ViewModels.ProductViewModel
+
+@{
+    ViewData["Title"] = "新增商品";
+}
+
+@section Styles
+{
+    <link href="~/css/productstylesheet.css" rel="stylesheet" />
+    <style>
+        .row{
+            max-width: 100%;
+        }
+        .content {            
+            margin: 0 auto;            
+            align-items: center;
+            width: 50%;
+        }
+    </style>
+}
+<div class="topic">
+    <h1 class="text-orange">新增商品 <i id="demoBtn" class="fa-solid fa-star fa-rotate-90 fa-2xs"></i></h1>
+</div>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-4 content">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group" style="display:none;">
+                <input type="hidden" asp-for="FUserId" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="FProductCategoryId" class="control-label"></label>
+                <select asp-for="FProductCategoryId" class="form-control" asp-items="ViewBag.FProductCategoryId"></select>
+                <span asp-validation-for="FProductCategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FProductName" class="control-label"></label>
+                <input asp-for="FProductName" class="form-control" />
+                <span asp-validation-for="FProductName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FProductPrice" class="control-label"></label>
+                <input asp-for="FProductPrice" class="form-control" type="number" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '');" />
+                <span asp-validation-for="FProductPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FIsOnSale" class="control-label"></label>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" asp-for="FIsOnSale" value="true" id="isOnSale1" checked="checked" />
+                    <label class="form-check-label" for="isOnSale1">上架</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" asp-for="FIsOnSale" value="false" id="isOnSale0" />
+                    <label class="form-check-label" for="isOnSale0">下架</label>
+                </div>
+                <span asp-validation-for="FIsOnSale" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FProductDescription" class="control-label"></label>
+                <textarea asp-for="FProductDescription" class="form-control"></textarea>
+                <span asp-validation-for="FProductDescription" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FStock" class="control-label"></label>
+                <input asp-for="FStock" class="form-control" />
+                <span asp-validation-for="FStock" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FImage" class="control-label">照片上傳</label>
+                <div class="fileSelectorContainer">
+                    <div id="div1" class="fileSelectorDiv text-content">點兩下上傳圖片</div>
+                    <div id="div2" class="fileSelectorDiv text-content hidden">點兩下上傳圖片</div>
+                    <div id="div3" class="fileSelectorDiv text-content hidden">點兩下上傳圖片</div>
+             </div>
+                <span asp-validation-for="FImage" class="text-danger"></span>
+                    <input type="file" id="imageUpload1" class="fileSelector" name="imageUpload1" accept="image/*" />
+                    <input type="file" id="imageUpload2" class="fileSelector" name="imageUpload2" accept="image/*" />
+                    <input type="file" id="imageUpload3" class="fileSelector" name="imageUpload3" accept="image/*" />
+            </div>
+            <hr />
+            <div class="form-group">
+                <a class="btn btn-orange" asp-action="Index"><i class="fa-solid fa-left-long" style="color: #ffffff;"></i></a>
+                <input type="submit" value="新增商品" class="btn btn-orange" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // 當雙擊 div 時觸發對應的文件選擇器
+        $("#div1").dblclick(function() {
+            $("#imageUpload1").click();
+        });
+        $("#div2").dblclick(function() {
+            $("#imageUpload2").click();
+        });
+        $("#div3").dblclick(function() {
+            $("#imageUpload3").click();
+        });
+
+        // 在選擇文件後顯示圖片並進行驗證
+        $("#imageUpload1").change(function() {
+            validateImage(this, $("#div1")[0]);
+        });
+        $("#imageUpload2").change(function() {
+            validateImage(this, $("#div2")[0]);
+        });
+        $("#imageUpload3").change(function() {
+            validateImage(this, $("#div3")[0]);
+        });
+
+        //Demo按鈕
+        $("#demoBtn").click(function(){
+            $('#FProductCategoryId').val($('#FProductCategoryId option:eq(3)').val());
+            $("#FProductName").val("全家吉伊卡哇行李箱");
+            $("#FProductPrice").val("5000");
+            $("#FProductDescription").val("2025全家限定 新年福袋 吉伊卡哇行李箱\n不附抽獎卷 24吋\n超級可愛哦");
+            $("#FStock").val("5");
+        });
+
+        function validateImage(input, div) {
+            if (input.files && input.files[0]) {
+                var file = input.files[0];
+                var fileType = file.type;
+
+                // 只允許圖片類型
+                if (!fileType.startsWith('image/')) {
+                    alert("請選擇正確圖片");
+                    input.value = ""; // 清空文件選擇
+                    div.style.backgroundImage = "";
+                    div.textContent = "點兩下上傳圖片";
+                    return;
+                }
+
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    div.style.backgroundImage = `url(${e.target.result})`;
+                    div.style.backgroundSize = "cover";
+                    div.style.backgroundPosition = "center";
+                    div.textContent = ""; // 移除提示文字
+
+                    // 動態顯示下一個文件選擇器
+                    if (div.id === "div1") {
+                        $("#div2").removeClass("hidden");                        
+                    }
+                    if(div.id=="div2"){
+                        $("#div3").removeClass("hidden");
+                    }
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+}

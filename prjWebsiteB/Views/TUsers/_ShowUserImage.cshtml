@@ -1,0 +1,18 @@
+﻿@model TUser
+@inject dbGroupBContext _context
+
+@{
+    TUser? user = await _context.TUsers.FindAsync(Model.FUserId);
+    if (user != null && user.FUserImage != null)
+    {
+        <img style="width:100px"
+             src="@Url.Action("GetPicture","TUsers",new{id=Model.FUserId})"
+             title="@Model.FUserName" />
+    }
+    else
+    {
+        <img style="width:100px"
+             src="@Url.Content("~/images/userNoImage.jpeg")"
+             title="沒有頭像" />
+    }
+}

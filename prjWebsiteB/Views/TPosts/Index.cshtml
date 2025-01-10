@@ -1,0 +1,83 @@
+﻿<h1 id="postsPage" name="Index">文章管理</h1>
+<div class="form-inline">
+    <label for="searchString" class="form-label mr-2">關鍵字搜尋:</label>
+    <input id="searchString" name="searchString" class="form-control" />
+</div>
+<div id="searchResults">
+    <partial name="_PostListPartial" />
+</div>
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="editPostModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content" id="partialResult">
+            
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $("#searchString").on("keyup", function () {
+            const searchString = encodeURIComponent($(this).val());
+            $.ajax({
+                type: "GET",
+                url: `/TPosts/Search/${searchString}`
+            }).done(data => {
+                $("#searchResults").html(data);
+            }).fail(err => {
+                alert(err.statusText);
+            })
+        });
+
+        function editData() {
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            var FPostId = $("#FPostIdforDetails").text();
+            var FIsPublic = $("#FIsPublic").val();
+            $.ajax({
+                type: "POST",
+                url: "/TPosts/Edit",
+                data: { id: FPostId, isPublic: FIsPublic, searchString: $("#searchString").val(), __RequestVerificationToken: token }
+            }).done(data => {
+                $("#searchResults").html(data);
+            }).fail(err => {
+                alert(err.statusText);
+            })
+        }
+
+        function deleteData(id) {
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            $.ajax({
+                type: "POST",
+                url: "/TPosts/Delete",
+                data: { id: id, searchString: $("#searchString").val(), __RequestVerificationToken: token }
+            }).done(data => {
+                $("#searchResults").html(data);
+            }).fail(err => {
+                alert(err.statusText);
+            })
+        }
+        function btnEdit(id) {
+            $.ajax({
+                type: "GET",
+                url: `/TPosts/Edit/${id}`
+            }).done(data => {
+                $("#partialResult").html(data);
+            }).fail(err => {
+                alert(err.statusText);
+            })
+        }
+        function btnDelete(id) {
+            $.ajax({
+                type: "GET",
+                url: `/TPosts/Delete/${id}`
+            }).done(data => {
+                $("#partialResult").html(data);
+            }).fail(err => {
+                alert(err.statusText);
+            })
+        }
+    </script>
+}

@@ -1,0 +1,176 @@
+﻿@model prjWebsiteB.AttractionViewModels.TAttraction
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+@section Styles {
+    <style>
+        .carousel {
+            width: 800px;
+            position: relative;
+        }
+
+        #carouselImage {
+            width: 600px;
+            height: 300px;
+            position: relative;
+            left: 100px;
+        }
+
+        #previous {
+            width: 50px;
+            height: 50px;
+            position: absolute;
+            top: 125px;
+            left: 0px;
+        }
+
+        #next {
+            width: 50px;
+            height: 50px;
+            position: absolute;
+            top: 125px;
+            left: 750px;
+        }
+
+        .progress-bar-container {
+            width: 100px;
+            height: 5px;
+            position: absolute;
+            left: 350px;
+            bottom: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.6);
+        }
+    </style>
+}
+
+<h1>Delete</h1>
+
+<div>
+    <h4>TAttraction</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FAttractionName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FAttractionName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FDescription)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FDescription)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FAddress)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FAddress)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FPhoneNumber)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FPhoneNumber)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FOpeningTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FOpeningTime)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FClosingTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FClosingTime)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FWebsiteUrl)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FWebsiteUrl)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FLongitude)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FLongitude)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FLatitude)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FLatitude)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FRegion)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FRegion)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FCreatedDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FCreatedDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FUpdatedDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FUpdatedDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FStatus)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FStatus)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FTrafficInformation)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FTrafficInformation)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FCategory)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FCategory.FAttractionCategoryId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FCategoryId)
+        </dt>
+        <dd class="col-sm-10">
+            @ViewBag.categoryName
+        </dd>
+        <dt class="col-sm-2">
+            <label for="FImage" class="control-label"></label>
+        </dt>
+    </dl>
+
+    <partial name="~/Views/TAttractionImages/_ShowImagePartial.cshtml" model="@Model" />
+
+    @* 此表單的 asp-action 屬性指定當使用者按下刪除按鈕時，請求將提交至 Delete 動作方法 (GET: Delete)。 *@
+    <form id="deleteForm" asp-action="Delete">
+        @* <input type="hidden" asp-for="FAttractionId" />：透過隱藏欄位將要刪除的景點 ID (FAttractionId) 傳送到伺服器，這樣伺服器知道使用者想刪除哪一個項目。 *@
+        <input type="hidden" asp-for="FAttractionId" />
+
+        @* <input type="submit" value="Delete" class="btn btn-danger" />：刪除按鈕，按下後表單提交。 *@
+        <input id="btnDelete" type="submit" value="Delete" class="btn btn-danger" /> |
+
+        @* <a asp-action="Index">Back to List</a>：提供返回列表頁面的超連結。 *@
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

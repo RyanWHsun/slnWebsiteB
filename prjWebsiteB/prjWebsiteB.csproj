@@ -8,6 +8,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\TAttractions\Edit.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\js\laertejjunior-freezeheader-0e17009\**" />
+    <Compile Remove="wwwroot\laertejjunior-freezeheader-0e17009\**" />
+    <Content Remove="wwwroot\js\laertejjunior-freezeheader-0e17009\**" />
+    <Content Remove="wwwroot\laertejjunior-freezeheader-0e17009\**" />
+    <EmbeddedResource Remove="wwwroot\js\laertejjunior-freezeheader-0e17009\**" />
+    <EmbeddedResource Remove="wwwroot\laertejjunior-freezeheader-0e17009\**" />
+    <None Remove="wwwroot\js\laertejjunior-freezeheader-0e17009\**" />
+    <None Remove="wwwroot\laertejjunior-freezeheader-0e17009\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="bundleconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.11" />
@@ -17,11 +36,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ViewModels\" />
+    <Folder Include="ViewModels\NewFolder\" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="bundleconfig.json" />
     <None Include="efpt.config.json.user" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Views\TPosts\_EditByUserPartial.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/prjWebsiteB.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     @await RenderSectionAsync("Styles", required: false)
 
 </head>
@@ -33,6 +34,7 @@
             </a>
 
             <!-- Divider -->
+            
             <hr class="sidebar-divider">
 
             <!-- Nav Item - Pages Collapse Menu -->
@@ -47,7 +49,7 @@
                 </a>
                 <div id="collapse1" class="collapse"  data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item customFontColor" asp-controller="Home" asp-action="Privacy">會員管理</a>
+                        <a class="collapse-item customFontColor" asp-controller="TUsers" asp-action="Index">會員管理</a>
                     </div>
                 </div>
             </li>
@@ -60,7 +62,8 @@
                 </a>
                 <div id="collapse2" class="collapse" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item customFontColor" asp-controller="Home" asp-action="Privacy">文章管理</a>
+                        <a class="collapse-item customFontColor" asp-controller="TPosts" asp-action="Index">文章管理</a>
+                        <a class="collapse-item customFontColor" asp-controller="TPosts" asp-action="Posts">個人文章</a>
                     </div>
                 </div>
             </li>
@@ -73,7 +76,9 @@
                 </a>
                 <div id="collapse3" class="collapse" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item customFontColor" asp-controller="Home" asp-action="Privacy">景點管理</a>
+                        <a class="collapse-item customFontColor" asp-controller="TAttractions" asp-action="Index">景點管理</a>
+                        @* <a class="collapse-item customFontColor" asp-controller="TAttractionComments" asp-action="Index">評論管理</a>
+                        <a class="collapse-item customFontColor" asp-controller="TAttractionTicketOrders" asp-action="Index">票務管理</a> *@
                     </div>
                 </div>
             </li>
@@ -86,7 +91,7 @@
                 </a>
                 <div id="collapse4" class="collapse" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item customFontColor" asp-controller="Home" asp-action="Privacy">活動管理</a>
+                        <a class="collapse-item customFontColor" asp-controller="TEvents" asp-action="Index">活動管理</a>                  
                     </div>
                 </div>
             </li>
@@ -99,7 +104,7 @@
                 </a>
                 <div id="collapse5" class="collapse" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item customFontColor" asp-controller="Home" asp-action="Privacy">商品管理</a>
+                        <a class="collapse-item customFontColor" asp-controller="TProducts" asp-action="Index">商品管理</a>
                     </div>
                 </div>
             </li>
@@ -183,6 +188,7 @@
                         <span>Copyright &copy; Your Website 2025</span>
                     </div>
                 </div>
+                
             </footer>
             <!-- End of Footer -->
 
