@@ -106,22 +106,22 @@
                 {
                     <tr>
                         <td>
-                            <div class="mb-1">
-                                <a class="btn btn-orange" asp-action="Details" asp-route-id="@item.FProductId"><i class="fa-solid fa-circle-info"></i></a>
+                            <div class="m-3">
+                                <a class="btn btn-orange" asp-action="Details" asp-route-id="@item.FProductId"><i class="fa-solid fa-circle-info"></i> 商品明細</a>
                             </div>
-                            <div class="mb-1">
-                                <a class="btn btn-yellow" asp-action="Edit" asp-route-id="@item.FProductId"><i class="fa-solid fa-pen-to-square"></i></a>
+                            <div class="m-3">
+                                <a class="btn btn-yellow" asp-action="Edit" asp-route-id="@item.FProductId"><i class="fa-solid fa-pen-to-square"></i> 商品修改</a>
                             </div>
-                            <div class="mb-0">
+                            <div class="m-3">
                                 <button class="btn btn-orange" data-bs-toggle="modal" data-bs-target="#deleteModal"
                                         onclick="setDeleteId(@item.FProductId)">
-                                    <i class="fa-solid fa-trash"></i>                                    
+                                    <i class="fa-solid fa-trash"></i> 商品刪除                             
                                 </button>
                             </div>
                         </td>
                         <td class="hidden-column">@Html.DisplayFor(modelItem => item.FProductId)</td>
                         <td>
-                            <img src="@Url.Action("GetPicture","TProducts", new{id=@item.FProductId})" style="width:100px" />
+                            <img src="@Url.Action("GetPicture","TProducts", new{id=@item.FProductId})" style="width:200px" />
                         </td>
                         <td>@Html.DisplayFor(modelItem => item.FProductName)</td>
                         <td>@Html.DisplayFor(modelItem => item.FCategoryName)</td>
