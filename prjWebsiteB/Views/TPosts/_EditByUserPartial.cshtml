@@ -28,7 +28,8 @@
                 <select asp-for="FIsPublic" class="form-control" asp-items="ViewBag.FIsPublic"></select>
                 <span asp-validation-for="FIsPublic" class="text-danger"></span>
             </div>
-            <button type="button" class="btn btn-primary" onclick="editDataByUser(@Model.FPostId)" data-bs-dismiss="modal">送出</button>
+            <button type="button" class="btn btn-primary float-right" onclick="editDataByUser(@Model.FPostId)" data-bs-dismiss="modal">送出</button>
+            <button type="button" class="btn btn-warning float-left" onclick="btnDemo()">Demo</button>
         </form>
     </div>
 </div>
