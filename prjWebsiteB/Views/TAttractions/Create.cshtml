@@ -206,6 +206,8 @@ DbGroupBContext 類別是一個 DI 容器，可以在這裡注入，並使用 _c
             previewImageContainer.append($previewCarouselItem);
 
             function previewImage(inputFile){
+                // 清空 imageNameContainer 的內容
+                $('#imageNameContainer').find('div').remove();
                 // 清空預覽圖片欄位的內容
                 previewImageContainer.empty();
 
