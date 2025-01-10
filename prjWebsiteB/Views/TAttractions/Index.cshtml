@@ -33,8 +33,6 @@
     </style>
 }
 
-<h1>Index</h1>
-
 <p>
     <a asp-action="Create" class="btn btn-outline-success"><i class="fas fa-plus"></i> Create New</a>
 </p>
@@ -222,6 +220,8 @@
             previewImageContainer.append($previewCarouselItem);
 
             function previewImage(inputFile){
+                // 清空 imageNameContainer 的內容
+                $('#imageNameContainer').find('div').remove();
                 // 清空預覽圖片欄位的內容
                 previewImageContainer.empty();
 
